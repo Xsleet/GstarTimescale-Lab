@@ -1,0 +1,8 @@
+* Native table index; paths are relative to the experiment working directory.
++FileTable
+ TimescaleCfg config/Timescale.cfg
+ object config/session.obj
+ satinf config/svinf.dat
+ leapsc config/leap.sec
+ paninf config/pan_info
+-FileTable

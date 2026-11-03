@@ -5,3 +5,8 @@
 *.yml text eol=lf
 *.svg text eol=lf
 .githooks/* text eol=lf
+config/Timescale.cfg text eol=lf
+config/session.obj text eol=lf
+config/file_table text eol=lf
+config/svinf.dat text eol=lf whitespace=-blank-at-eol
+config/pan_info text eol=lf

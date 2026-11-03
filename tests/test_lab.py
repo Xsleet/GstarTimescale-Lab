@@ -112,6 +112,7 @@ class PublicationAuditTests(unittest.TestCase):
     def test_public_text_allowed(self):
         self.assertEqual(audit_file("docs/guide.md", b"Use the maintainer runtime."), [])
         self.assertEqual(audit_file("tools/generate.py", b"print('hello')"), [])
+        self.assertEqual(audit_file("config/session.obj", b"+LEO used\n-LEO used\n"), [])
 
     def test_core_source_archives_and_runtime_denied(self):
         for name in ("GstarTimescale/src/main.cpp", "include/solver.h", "engine/GstarTimescale.exe",
@@ -123,6 +124,7 @@ class PublicationAuditTests(unittest.TestCase):
         self.assertTrue(audit_file("docs/hidden.md", b"MZbinary"))
         self.assertTrue(audit_file("docs/hidden.md", b"PK\x03\x04zip"))
         self.assertTrue(audit_file("docs/linked.md", b"../outside", "120000"))
+        self.assertTrue(audit_file("config/session.obj", b"\x64\x86\x00binary object"))
 
     def test_private_path_and_token_denied(self):
         local_path = "Z:" + "/Users/" + "example/secret"

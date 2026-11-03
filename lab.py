@@ -129,6 +129,8 @@ def main(argv: list[str] | None = None) -> int:
     install = commands.add_parser("install-engine", help="Install the ZIP provided privately by your maintainer")
     install.add_argument("archive", type=Path)
     commands.add_parser("doctor", help="Check Python, platform, dependencies, and runtime integrity")
+    initialize = commands.add_parser("init", help="Copy editable native configuration templates into a new experiment; no data generation")
+    initialize.add_argument("--output", type=Path, required=True)
     for name in ("inspect", "execute"):
         command = commands.add_parser(name, help="Inspect an existing configuration" if name == "inspect" else
                                       "Run an existing file_table without generating inputs or rewriting settings")
@@ -153,6 +155,13 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "install-engine":
             print(f"Installed: {install_engine(args.archive.resolve())}")
             print("Next: python lab.py doctor")
+            return 0
+        if args.command == "init":
+            from tools.run_config import initialize_case
+            destination = resolve_output(args.output, "custom", 10)
+            initialize_case(destination, ROOT / "config")
+            print(f"Editable configuration: {destination / 'config'}")
+            print("Edit the native files and provide matching input data; then use lab.py inspect and execute.")
             return 0
         if args.command == "doctor":
             checks = (("Windows x64", check_platform), ("Python packages", check_dependencies), ("Runtime SHA256", check_engine))

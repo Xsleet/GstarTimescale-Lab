@@ -6,7 +6,55 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from tools.run_config import execute_config, inspect_config
+from tools.run_config import CONFIG_FILES, execute_config, initialize_case, inspect_config
+
+
+class NativeTemplateTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        self.template = Path(__file__).resolve().parents[1] / "config"
+
+    def test_initialized_native_config_is_complete_and_inspectable(self):
+        case = initialize_case(self.root / "new_case", self.template)
+        self.assertEqual({path.name for path in (case / "config").iterdir()}, set(CONFIG_FILES))
+        for name in CONFIG_FILES:
+            self.assertEqual((case / "config" / name).read_bytes(), (self.template / name).read_bytes())
+        self.assertEqual(list((case / "clk").iterdir()), [])
+        self.assertEqual(list((case / "pfd").iterdir()), [])
+        info = inspect_config(Path("config/file_table"), case)
+        self.assertEqual(info["duration_s"], 864000)
+        self.assertEqual(info["start"], "2026-01-01T00:00:00")
+        self.assertEqual(info["end"], "2026-01-11T00:00:00")
+        self.assertEqual(info["architecture"], "centralized")
+        self.assertTrue(all(Path(path).is_file() for path in info["tables"].values()))
+
+    def test_user_edits_are_read_without_rewriting_or_changing_template(self):
+        case = initialize_case(self.root / "custom", self.template)
+        original = (self.template / "Timescale.cfg").read_bytes()
+        cfg = case / "config/Timescale.cfg"
+        changed = cfg.read_text(encoding="utf-8").replace("= centralized", "= distributed_ci").replace("= results", "= result_two")
+        cfg.write_text(changed, encoding="utf-8")
+        info = inspect_config(Path("config/file_table"), case)
+        self.assertEqual(info["architecture"], "distributed_ci")
+        self.assertEqual(info["result_dir"], str((case / "result_two").resolve()))
+        self.assertEqual(cfg.read_text(encoding="utf-8"), changed)
+        self.assertEqual((self.template / "Timescale.cfg").read_bytes(), original)
+
+    def test_reinitialization_preserves_existing_case(self):
+        case = initialize_case(self.root / "existing", self.template)
+        cfg = case / "config/Timescale.cfg"
+        cfg.write_text("user settings", encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "not empty"):
+            initialize_case(case, self.template)
+        self.assertEqual(cfg.read_text(), "user settings")
+
+    def test_missing_template_does_not_create_a_partial_case(self):
+        target = self.root / "absent"
+        with self.assertRaises(OSError):
+            initialize_case(target, self.root / "missing_templates")
+        self.assertFalse(target.exists())
 
 
 class ExistingConfigurationTests(unittest.TestCase):

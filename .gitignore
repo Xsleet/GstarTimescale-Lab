@@ -19,6 +19,8 @@ __pycache__/
 *.a
 *.o
 *.obj
+# This exact .obj is a public text configuration, not a compiled object file.
+!/config/session.obj
 *.zip
 *.7z
 *.tar

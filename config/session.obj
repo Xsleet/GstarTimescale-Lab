@@ -1,0 +1,15 @@
+* Editable four-clock PFD configuration; see config/README.md.
+* 0101/0102: CSAC; 0103/0104: mRO. Keep IDs consistent with CLK/PFD and svinf.dat.
+* Phase/Frequency arrays: [initial standard deviation, diffusion coefficient].
++GNSS satellite
+-GNSS satellite
+
++LEO used = ""
+ 000 0101  0101  FIX FIX NON P    7.0 30000. 300.  10.0  10.0  10.0   0.10   0.10   0.10 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5      {TotalPhase:[9.9999999999999995e-08,2.0391000000000000e-10], Phase:[9.9999999999999995e-08,2.0391000000000000e-10], Frequency:[1.0000000000000001e-09,2.3340624376340060e-13], Drift:[1e-11,0], Link_Noise:{Default:9.9999999999999998e-13}}
+ 000 0102  0102  FIX FIX NON P    7.0 30000. 300.  10.0  10.0  10.0   0.10   0.10   0.10 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5      {TotalPhase:[9.9999999999999995e-08,1.6005999999999999e-10], Phase:[9.9999999999999995e-08,1.6005999999999999e-10], Frequency:[1.0000000000000001e-09,2.2426499299230809e-13], Drift:[1e-11,0], Link_Noise:{Default:9.9999999999999998e-13}}
+ 000 0103  0103  FIX FIX NON P    7.0 30000. 300.  10.0  10.0  10.0   0.10   0.10   0.10 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5      {TotalPhase:[9.9999999999999995e-08,3.2996599999999998e-11], Phase:[9.9999999999999995e-08,3.2996599999999998e-11], Frequency:[1.0000000000000001e-09,6.7595873992870301e-13], Drift:[1e-11,0], Link_Noise:{Default:9.9999999999999998e-13}}
+ 000 0104  0104  FIX FIX NON P    7.0 30000. 300.  10.0  10.0  10.0   0.10   0.10   0.10 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5 1.e5      {TotalPhase:[9.9999999999999995e-08,2.7343500000000000e-11], Phase:[9.9999999999999995e-08,2.7343500000000000e-11], Frequency:[1.0000000000000001e-09,6.3080729549998063e-13], Drift:[1e-11,0], Link_Noise:{Default:9.9999999999999998e-13}}
+-LEO used
+
++GNSS site
+-GNSS site

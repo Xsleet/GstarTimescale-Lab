@@ -11,6 +11,8 @@ ROOT_FILES = {"README.md", "LICENSE.md", "SECURITY.md", "CONTRIBUTING.md", "CHAN
               "lab.py", "requirements-demo.txt", "engine-release.json", ".gitignore", ".gitattributes"}
 FOLDERS = {"docs", "examples", "tools", "tests", ".github", ".githooks", "config"}
 SUFFIXES = {".md", ".py", ".json", ".yml", ".yaml", ".svg"}
+CONFIG_FILES = {"config/file_table", "config/Timescale.cfg", "config/session.obj",
+                "config/svinf.dat", "config/leap.sec", "config/pan_info"}
 
 
 def audit_file(name: str, data: bytes, mode: str = "100644") -> list[str]:
@@ -18,7 +20,7 @@ def audit_file(name: str, data: bytes, mode: str = "100644") -> list[str]:
     path = PurePosixPath(name)
     if mode not in ("100644", "100755"):
         issues.append("symlinks/submodules are not permitted")
-    special = name in ROOT_FILES or name in {"config/leap.sec", ".githooks/pre-commit"}
+    special = name in ROOT_FILES or name in CONFIG_FILES or name == ".githooks/pre-commit"
     if not special and (len(path.parts) < 2 or path.parts[0] not in FOLDERS or path.suffix not in SUFFIXES):
         issues.append("path/type is outside the public file allowlist")
     if any(part.lower() in {"engine", "private", "runs", "build", "src", "include", ".git", ".claude"} for part in path.parts):

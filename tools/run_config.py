@@ -10,6 +10,31 @@ import re
 import subprocess
 import uuid
 
+CONFIG_FILES = ("file_table", "Timescale.cfg", "session.obj", "svinf.dat", "leap.sec", "pan_info")
+
+
+def initialize_case(destination: Path, template_dir: Path) -> Path:
+    """Copy editable native files exactly; never generate or replace experiment inputs."""
+    destination = destination.resolve()
+    if destination.exists() and (not destination.is_dir() or any(destination.iterdir())):
+        raise ValueError(f"Experiment directory is not empty: {destination}. Choose a new --output directory")
+    # Read the entire small template first, so a missing file creates no partial case.
+    contents = {name: (template_dir / name).read_bytes() for name in CONFIG_FILES}
+    for name in ("config", "clocks_raw", "clk", "pfd", "logs", "results", "analysis", "figures", "tools"):
+        (destination / name).mkdir(parents=True, exist_ok=True)
+    for name, data in contents.items():
+        with (destination / "config" / name).open("xb") as stream:
+            stream.write(data)
+    (destination / "README.md").write_text(
+        "# Configured GSTAR experiment\n\n"
+        "Edit config/Timescale.cfg, config/session.obj and config/file_table directly.\n"
+        "Provide matching CLK/PFD data or point configuration paths to existing inputs.\n"
+        "This directory was initialized from public native configuration templates; no data was generated.\n\n"
+        "Run lab.py inspect/execute --workdir <this-directory> from the repository.\n"
+        "Configuration guide: https://github.com/Xsleet/GstarTimescale-Lab/blob/main/docs/configuration.md\n",
+        encoding="utf-8")
+    return destination
+
 
 def configured_path(value: str, workdir: Path) -> Path:
     # The runtime reads path fields as one whitespace-delimited token.

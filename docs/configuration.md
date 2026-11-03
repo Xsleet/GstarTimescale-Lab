@@ -2,6 +2,8 @@
 
 核心程序从 `file_table`、`Timescale.cfg` 和 `session.obj` 读取配置。可执行文件封装了求解实现，**没有把运行模式、起始时间和数据路径固定在程序中**。
 
+完整、可直接编辑的原生文件已放在公开的 [config 目录](../config/README.md)，无需先生成数据才能获得配置。推荐先用 `lab.py init --output Runs/my_case` 复制一份，再编辑实验目录里的配置。也可以直接用文件管理器复制，无需使用初始化脚本。
+
 ## 两种运行入口
 
 | 入口 | 适用情况 | 行为 |
@@ -70,17 +72,17 @@
 -Timescale Section
 ```
 
-这是需要修改的字段片段，不是独立完整配置。建议从 `prepare` 生成的完整配置开始。实际输出历元还取决于输入覆盖、插值和初始化，不保证所有边界时刻都有输出。
+这是需要修改的字段片段，不是独立完整配置。完整模板见 [Timescale.cfg](../config/Timescale.cfg)。实际输出历元还取决于输入覆盖、插值和初始化，不保证所有边界时刻都有输出。
 
 ## 实际操作
 
-先生成一个可修改的完整示例，或把已有的标准输入和配置放到自己的实验目录：
+先复制一套原生配置，或把已有配置放到自己的实验目录：
 
 ```powershell
-.\.venv\Scripts\python.exe lab.py prepare --output Runs/custom_case
+.\.venv\Scripts\python.exe lab.py init --output Runs/custom_case
 ```
 
-编辑 `Runs/custom_case/config/Timescale.cfg` 及必要的其它文件。配置预览不需要核心程序或科学计算依赖：
+init 不生成模拟数据，也不调用核心。直接编辑 `Runs/custom_case/config/Timescale.cfg`、`session.obj`、`file_table`，并准备覆盖所选时间段的匹配输入。配置预览不需要核心程序或科学计算依赖：
 
 ```powershell
 .\.venv\Scripts\python.exe lab.py inspect --workdir Runs/custom_case
@@ -101,6 +103,8 @@
 `--workdir` 可以是绝对路径；相对路径从本仓库根目录解析。`--file-table` 的相对路径和文件内所有相对路径，都从 workdir 解析。核心配置中的路径支持无空格的绝对路径，也可以使用 `../` 指向其它数据目录。
 
 为防止覆盖结果，execute 要求 `Project directory` 不存在或为空。重跑时修改为新目录。控制台与执行记录放在 `logs/execute_<唯一编号>/`；记录包含配置路径、起止时间、配置与程序哈希、退出码和执行状态。输入和配置不会被启动器改写。
+
+初始化后的配置与仓库根目录模板互相独立。编辑模板不会改变已有实验，重新 init 也不会覆盖非空实验目录。`prepare`/`run` 仍用于合成示例，会按生成器参数创建配置，不读取这套已编辑模板；不要用它们重新生成自己的配置实验。
 
 ## 需要注意的边界
 

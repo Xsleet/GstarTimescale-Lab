@@ -6,6 +6,8 @@
 
 可以运行内置合成案例，也可以通过 `file_table` 和 `Timescale.cfg` 接入已有标准数据。默认示例为 **2 只 CSAC + 2 只 mRO、10 天、10 秒采样**；另有四只同类白相位噪声模型的基础案例。内置案例使用 PFD 时钟比对，不需要 STK、轨道数据或 Jupyter。
 
+**配置文件直接公开、直接编辑：** [运行配置 Timescale.cfg](config/Timescale.cfg) · [对象与噪声参数 session.obj](config/session.obj) · [文件索引 file_table](config/file_table) · [配置目录说明](config/README.md)。自己的实验推荐使用“复制配置 → 编辑 → 运行”的流程。
+
 ![异构案例的四只原始钟和组合时间尺度 ADEV](docs/images/heterogeneous-adev.svg)
 
 *上图是固定种子的案例预览。CSAC/mRO 参数是研究预设，不代表某款物理钟的标定性能；单次结果不能证明所有情况下都能改善。*
@@ -55,7 +57,24 @@ python -m venv .venv
 
 看到 Windows、Python packages、Runtime SHA256 三项 `PASS` 后继续。有错误先看 [故障排查](docs/troubleshooting.md)。
 
-### 5. 跑完整的 10 天异构实验
+### 5. 选择自己的配置，或先运行示例
+
+**已有标准数据：直接编辑配置。**
+
+```powershell
+.\.venv\Scripts\python.exe lab.py init --output Runs/my_case
+```
+
+打开 `Runs/my_case/config/Timescale.cfg` 修改模式、时间与路径；打开 `session.obj` 修改对象及噪声参数。把匹配的 CLK/PFD 数据放入实验目录，或在配置中指向已有位置，然后运行：
+
+```powershell
+.\.venv\Scripts\python.exe lab.py inspect --workdir Runs/my_case
+.\.venv\Scripts\python.exe lab.py execute --workdir Runs/my_case
+```
+
+init 只复制配置，不生成数据。execute 按编辑后的配置执行，不改写配置；详细操作见 [config/README.md](config/README.md)。
+
+**没有数据：跑完整的 10 天异构示例。**
 
 ```powershell
 .\.venv\Scripts\python.exe lab.py run
@@ -64,6 +83,8 @@ python -m venv .venv
 默认参数为 `--case heterogeneous --days 10 --seed 2026 --architecture centralized`。10 天是**仿真时间**，无需等待现实中的 10 天。程序先生成数据，再求解，最后绘图。运行耗时取决于电脑；日志位于实验文件夹的 `logs/`。请预留磁盘空间，完整案例会生成数百 MB 级数据。
 
 ### 6. 打开结果
+
+上面的内置示例完成后，可以直接打开 HTML：
 
 ```powershell
 Start-Process .\Runs\heterogeneous_10days\report.html
@@ -76,6 +97,8 @@ Start-Process .\Runs\heterogeneous_10days\report.html
 - 有效样本数、运行检查结果、CSV/TSV 数据和 PNG/PDF/SVG 图片链接。
 
 从 [如何读结果](docs/results.md) 开始：先认识坐标和单位，再比较哪段平均时间上有所改善。
+
+自己的配置通过 execute 运行时，结果位于 `Project directory` 指定的目录，执行记录位于实验的 `logs/execute_.../`。自定义分析须与对象、时间和状态模型匹配，不自动套用内置示例 HTML。
 
 ## 常用实验命令
 
@@ -105,12 +128,18 @@ Start-Process .\Runs\heterogeneous_10days\report.html
 **这些参数可以调整，不需要重新编译核心程序。** `Timescale.cfg` 指定运行架构、开始时间、运行秒数、采样间隔、输入文件和结果目录；`session.obj` 指定对象和噪声参数。
 
 ```powershell
+# 只复制原生配置模板，不生成数据
+.\.venv\Scripts\python.exe lab.py init --output Runs/custom_case
+
+# 编辑 Runs/custom_case/config/ 中的原生文件，并准备匹配数据
 # 查看已有配置实际解析出的起止时间、架构和路径
-.\.venv\Scripts\python.exe lab.py inspect --workdir Runs/inputs_only
+.\.venv\Scripts\python.exe lab.py inspect --workdir Runs/custom_case
 
 # 按已有配置运行，不重新生成数据或改写配置
-.\.venv\Scripts\python.exe lab.py execute --workdir Runs/inputs_only
+.\.venv\Scripts\python.exe lab.py execute --workdir Runs/custom_case
 ```
+
+也可以手动复制公开的 config 目录到实验中使用。init/execute 不会替你同步或覆盖参数；修改根目录模板只影响之后新建的实验。`prepare`/`run` 则是另一条合成示例流程，配置由生成器创建，不读取你修改后的根目录模板。
 
 结束时刻由“开始时刻 + 运行秒数”确定。内置案例生成器的起点仍固定为 2026-01-01；自定义时间范围通过已有配置入口运行。当前核心会拒绝起始年份大于 2026 的任务。
 
