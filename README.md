@@ -8,7 +8,7 @@
 
 **配置文件直接公开、直接编辑：** [运行配置 Timescale.cfg](config/Timescale.cfg) · [对象与噪声参数 session.obj](config/session.obj) · [文件索引 file_table](config/file_table) · [配置目录说明](config/README.md)。自己的实验推荐使用“复制配置 → 编辑 → 运行”的流程。
 
-**论文实验数据：** [第 4.3 节秩亏补偿实验复现](examples/thesis-section43/README.md)提供图 4.7～4.11、表 4.1～4.2 对应的数据、分组映射和重算步骤。下载公开分析包即可生成图表与 HTML 报告，**无需核心程序**；另提供 CLK/PFD 输入供授权用户重新解算。已知论文与归档的统计口径差异会在报告中显示。
+**论文实验入门：** [第 4.3 节：从数据到 ADEV](examples/thesis-section43/README.md)带你完成“下载数据 → 运行分析 → 打开报告”，解释秩亏补偿、ADEV 计算和图 4.7～4.11 的主要结论，**无需核心程序**。另有 CLK/PFD 输入与可编辑配置，供授权用户从观测重新解算。首次使用关注怎么算、怎么用、怎么看图，详细数据说明可按需阅读。
 
 ![异构案例的四只原始钟和组合时间尺度 ADEV](docs/images/heterogeneous-adev.svg)
 

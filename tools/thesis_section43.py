@@ -215,6 +215,8 @@ def analyze(data: Path, output: Path) -> None:
     comparison = pd.DataFrame(comparisons, columns=['tau_s', 'method', 'paper_rounded', 'five_group_exact',
                               'four_plotted_group_exact', 'difference_percent', 'matches_printed_rounding'])
     comparison.to_csv(tables / 'table4_2_audit.csv', index=False, float_format='%.17e')
+    recomputed = comparison.pivot(index='tau_s', columns='method', values='five_group_exact')[list(METHODS)]
+    recomputed.to_csv(tables / 'table4_2_recomputed.csv', float_format='%.17e')
     notebook = pd.read_csv(data / 'notebook_summary.csv', float_precision='round_trip')
     selected = curve_table[curve_table.group.str.startswith('mixed_2plus2') & curve_table.series.isin(METHODS)]
     averages = selected.groupby(['series', 'tau_s']).adev.mean()
@@ -298,23 +300,74 @@ def analyze(data: Path, output: Path) -> None:
                     'notebook_max_relative_error':max_error,'paper_table_matching_cells':int(comparison.matches_printed_rounding.sum()),
                     'paper_table_total_cells':20,'solver_rerun':False})
     (output/'validation.json').write_text(json.dumps(checked,indent=2)+'\n',encoding='utf-8')
-    summary = comparison.assign(method=comparison.method.map(LABELS)).rename(columns={
+    audit_summary = comparison.assign(method=comparison.method.map(LABELS)).rename(columns={
         'tau_s':'平滑时间 (s)', 'method':'方法', 'paper_rounded':'论文原值',
         'five_group_exact':'五组直接重算', 'four_plotted_group_exact':'图示四组直接重算',
         'difference_percent':'五组相对差异 (%)', 'matches_printed_rounding':'匹配论文印刷精度'
     }).to_html(index=False,float_format=lambda x:f'{x:.4e}')
-    captions = {'fig4_7':'图 4.7：无补偿时的后验标准差', 'fig4_8':'图 4.8：三种补偿方法（原脚本的单钟口径）',
-                'fig4_8_max':'图 4.8 补充核对：四钟标准差最大值', 'fig4_9':'图 4.9：CSAC 同构钟组 ADEV',
-                'fig4_10':'图 4.10：MRO 同构钟组 ADEV', 'fig4_11':'图 4.11：异构钟组 ADEV'}
-    body=''.join(f'<h2>{html.escape(caption)}</h2><img src="figures/{name}.svg" alt="{html.escape(caption)}">'
-                 for name, caption in captions.items())
-    (output/'report.html').write_text('<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>论文 4.3 复现</title>'
-        '<style>body{max-width:1100px;margin:40px auto;padding:0 20px;font:16px/1.7 sans-serif;color:#222}img{max-width:100%}table{font-size:13px;border-collapse:collapse}td,th{padding:6px;border:1px solid #ddd}pre{white-space:pre-wrap}</style>'
-        '<h1>论文第 4.3 节实验复现</h1><p>归档仿真数据：10 天、10 秒采样，三种钟组配置。此报告从公开相位和协方差数据重算，未运行核心解算程序。</p>'
-        '<p>图 4.7/4.8 按 Word 内嵌图像匹配选择 group02。图 4.8 保留脚本的 Clock 1 口径，另附 max 图对应正文“四钟最大值”口径。图 4.9～4.11 展示 group01、02、04、05；原表统计归档含 5 组。详见仓库复现说明。</p>'
-        f'<h2>核对结果</h2><p>数据文件校验通过；120 条序列、1800 个 ADEV 点与原计算函数一致。归档汇总表 60 项一致。论文表 4.2 的 {checked["paper_table_matching_cells"]}/20 项匹配印刷精度，其余项尚未复现。</p>'
-        '<details><summary>查看校验明细</summary><pre>'+html.escape(json.dumps(checked,indent=2,ensure_ascii=False))+'</pre></details>'+body+
-        '<h2>表 4.2 数值核对</h2><p>两种重算值均直接在目标 τ 计算 ADEV，未插值。False 表示未复现论文的印刷精度，不能视为通过。原始字段名与高精度数值见 tables/table4_2_audit.csv。</p>'+summary+'</html>',encoding='utf-8')
+    summary = recomputed.rename(columns=LABELS).rename_axis('平均时间 τ (s)').reset_index().to_html(
+        index=False, float_format=lambda x: f'{x:.3e}', formatters={'平均时间 τ (s)': lambda x: f'{x:g}'})
+    captions = {
+        'fig4_7': ('图 4.7：为什么需要秩亏补偿？',
+                   '只知道两钟的差，无法确定所有钟共同的时间基准。无补偿时的标准差增大，展示了这种估计不稳定的现象。'),
+        'fig4_8': ('图 4.8：加入补偿后怎样变化？',
+                   '对照上一张图，观察三种补偿方法下成员钟标准差的变化。S1 为 4 只 CSAC，S2 为 4 只 mRO，S3 为 2 只 mRO + 2 只 CSAC。标准差与下面的 ADEV 是不同指标。'),
+        'fig4_9': ('图 4.9：4 只 CSAC 的同构组合',
+                   '先找灰色原始钟曲线，再看彩色组合曲线。多钟组合整体改善稳定性，几种补偿方法的 ADEV 很接近。'),
+        'fig4_10': ('图 4.10：4 只 mRO 的同构组合',
+                    '用相同的方法比较组合与单钟。关注短期和较长期的表现，以及几种方法曲线的接近程度。'),
+        'fig4_11': ('图 4.11：2 只 mRO + 2 只 CSAC 的异构组合',
+                    '不同类型钟的短期和较长期特性可以互补，方法间的差别也更明显。此案例中 Greenhall/KPW 整体较均衡，不代表某一种方法在所有平均时间上都最优。'),
+    }
+    body = ''.join(
+        f'<section id="{name}"><h2>{html.escape(caption)}</h2><p>{html.escape(hint)}</p>'
+        f'<img loading="lazy" src="figures/{name}.svg" alt="{html.escape(caption)}"></section>'
+        for name, (caption, hint) in captions.items())
+    maximum_difference = float(comparison.difference_percent.abs().max())
+    (output / 'report.html').write_text(
+        '<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">'
+        '<meta name="viewport" content="width=device-width,initial-scale=1"><title>论文 4.3 入门实验报告</title>'
+        '<style>body{max-width:1100px;margin:40px auto;padding:0 20px;font:16px/1.7 sans-serif;color:#222}'
+        'img{display:block;max-width:100%;height:auto}table{font-size:14px;border-collapse:collapse}'
+        'td,th{padding:8px;border:1px solid #ddd}th{background:#f3f5f7}pre{white-space:pre-wrap;overflow-wrap:anywhere}'
+        'a{color:#175d8d}section{margin:36px 0}.intro{background:#f3f7fa;padding:18px 24px;border-radius:8px}'
+        '.table-scroll{overflow-x:auto}details{margin:28px 0}summary{cursor:pointer;font-weight:bold}</style></head><body>'
+        '<h1>论文第 4.3 节：从数据到 ADEV</h1>'
+        '<p>10 天 · 10 秒采样 · 同构与异构钟组</p><div class="intro">'
+        '<p><strong>报告已生成。</strong>你已用公开归档数据重新计算相位 ADEV 和协方差图，无需运行核心程序。'
+        '下面按“计算过程 → 读图 → 比较数值”理解本节实验。</p>'
+        '<p>入门目标是掌握流程并观察与论文基本接近的主要结论，不要求每个数字与论文印刷值完全一致。</p></div>'
+        '<h2>这些结果怎样算出来？</h2><ol>'
+        '<li>仿真四只钟，取两两钟差作为 PFD 观测；本节不需要轨道数据。</li>'
+        '<li>GSTAR 采用不同秩亏补偿方法，输出组合时间尺度相位。这一步的历史结果已经保存在数据包中。</li>'
+        '<li>本工具读取原始钟和组合相位，以 0.1 Hz 采样率调用 <code>allantools.adev</code>，得到下面的稳定度曲线。</li></ol>'
+        '<h2>先学会读 ADEV 图</h2><p>横轴 τ 为平均时间，左侧看短期，右侧看较长期；'
+        '纵轴为 ADEV，在相同 τ 上越低通常表示越稳定。它衡量稳定性，不直接表示相对 UTC 的绝对误差。</p>'
+        '<p>每个子图有 <strong>4 只原始钟 + 4 种方法，共 8 条曲线</strong>：灰色虚线为原始钟，彩色曲线为组合时间尺度。'
+        '曲线接近时会重叠。Centroid 对应配置名 SUMZERO，其余为 Brown、Greenhall、KPW。</p>'
+        '<p>快速查看：<a href="#fig4_9">CSAC 同构</a> · <a href="#fig4_10">mRO 同构</a> · '
+        '<a href="#fig4_11">2+2 异构</a> · <a href="#table4_2">数值表</a></p>' + body +
+        '<h2 id="table4_2">表 4.2 对应计算：异构钟组平均 ADEV</h2>'
+        '<p>先对每组相位分别计算 ADEV，再对 5 组结果取算术平均。横向比较同一行即可比较不同方法；数值越小，稳定度越好。</p>'
+        '<div class="table-scroll">' + summary + '</div>'
+        f'<p>与论文印刷值的最大相对差异约 {maximum_difference:.1f}%，可用于理解本节的计算过程与主要趋势。'
+        '下载重算表：<a href="tables/table4_2_recomputed.csv">CSV 数值</a>；'
+        '<a href="tables/adev_exact_by_group.csv">每组的指定 τ 结果</a>。</p>'
+        '<h2>接下来可以做什么？</h2><p>在图 4.11 中选一组，比较约 10 秒、1000 秒、100000 秒处的原始钟和组合曲线；'
+        '再与同构组对照。想重新解算或修改配置，可继续仓库教程的第 5 步，先运行“异构第 1 组 + Greenhall”。</p>'
+        '<details><summary>进阶：数据来源、绘图口径与逐项核对（可跳过）</summary>'
+        '<p>数据文件校验通过；120 条相位序列、1800 个 ADEV 点与原计算函数一致，归档汇总表 60 项一致。'
+        '图 4.7/4.8 采用实际论文插图对应的 group02，图 4.8 展示 Clock 1；下方额外给出四钟最大值。'
+        '图 4.9～4.11 展示 group01、02、04、05，表格统计全部 5 组。</p>'
+        '<p>协方差图只对正且有限的方差开方；原始数据及其他方法的当前程序运行范围详见仓库进阶说明。'
+        '分析归档与重新执行核心程序是两个步骤，本报告完成前者。</p>'
+        '<h3>四钟标准差最大值补充图</h3><img loading="lazy" src="figures/fig4_8_max.svg" alt="四钟标准差最大值">'
+        f'<h3>论文印刷值与重算值</h3><p>{checked["paper_table_matching_cells"]}/20 项在印刷精度上相同。'
+        '其余为数值差异记录，不作为入门练习的失败判定。False 仅表示未逐位匹配论文印刷值。'
+        '两种重算值均在目标 τ 直接计算，未插值。</p><div class="table-scroll">' + audit_summary + '</div>'
+        '<p><a href="tables/table4_2_audit.csv">完整差异表</a> · <a href="validation.json">机器可读校验记录</a></p>'
+        '<pre>' + html.escape(json.dumps(checked, indent=2, ensure_ascii=False)) + '</pre></details></body></html>',
+        encoding='utf-8')
     print(json.dumps(checked,indent=2))
     print(f'Report: {output / "report.html"}')
 
@@ -377,14 +430,34 @@ def compare_rerun(data: Path, workdir: Path, group: str, method: str, output: Pa
         fig.tight_layout()
         fig.savefig(output / 'adev_comparison.png', dpi=180)
         plt.close(fig)
-        comparison_html = '<img style="max-width:100%" src="adev_comparison.png" alt="ADEV comparison">' + table.to_html(index=False)
+        visible_table = table.rename(columns={
+            'tau_s': '平均时间 τ (s)', 'archived_adev': '历史 ADEV', 'rerun_adev': '本次 ADEV',
+            'relative_difference': '相对差异', 'terms': '有效项数',
+        }).to_html(index=False, float_format=lambda x: f'{x:.3e}')
+        comparison_html = (
+            '<h2>比较六条 ADEV 曲线</h2><p>Clock 1～4 是四只原始钟；archived 是历史时间尺度，rerun 是本次时间尺度。'
+            '在相同平均时间上，曲线越低通常表示越稳定；新旧曲线重合或接近，表示相应稳定度结果接近。</p>'
+            '<img style="max-width:100%" src="adev_comparison.png" alt="四只原始钟、历史时间尺度和本次时间尺度 ADEV">'
+            f'<p>本次与历史 ADEV 的最大相对差异为 {report["max_adev_relative_difference"] * 100:.4g}%。</p>'
+            '<details><summary>查看各平均时间的数值</summary><div style="overflow-x:auto">' + visible_table + '</div></details>')
     else:
         comparison_html = '<p>历元不完整、不连续或存在非有限值，未压缩缺测序列来计算 ADEV。请检查解算日志。</p>'
     (output / 'comparison.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
-    (output / 'report.html').write_text('<!doctype html><meta charset="utf-8"><title>重新解算核对</title>'
-        '<main style="max-width:1000px;margin:40px auto;font:16px/1.6 sans-serif"><h1>当前解算与历史归档核对</h1>'
-        '<p>execution_checks_passed 仅表示日志与完整性检查通过，不表示与论文或历史版本完全相同。组名是命令行声明值，输入来源仍需核实。</p><pre>'
-        + html.escape(json.dumps(report, indent=2)) + '</pre>' + comparison_html + '</main>', encoding='utf-8')
+    status_text = ('解算完成，日志与输出完整性检查通过。下面比较本次结果与历史归档。'
+                   if report['execution_checks_passed'] else
+                   '本次解算检查未通过，请查看运行日志和下方检查明细。若仍有曲线，仅用于排查，不能据此认为运行成功。')
+    (output / 'report.html').write_text(
+        '<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">'
+        '<meta name="viewport" content="width=device-width,initial-scale=1"><title>我的解算结果与历史结果</title>'
+        '<style>body{max-width:1000px;margin:40px auto;padding:0 20px;font:16px/1.7 sans-serif}'
+        'td,th{padding:6px;border:1px solid #ddd}table{border-collapse:collapse}details{margin:24px 0}'
+        'summary{cursor:pointer}pre{white-space:pre-wrap;overflow-wrap:anywhere}</style></head><body>'
+        '<h1>我的解算结果与历史结果</h1>'
+        f'<p>实验组：{html.escape(group)} · 方法：{html.escape(LABELS[method])}</p>'
+        f'<p><strong>{status_text}</strong></p>' + comparison_html +
+        '<details><summary>进阶：运行检查明细</summary><p>检查覆盖日志、历元完整性和记录中的方法，'
+        '不要求与历史版本逐点相同。组名按命令行指定，应与准备输入时的选择保持一致。</p><pre>'
+        + html.escape(json.dumps(report, indent=2)) + '</pre></details></body></html>', encoding='utf-8')
     print(json.dumps(report, indent=2))
     print(f'Report: {output / "report.html"}')
     return report['execution_checks_passed']
