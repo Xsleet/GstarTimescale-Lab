@@ -13,6 +13,9 @@ FOLDERS = {"docs", "examples", "tools", "tests", ".github", ".githooks", "config
 SUFFIXES = {".md", ".py", ".json", ".yml", ".yaml", ".svg"}
 CONFIG_FILES = {"config/file_table", "config/Timescale.cfg", "config/session.obj",
                 "config/svinf.dat", "config/leap.sec", "config/pan_info"}
+RESEARCH_TABLES = {"examples/thesis-section43/reference/adev_octave.csv",
+                   "examples/thesis-section43/reference/table4_2_audit.csv",
+                   "examples/thesis-section43/reference/group_mapping.csv"}
 
 
 def audit_file(name: str, data: bytes, mode: str = "100644") -> list[str]:
@@ -20,7 +23,7 @@ def audit_file(name: str, data: bytes, mode: str = "100644") -> list[str]:
     path = PurePosixPath(name)
     if mode not in ("100644", "100755"):
         issues.append("symlinks/submodules are not permitted")
-    special = name in ROOT_FILES or name in CONFIG_FILES or name == ".githooks/pre-commit"
+    special = name in ROOT_FILES or name in CONFIG_FILES or name in RESEARCH_TABLES or name == ".githooks/pre-commit"
     if not special and (len(path.parts) < 2 or path.parts[0] not in FOLDERS or path.suffix not in SUFFIXES):
         issues.append("path/type is outside the public file allowlist")
     if any(part.lower() in {"engine", "private", "runs", "build", "src", "include", ".git", ".claude"} for part in path.parts):

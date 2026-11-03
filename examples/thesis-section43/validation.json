@@ -1,0 +1,292 @@
+{
+  "files": 81,
+  "manifest_sha256": "a982c1ddc70fbd4dc38ecec8114cffa0a87beda92c1310fa38b8df5a9e9643f4",
+  "phase_series": 120,
+  "octave_adev_points": 1800,
+  "notebook_summary_points": 60,
+  "notebook_max_relative_error": 4.440892098500626e-16,
+  "paper_table_matching_cells": 7,
+  "paper_table_total_cells": 20,
+  "solver_rerun": false,
+  "date": "2026-11-03",
+  "source_notebook_sha256": "e7595b02a1f2abedc8ace49525c2bde1afd33a265a6bfbde12b1c4f1f5a0af72",
+  "original_function_sha256": {
+    "read_raw_clock_phase": "a7844d6224a00324417123d27e967f4fc3234cd950cc3079223dd064f68e51f5",
+    "read_iem_phase": "ee2ee34b2b77aa7de2261d391f184c88acdc2254a4febb59c836c0be3ec3ad04",
+    "load_phase_series": "ce755492c86482c796b46b31a2b801df91c4454f7dac7c78c16204398076ce34",
+    "compute_adev_curve_from_path": "62cc0c29095fb5aea25da76ca20244266c1183518e773c48c00b1e922a96e9bc"
+  },
+  "input_validation": [
+    {
+      "group": "csac_only_group01",
+      "clk_files": 10,
+      "clk_rows_per_file": 34560,
+      "pfd_files": 60,
+      "pfd_rows_per_file": 17280,
+      "input_bytes_match_thesis_archive": true,
+      "finite_values": true,
+      "epochs_and_bidirectional_pairs": true
+    },
+    {
+      "group": "csac_only_group02",
+      "clk_files": 10,
+      "clk_rows_per_file": 34560,
+      "pfd_files": 60,
+      "pfd_rows_per_file": 17280,
+      "input_bytes_match_thesis_archive": true,
+      "finite_values": true,
+      "epochs_and_bidirectional_pairs": true
+    },
+    {
+      "group": "csac_only_group03",
+      "clk_files": 10,
+      "clk_rows_per_file": 34560,
+      "pfd_files": 60,
+      "pfd_rows_per_file": 17280,
+      "input_bytes_match_thesis_archive": true,
+      "finite_values": true,
+      "epochs_and_bidirectional_pairs": true
+    },
+    {
+      "group": "csac_only_group04",
+      "clk_files": 10,
+      "clk_rows_per_file": 34560,
+      "pfd_files": 60,
+      "pfd_rows_per_file": 17280,
+      "input_bytes_match_thesis_archive": true,
+      "finite_values": true,
+      "epochs_and_bidirectional_pairs": true
+    },
+    {
+      "group": "csac_only_group05",
+      "clk_files": 10,
+      "clk_rows_per_file": 34560,
+      "pfd_files": 60,
+      "pfd_rows_per_file": 17280,
+      "input_bytes_match_thesis_archive": true,
+      "finite_values": true,
+      "epochs_and_bidirectional_pairs": true
+    },
+    {
+      "group": "mixed_2plus2_group01",
+      "clk_files": 10,
+      "clk_rows_per_file": 34560,
+      "pfd_files": 60,
+      "pfd_rows_per_file": 17280,
+      "input_bytes_match_thesis_archive": true,
+      "finite_values": true,
+      "epochs_and_bidirectional_pairs": true
+    },
+    {
+      "group": "mixed_2plus2_group02",
+      "clk_files": 10,
+      "clk_rows_per_file": 34560,
+      "pfd_files": 60,
+      "pfd_rows_per_file": 17280,
+      "input_bytes_match_thesis_archive": true,
+      "finite_values": true,
+      "epochs_and_bidirectional_pairs": true
+    },
+    {
+      "group": "mixed_2plus2_group03",
+      "clk_files": 10,
+      "clk_rows_per_file": 34560,
+      "pfd_files": 60,
+      "pfd_rows_per_file": 17280,
+      "input_bytes_match_thesis_archive": true,
+      "finite_values": true,
+      "epochs_and_bidirectional_pairs": true
+    },
+    {
+      "group": "mixed_2plus2_group04",
+      "clk_files": 10,
+      "clk_rows_per_file": 34560,
+      "pfd_files": 60,
+      "pfd_rows_per_file": 17280,
+      "input_bytes_match_thesis_archive": true,
+      "finite_values": true,
+      "epochs_and_bidirectional_pairs": true
+    },
+    {
+      "group": "mixed_2plus2_group05",
+      "clk_files": 10,
+      "clk_rows_per_file": 34560,
+      "pfd_files": 60,
+      "pfd_rows_per_file": 17280,
+      "input_bytes_match_thesis_archive": true,
+      "finite_values": true,
+      "epochs_and_bidirectional_pairs": true
+    },
+    {
+      "group": "mro_only_group01",
+      "clk_files": 10,
+      "clk_rows_per_file": 34560,
+      "pfd_files": 60,
+      "pfd_rows_per_file": 17280,
+      "input_bytes_match_thesis_archive": true,
+      "finite_values": true,
+      "epochs_and_bidirectional_pairs": true
+    },
+    {
+      "group": "mro_only_group02",
+      "clk_files": 10,
+      "clk_rows_per_file": 34560,
+      "pfd_files": 60,
+      "pfd_rows_per_file": 17280,
+      "input_bytes_match_thesis_archive": true,
+      "finite_values": true,
+      "epochs_and_bidirectional_pairs": true
+    },
+    {
+      "group": "mro_only_group03",
+      "clk_files": 10,
+      "clk_rows_per_file": 34560,
+      "pfd_files": 60,
+      "pfd_rows_per_file": 17280,
+      "input_bytes_match_thesis_archive": true,
+      "finite_values": true,
+      "epochs_and_bidirectional_pairs": true
+    },
+    {
+      "group": "mro_only_group04",
+      "clk_files": 10,
+      "clk_rows_per_file": 34560,
+      "pfd_files": 60,
+      "pfd_rows_per_file": 17280,
+      "input_bytes_match_thesis_archive": true,
+      "finite_values": true,
+      "epochs_and_bidirectional_pairs": true
+    },
+    {
+      "group": "mro_only_group05",
+      "clk_files": 10,
+      "clk_rows_per_file": 34560,
+      "pfd_files": 60,
+      "pfd_rows_per_file": 17280,
+      "input_bytes_match_thesis_archive": true,
+      "finite_values": true,
+      "epochs_and_bidirectional_pairs": true
+    }
+  ],
+  "covariance": {
+    "NONE": {
+      "total": 518400,
+      "positive": 259450,
+      "negative": 50799,
+      "zero": 0,
+      "nonfinite": 208151,
+      "min_finite_variance_s2": -1.1960846766931637e+303,
+      "max_finite_variance_s2": 1.5813726589745238e+301
+    },
+    "SUMZERO": {
+      "total": 518400,
+      "positive": 518400,
+      "negative": 0,
+      "zero": 0,
+      "nonfinite": 0,
+      "min_finite_variance_s2": 1.162474624372093e-28,
+      "max_finite_variance_s2": 2.0811181774814846e-28
+    },
+    "BROWN": {
+      "total": 518400,
+      "positive": 518354,
+      "negative": 22,
+      "zero": 24,
+      "nonfinite": 0,
+      "min_finite_variance_s2": -1.2407709188295415e-24,
+      "max_finite_variance_s2": 1.0723031231768717e-17
+    },
+    "GREENHALL": {
+      "total": 518400,
+      "positive": 225674,
+      "negative": 225774,
+      "zero": 66952,
+      "nonfinite": 0,
+      "min_finite_variance_s2": -5.169878828456423e-25,
+      "max_finite_variance_s2": 5.169878828456423e-25
+    }
+  },
+  "solver_cases": [
+    {
+      "group": "mro_only_group01",
+      "method": "GREENHALL",
+      "runtime_sha256": "cdbbc9afef1fd941467e37e65e17b8c1c0153f00eafcbbb8e4506dc5594a7153",
+      "execution": "failed",
+      "iem_rows": 86397,
+      "max_phase_difference_s": 4.941007484616285e-09,
+      "max_adev_relative_difference": 6.376308495648075e-06,
+      "log_error": "KalmanFilter::update: LDLT failed (S may be not SPD)."
+    },
+    {
+      "group": "mixed_2plus2_group01",
+      "method": "SUMZERO",
+      "runtime_sha256": "cdbbc9afef1fd941467e37e65e17b8c1c0153f00eafcbbb8e4506dc5594a7153",
+      "execution": "failed",
+      "iem_rows": 86394,
+      "log_error": "KalmanFilter::update: LDLT failed (S may be not SPD)."
+    },
+    {
+      "group": "csac_only_group01",
+      "method": "GREENHALL",
+      "runtime_sha256": "cdbbc9afef1fd941467e37e65e17b8c1c0153f00eafcbbb8e4506dc5594a7153",
+      "execution": "failed",
+      "iem_rows": 86397,
+      "max_phase_difference_s": 1.4663739492272584e-09,
+      "max_adev_relative_difference": 5.315820814399963e-05,
+      "log_error": "KalmanFilter::update: LDLT failed (S may be not SPD)."
+    },
+    {
+      "group": "mixed_2plus2_group01",
+      "method": "KPW",
+      "runtime_sha256": "cdbbc9afef1fd941467e37e65e17b8c1c0153f00eafcbbb8e4506dc5594a7153",
+      "execution": "failed",
+      "iem_rows": 86397,
+      "max_phase_difference_s": 1.5177783978341144e-09,
+      "max_adev_relative_difference": 0.0014771833519127142,
+      "log_error": "KalmanFilter::update: LDLT failed (S may be not SPD)."
+    },
+    {
+      "group": "csac_only_group01",
+      "method": "NONE",
+      "runtime_sha256": "cdbbc9afef1fd941467e37e65e17b8c1c0153f00eafcbbb8e4506dc5594a7153",
+      "execution": "failed",
+      "iem_rows": 86397,
+      "log_error": "KalmanFilter::update: LDLT failed (S may be not SPD)."
+    },
+    {
+      "group": "mixed_2plus2_group01",
+      "method": "BROWN",
+      "runtime_sha256": "cdbbc9afef1fd941467e37e65e17b8c1c0153f00eafcbbb8e4506dc5594a7153",
+      "execution": "completed",
+      "iem_rows": 86397,
+      "max_phase_difference_s": 2.7359689221215927e-12,
+      "max_adev_relative_difference": 2.3087820544276383e-10
+    },
+    {
+      "group": "mro_only_group01",
+      "method": "NONE",
+      "runtime_sha256": "cdbbc9afef1fd941467e37e65e17b8c1c0153f00eafcbbb8e4506dc5594a7153",
+      "execution": "failed",
+      "iem_rows": 86397,
+      "log_error": "KalmanFilter::update: LDLT failed (S may be not SPD)."
+    },
+    {
+      "group": "mixed_2plus2_group01",
+      "method": "NONE",
+      "runtime_sha256": "cdbbc9afef1fd941467e37e65e17b8c1c0153f00eafcbbb8e4506dc5594a7153",
+      "execution": "failed",
+      "iem_rows": 86397,
+      "log_error": "KalmanFilter::update: LDLT failed (S may be not SPD)."
+    },
+    {
+      "max_phase_difference_s": 8.392978821593518e-09,
+      "max_adev_relative_difference": 0.00013788358052835292,
+      "iem_rows": 86397,
+      "group": "mixed_2plus2_group01",
+      "method": "GREENHALL",
+      "execution": "completed"
+    }
+  ],
+  "figure_covariance_group": "group02",
+  "source_figure_identification": "Word embedded figures compared with all five archived candidates, plus visual inspection."
+}

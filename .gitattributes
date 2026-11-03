@@ -4,6 +4,7 @@
 *.json text eol=lf
 *.yml text eol=lf
 *.svg text eol=lf
+*.csv text eol=lf
 .githooks/* text eol=lf
 config/Timescale.cfg text eol=lf
 config/session.obj text eol=lf

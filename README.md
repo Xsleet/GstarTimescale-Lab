@@ -8,6 +8,8 @@
 
 **配置文件直接公开、直接编辑：** [运行配置 Timescale.cfg](config/Timescale.cfg) · [对象与噪声参数 session.obj](config/session.obj) · [文件索引 file_table](config/file_table) · [配置目录说明](config/README.md)。自己的实验推荐使用“复制配置 → 编辑 → 运行”的流程。
 
+**论文实验数据：** [第 4.3 节秩亏补偿实验复现](examples/thesis-section43/README.md)提供图 4.7～4.11、表 4.1～4.2 对应的数据、分组映射和重算步骤。下载公开分析包即可生成图表与 HTML 报告，**无需核心程序**；另提供 CLK/PFD 输入供授权用户重新解算。已知论文与归档的统计口径差异会在报告中显示。
+
 ![异构案例的四只原始钟和组合时间尺度 ADEV](docs/images/heterogeneous-adev.svg)
 
 *上图是固定种子的案例预览。CSAC/mRO 参数是研究预设，不代表某款物理钟的标定性能；单次结果不能证明所有情况下都能改善。*
