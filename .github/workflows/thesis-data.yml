@@ -22,6 +22,9 @@ jobs:
       - run: python tools/check_public_tree.py
       - run: python tools/thesis_section43.py fetch --kind analysis --output Runs/thesis43/data
       - run: python tools/thesis_section43.py analyze --data Runs/thesis43/data --output Runs/thesis43/report
+      - run: python tools/thesis_section43.py fetch --kind inputs --output Runs/thesis43/inputs
+      - run: python tools/thesis_section43.py prepare-case --inputs Runs/thesis43/inputs --output Runs/thesis43/config-check
+      - run: python lab.py inspect --workdir Runs/thesis43/config-check
       - uses: actions/upload-artifact@v4
         with:
           name: thesis-section43-archive-report
