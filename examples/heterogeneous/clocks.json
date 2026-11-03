@@ -1,0 +1,63 @@
+{
+  "profile": "csac-mro",
+  "description": "Two CSAC and two mRO research clock models; not calibrated hardware specifications",
+  "source": "Maintainer-provided synthetic research preset; not calibrated hardware specifications",
+  "source_clocks": [
+    "CSAC_01",
+    "CSAC_02",
+    "mRO_01",
+    "mRO_02"
+  ],
+  "model": "dx = y dt + a dW1; dy = b dW2; independent Wiener processes",
+  "normalization": "a = ClockSim WFM coefficient; b = sqrt(6) * ClockSim RWFM coefficient",
+  "omitted_reference_terms": [
+    "deterministic frequency drift",
+    "RRFM"
+  ],
+  "phase_initial_std_s": 1e-07,
+  "frequency_initial_std": 1e-09,
+  "link_noise_std_s": 1e-12,
+  "observation_noise": "PFD is the exact clock difference; link_noise_std_s is the filter uncertainty floor, not injected noise",
+  "clocks": [
+    {
+      "session_prn": "0101",
+      "clock_type": "CSAC",
+      "source_clock": "CSAC_01",
+      "seed_offset": 1,
+      "phase_offset_s": -4.34578e-09,
+      "frequency_offset": -4.59112e-11,
+      "wfm_coefficient": 2.0391e-10,
+      "rwfm_coefficient": 9.52877e-14
+    },
+    {
+      "session_prn": "0102",
+      "clock_type": "CSAC",
+      "source_clock": "CSAC_02",
+      "seed_offset": 2,
+      "phase_offset_s": 4.89634e-08,
+      "frequency_offset": -6.20297e-12,
+      "wfm_coefficient": 1.6006e-10,
+      "rwfm_coefficient": 9.15558e-14
+    },
+    {
+      "session_prn": "0103",
+      "clock_type": "mRO",
+      "source_clock": "mRO_01",
+      "seed_offset": 4,
+      "phase_offset_s": -4.34578e-09,
+      "frequency_offset": -3.6729e-10,
+      "wfm_coefficient": 3.29966e-11,
+      "rwfm_coefficient": 2.75959e-13
+    },
+    {
+      "session_prn": "0104",
+      "clock_type": "mRO",
+      "source_clock": "mRO_02",
+      "seed_offset": 5,
+      "phase_offset_s": 4.89634e-08,
+      "frequency_offset": -4.96238e-11,
+      "wfm_coefficient": 2.73435e-11,
+      "rwfm_coefficient": 2.57526e-13
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "version": "0.1.0",
+  "platform": "windows-x64",
+  "distribution": "instructor-only",
+  "archive_name": "GstarTimescale-engine-0.1.0-windows-x64.zip",
+  "archive_sha256": "800d23e7d177d4685383c40724d7094e5f9685ce65d49968a9f0f6b1defc5850",
+  "files": {
+    "GstarTimescale.exe": {
+      "sha256": "cdbbc9afef1fd941467e37e65e17b8c1c0153f00eafcbbb8e4506dc5594a7153",
+      "size": 6289408
+    },
+    "licenses/crt-COPYING.MinGW-w64-runtime.txt.txt": {
+      "sha256": "e9b2dc02451ea29092a1f25fa0f3c07207ed421f1807dffb0c4e6dce69dee7bd",
+      "size": 10936
+    },
+    "licenses/crt-COPYING.MinGW-w64.txt.txt": {
+      "sha256": "f38e6194bd3bfa1b654f118e5acefe0aead437bbe669eee43957ccc65a7127f1",
+      "size": 5905
+    },
+    "licenses/crt-COPYING.txt": {
+      "sha256": "99a69660981156c21336fdb5661f89341b013c94e4bf9e1c7467b4745718397f",
+      "size": 2326
+    },
+    "licenses/Eigen-MPL-2.0.txt": {
+      "sha256": "fab3dd6bdab226f1c08630b1dd917e11fcb4ec5e1e020e2c16f83a0a13863e85",
+      "size": 16726
+    },
+    "licenses/fmt-license.txt": {
+      "sha256": "07580f2a3b35709ce703d523f447b242f6dfec7582a8c0df102c7fa2849375f8",
+      "size": 1431
+    },
+    "licenses/gcc-libs-COPYING.LIB.txt": {
+      "sha256": "a9bdde5616ecdd1e980b44f360600ee8783b1f99b8cc83a2beb163a0a390e861",
+      "size": 26527
+    },
+    "licenses/gcc-libs-COPYING.RUNTIME.txt": {
+      "sha256": "9d6b43ce4d8de0c878bf16b54d8e7a10d9bd42b75178153e3af6a815bdc90f74",
+      "size": 3324
+    },
+    "licenses/gcc-libs-COPYING3.txt": {
+      "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903",
+      "size": 35147
+    },
+    "licenses/gcc-libs-README.txt": {
+      "sha256": "33400d067fa3e2bd670a0868dcdb60c9486e8f559b675cf9ff1ff55d4e0d06ab",
+      "size": 236
+    },
+    "licenses/libwinpthread-COPYING.txt": {
+      "sha256": "63263614cdd29f2f93cba85e992f041b31f9fc7b4033692f31269489a8a1b177",
+      "size": 2883
+    },
+    "licenses/SOFA-license.txt": {
+      "sha256": "192250b7ecd0d8396d343b4576941e7775329c561e71e0edd9dacb8ffe5ce603",
+      "size": 4365
+    },
+    "licenses/spdlog-MIT.txt": {
+      "sha256": "4ccecab18d1ff0b61174fe3d6c430541625d3ddb865b0d5887db296f883c76e7",
+      "size": 1354
+    },
+    "third-party-sources.zip": {
+      "sha256": "00c8bf1f466db82c76d3e28ce2cb91be1189846b58a12416a9e45a3cae713f0a",
+      "size": 1228228
+    },
+    "THIRD_PARTY_NOTICES.md": {
+      "sha256": "c59338d4e544de65b94267da10a3431d0406c398f43d9ccd6ffeb926395c1140",
+      "size": 1191
+    },
+    "USAGE.md": {
+      "sha256": "6d4fcb5f3fa096501a721fb587c179e978db6a9cc0d858bc17da1eb58799a66b",
+      "size": 755
+    }
+  }
+}

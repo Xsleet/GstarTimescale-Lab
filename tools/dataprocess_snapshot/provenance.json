@@ -1,0 +1,20 @@
+{
+  "source": "Code/DataProcess/LEOTimescale.ipynb",
+  "notebook_sha256": "cc71f104ebaf4c6af56ee0ee2bd907725cf5e6446d6f5295a65e42214f58b136",
+  "cell_indices_zero_based": [
+    35,
+    43
+  ],
+  "cells": {
+    "35": {
+      "file": "helpers.py",
+      "source_sha256": "d0919e43f0dc0badb604db6308b6fb071c4271658423c428c81c0e3cce65ec82",
+      "export_sha256": "cb58ba50acb235e795ebd98ea697f3dca9c1024ffef484ad91f5f49dd8efff82"
+    },
+    "43": {
+      "file": "frequency_stability.py",
+      "source_sha256": "27ebfc2770df277d8fe403379cbdea8ed1aeb67780b953c6184ecae3550fd38f",
+      "export_sha256": "561f26636a8dde39a54dc0dab670b921c24c23e3a5c21e30cd1f0019f801a738"
+    }
+  }
+}

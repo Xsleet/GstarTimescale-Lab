@@ -1,0 +1,25 @@
+name: 教程或实验问题
+description: 反馈安装、生成、运行或报告问题，请勿上传私有程序或源码
+body:
+  - type: markdown
+    attributes:
+      value: 请只使用可公开的合成案例。不要上传 engine、教师 ZIP、私有源码或带敏感路径的整个工程。
+  - type: textarea
+    id: environment
+    attributes:
+      label: 环境与版本
+      description: Windows、Python、公开仓库版本、runtime 版本
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 复现命令与现象
+      description: 写明 case、days、seed、architecture，以及期待行为与实际行为
+    validations:
+      required: true
+  - type: textarea
+    id: error
+    attributes:
+      label: 最小错误文本
+      description: 去掉本机用户名、私有路径、访问令牌和敏感数据后再粘贴
