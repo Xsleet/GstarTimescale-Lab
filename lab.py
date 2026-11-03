@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Student entry point. The numerical solver is supplied separately by the instructor."""
+"""Command-line entry point. The numerical solver is supplied separately by the maintainer."""
 from __future__ import annotations
 
 import argparse
@@ -34,7 +34,7 @@ def safe_name(name: str) -> bool:
 
 def release_manifest(root: Path = ROOT) -> dict:
     manifest = json.loads((root / "engine-release.json").read_text(encoding="utf-8"))
-    if manifest.get("platform") != "windows-x64" or manifest.get("distribution") != "instructor-only":
+    if manifest.get("platform") != "windows-x64" or manifest.get("distribution") != "restricted":
         raise ValueError("Unsupported runtime release manifest")
     files = manifest.get("files", {})
     if "GstarTimescale.exe" not in files or any(not safe_name(name) for name in files):
@@ -46,7 +46,7 @@ def release_manifest(root: Path = ROOT) -> dict:
 
 
 def install_engine(archive: Path, root: Path = ROOT) -> Path:
-    """Install only the exact instructor archive described by this checkout."""
+    """Install only the exact maintainer archive described by this checkout."""
     manifest = release_manifest(root)
     destination = root / "engine"
     if destination.exists() or destination.is_symlink():
@@ -57,7 +57,7 @@ def install_engine(archive: Path, root: Path = ROOT) -> Path:
         for block in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(block)
         if digest.hexdigest() != manifest["archive_sha256"]:
-            raise ValueError("Archive SHA256 mismatch. Ask your instructor for the matching version; do not bypass the check.")
+            raise ValueError("Archive SHA256 mismatch. Ask your maintainer for the matching version; do not bypass the check.")
         stream.seek(0)
         with zipfile.ZipFile(stream) as package:
             entries = package.infolist()
@@ -90,7 +90,7 @@ def check_engine(root: Path = ROOT) -> Path:
     manifest = release_manifest(root)
     engine = root / "engine"
     if not engine.is_dir() or engine.is_symlink():
-        raise ValueError("Runtime missing. Receive the ZIP from your instructor, then run: python lab.py install-engine <zip>")
+        raise ValueError("Runtime missing. Receive the ZIP from your maintainer, then run: python lab.py install-engine <zip>")
     paths = list(engine.rglob("*"))
     if any(path.is_symlink() for path in paths):
         raise ValueError("Runtime directory must not contain symbolic links")
@@ -100,7 +100,7 @@ def check_engine(root: Path = ROOT) -> Path:
     for name, spec in manifest["files"].items():
         path = engine / name
         if path.stat().st_size != spec["size"] or sha256(path) != spec["sha256"]:
-            raise ValueError(f"Runtime file changed: {name}; obtain a fresh package from your instructor")
+            raise ValueError(f"Runtime file changed: {name}; obtain a fresh package from your maintainer")
     return engine / "GstarTimescale.exe"
 
 
@@ -126,9 +126,16 @@ def resolve_output(value: Path | None, case: str, days: float) -> Path:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
-    install = commands.add_parser("install-engine", help="Install the ZIP provided privately by your instructor")
+    install = commands.add_parser("install-engine", help="Install the ZIP provided privately by your maintainer")
     install.add_argument("archive", type=Path)
     commands.add_parser("doctor", help="Check Python, platform, dependencies, and runtime integrity")
+    for name in ("inspect", "execute"):
+        command = commands.add_parser(name, help="Inspect an existing configuration" if name == "inspect" else
+                                      "Run an existing file_table without generating inputs or rewriting settings")
+        command.add_argument("--file-table", type=Path, default=Path("config/file_table"))
+        command.add_argument("--workdir", type=Path, required=True, help="Run working directory; relative paths start at this repository")
+        if name == "execute":
+            command.add_argument("--timeout", type=float, default=1800)
     for name in ("run", "prepare"):
         command = commands.add_parser(name, help="Run a complete experiment" if name == "run" else "Generate input files only")
         command.add_argument("--case", choices=("heterogeneous", "basic"), default="heterogeneous")
@@ -159,6 +166,18 @@ def main(argv: list[str] | None = None) -> int:
                     failed = True
                     print(f"FAIL: {label}: {exc}")
             return int(failed)
+        if args.command in ("inspect", "execute"):
+            from tools.run_config import execute_config, inspect_config
+            workdir = (args.workdir if args.workdir.is_absolute() else ROOT / args.workdir).resolve()
+            if args.command == "inspect":
+                print(json.dumps(inspect_config(args.file_table, workdir), indent=2, ensure_ascii=False))
+            else:
+                check_platform()
+                record = execute_config(args.file_table, workdir, check_engine(), args.timeout)
+                print(f"Engine execution completed. Results: {record['configuration']['result_dir']}")
+                print(f"Run record: {Path(record['console_log']).parent / 'execution.json'}")
+                print("Custom runs require case-specific validation and analysis; no demo HTML report was generated.")
+            return 0
         from tools import run_demo
         if args.command == "report":
             check_dependencies()

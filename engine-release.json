@@ -1,7 +1,7 @@
 {
   "version": "0.1.0",
   "platform": "windows-x64",
-  "distribution": "instructor-only",
+  "distribution": "restricted",
   "archive_name": "GstarTimescale-engine-0.1.0-windows-x64.zip",
   "archive_sha256": "800d23e7d177d4685383c40724d7094e5f9685ce65d49968a9f0f6b1defc5850",
   "files": {

@@ -236,7 +236,7 @@ def prepare_case(root: Path, architecture: str, seed: int = 2026, duration_s: in
     write_text(root / "config/svinf.dat", "PART 2: PHYSICAL NON-GNSS SATELLITE PARAMETERS\n" + "\n".join(rows) + "\n")
     shutil.copyfile(REPO_ROOT / "config/leap.sec", root / "config/leap.sec")
     write_text(root / "config/pan_info", "* No solar panel model is used in the PFD demo.\n")
-    write_text(root / "config/Timescale.cfg", f"""* Synthetic PFD example; educational, not calibrated clock noise.
+    write_text(root / "config/Timescale.cfg", f"""* Synthetic PFD example; research preset, not calibrated clock noise.
  Start time&session length   = 2026 01 01 00 00 00 {duration_s} [GPST]
  Processing interval         = {INTERVAL}
 +File Directory
@@ -718,7 +718,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"PASS: Refreshed phase and five-series ADEV report: {root / 'report.html'}")
             return 0
         if not args.prepare_only and not executable.is_file():
-            raise ValueError(f"Executable not found: {executable}. Install the instructor runtime with lab.py or use --prepare-only.")
+            raise ValueError(f"Executable not found: {executable}. Install the maintainer runtime with lab.py or use --prepare-only.")
         architecture = args.architecture or "centralized"
         duration_s = requested_duration if requested_duration is not None else DURATION
         prepare_case(root, architecture, args.seed, duration_s, args.clock_profile or "basic")

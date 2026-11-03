@@ -1,4 +1,4 @@
-# Instructor-only runtime and experiment data. Never force-add these files.
+# Restricted runtime and experiment data. Never force-add these files.
 /engine/
 /Runs/
 /.engine-install-*/

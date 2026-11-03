@@ -1,4 +1,4 @@
-# 学生指南
+# 用户指南
 
 ## 你实际在研究什么
 
@@ -13,7 +13,7 @@
         ↓
 四路合成钟差 → CLK 文件 + 双向 PFD 比对数据
         ↓
-教师提供的 GstarTimescale.exe
+独立运行包中的 GstarTimescale.exe
         ↓
 四路原始钟 + IEM 输出
         ↓
@@ -62,22 +62,18 @@ Runs/heterogeneous_10days/
 
 ## 修改生成后的输入
 
-初学时优先通过 `lab.py run` 的参数做实验。进阶时可以先准备，再修改某一个配置。下面示范手动运行，不会重新生成输入：
+使用示例时可通过 `lab.py run` 的参数做实验。已有输入需要修改设置时，先编辑配置，再使用 execute，不会重新生成输入：
 
 ```powershell
 .\.venv\Scripts\python.exe lab.py prepare --output Runs/manual_case
-Set-Location Runs/manual_case
-# 此处按教师要求编辑 config/ 下的配置，记录所有变更
-& ..\..\engine\GstarTimescale.exe config/file_table 2>&1 | Out-File logs/console.log -Encoding utf8
-# 检查退出码，并检查 results/gstar.log 的错误；失败时不要继续解释图形
-$LASTEXITCODE
-Set-Location ../..
-.\.venv\Scripts\python.exe lab.py report --output Runs/manual_case
+# 编辑 Runs/manual_case/config/ 下的配置，并记录变更
+.\.venv\Scripts\python.exe lab.py inspect --workdir Runs/manual_case
+.\.venv\Scripts\python.exe lab.py execute --workdir Runs/manual_case
 ```
 
-核心程序必须以实验目录作为工作目录，`file_table` 中使用相对路径。运行前可先执行 `lab.py doctor` 确认程序完整性；手动调用本身不经过启动器校验。
+execute 会校验核心程序完整性，以指定实验目录为工作目录，保存独立日志和执行记录。详细的时间与路径字段见 [配置指南](configuration.md)。
 
-自动报告只适用于本案例的四钟、二状态输出；它依据生成时的 manifest 标注实验。如果你修改时长、钟数、状态数、架构或模型，必须同时保持清单、配置和数据一致，必要时编写新的分析程序。不能拿旧 manifest 的标题给另一个实验背书。首轮课程建议不要手动改这些结构性参数。
+自动报告只适用于内置四钟、二状态输出，依据生成时的 manifest 标注实验。自定义时间、钟数、状态、架构、模型或结果路径需要对应的完整性检查与分析。execute 不会自动运行 `lab.py report`，避免用旧 manifest 标注另一个实验。
 
 ## 复现一项结论
 

@@ -1,6 +1,6 @@
 # 分级实验任务
 
-每次只改变一个主要因素。完成后提交你自己的参数表、曲线、数据表和解释；不要提交教师的程序包。
+每次只改变一个主要因素，保存参数表、曲线、数据表和解释。分享实验材料时不包含受限分发的运行包。
 
 ## 实验 1：跑通并解释结果
 
@@ -9,8 +9,8 @@
 ## 实验 2：同类模型与异构模型
 
 ```powershell
-.\.venv\Scripts\python.exe lab.py run --case basic --output Runs/lesson2_basic
-.\.venv\Scripts\python.exe lab.py run --case heterogeneous --output Runs/lesson2_heterogeneous
+.\.venv\Scripts\python.exe lab.py run --case basic --output Runs/comparison_basic
+.\.venv\Scripts\python.exe lab.py run --case heterogeneous --output Runs/comparison_heterogeneous
 ```
 
 基础案例是“初始钟差 + 固定频率偏差 + 白相位噪声”，四钟噪声标准差分别为 0.1、0.2、0.3、0.4 ns。异构案例加入白频噪声和频率随机游走，见 [参数说明](../examples/heterogeneous/README.md)。
@@ -20,21 +20,21 @@
 ## 实验 3：随机性与可重复性
 
 ```powershell
-.\.venv\Scripts\python.exe lab.py run --seed 2026 --output Runs/lesson3_seed2026
-.\.venv\Scripts\python.exe lab.py run --seed 2027 --output Runs/lesson3_seed2027
-.\.venv\Scripts\python.exe lab.py run --seed 2028 --output Runs/lesson3_seed2028
+.\.venv\Scripts\python.exe lab.py run --seed 2026 --output Runs/repeat_seed2026
+.\.venv\Scripts\python.exe lab.py run --seed 2027 --output Runs/repeat_seed2027
+.\.venv\Scripts\python.exe lab.py run --seed 2028 --output Runs/repeat_seed2028
 ```
 
 选定相同 τ，比较不同种子的 ADEV。先描述单次实验，再汇总多次实验。三个种子只适合练习；正式统计研究应根据目标误差设计更多重复。不要只保留结果最好的种子。
 
-## 实验 4：集中式与分布式（教师指导）
+## 实验 4：集中式与分布式（进阶）
 
 ```powershell
-.\.venv\Scripts\python.exe lab.py run --architecture distributed_if --output Runs/lesson4_if
-.\.venv\Scripts\python.exe lab.py run --architecture distributed_ci --output Runs/lesson4_ci
+.\.venv\Scripts\python.exe lab.py run --architecture distributed_if --output Runs/architecture_if
+.\.venv\Scripts\python.exe lab.py run --architecture distributed_ci --output Runs/architecture_ci
 ```
 
-保持种子、时长和时钟参数相同，先检查各架构日志，再比较输出。在 CI 架构中同时记录选定节点和其它节点，不能只取一个节点就评价全网。默认教学验收以 centralized 为基准；这些选项供探索，不宣称所有异构参数下都已经通过性能验证。
+保持种子、时长和时钟参数相同，先检查各架构日志，再比较输出。在 CI 架构中同时记录选定节点和其它节点，不能只取一个节点就评价全网。默认实验验收以 centralized 为基准；这些选项供探索，不宣称所有异构参数下都已经通过性能验证。
 
 ## 实验 5：研究时长与统计支持
 

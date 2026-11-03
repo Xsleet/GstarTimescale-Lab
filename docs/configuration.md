@@ -1,0 +1,114 @@
+# 配置与自定义数据运行
+
+核心程序从 `file_table`、`Timescale.cfg` 和 `session.obj` 读取配置。可执行文件封装了求解实现，**没有把运行模式、起始时间和数据路径固定在程序中**。
+
+## 两种运行入口
+
+| 入口 | 适用情况 | 行为 |
+|---|---|---|
+| `lab.py run` | 使用内置的四钟合成案例 | 生成输入和配置，运行核心，生成五线 ADEV 与 HTML |
+| `lab.py execute` | 已有自己的配置与标准输入 | 按原配置运行核心，保留配置和输入；保存执行日志，不自动套用示例报告 |
+
+内置生成器目前固定从 **2026-01-01 00:00:00 GPST** 开始，四只钟、10 秒采样。`--days` 调时长，`--architecture` 调架构，`--output` 调整个实验目录。它暂时没有 `--start`、`--end` 或外部 CLK/PFD 参数。
+
+若使用其它起点、采样率、输入位置或已准备的数据，使用下面的配置入口，无需修改 C++ 或重新编译。
+
+## 配置文件分工
+
+`file_table` 指向配置和辅助表，例如：
+
+```text
++FileTable
+ TimescaleCfg config/Timescale.cfg
+ object config/session.obj
+ satinf config/svinf.dat
+ leapsc config/leap.sec
+ paninf config/pan_info
+-FileTable
+```
+
+数据行前保留一个空格。上述路径都相对于**运行工作目录**，不是相对于 file_table 所在的 config 子目录。
+
+`Timescale.cfg` 控制时间、采样、算法选项和数据路径；`session.obj` 控制参与对象、观测类型和各钟噪声参数。更换对象或观测链路时，两个文件及基础表必须一致。
+
+## 哪些设置可以改
+
+| 目标 | 配置字段 | 说明 |
+|---|---|---|
+| 开始时间与时长 | `Start time&session length` | 年月日时分秒、运行秒数、时间系统 |
+| 结束时间 | 无单独 End 字段 | 结束时刻 = 开始时刻 + 运行秒数 |
+| 处理间隔 | `Processing interval` | 单位秒，应与输入覆盖和插值能力匹配 |
+| 估计架构 | `Estimation architecture` | `centralized`、`distributed_if`、`distributed_ci` |
+| 解算范围 | `Timescale scope` | `satellite` 或 `constellation`，须匹配观测类型 |
+| 钟状态模型 | `Clock Trend state num`、`Clock Harmonics state num` | 默认示例为二状态、零周期项；其它组合由核心校验 |
+| 秩亏处理 | `Rank deficiency remedy` | 核心识别 NONE、SUMZERO、BROWN、GREENHALL、KPW；并非所有组合都已在本仓库验证 |
+| 结果目录 | `Project directory` | 核心结果和 gstar.log 的位置 |
+| 钟差输入 | `LEO Clk full name`、`GNSS Clk full name` | 文件名可使用 `-YEARDOY-` 等核心支持的日期占位符 |
+| 轨道输入 | `LEO Sp3 full name`、`GNSS Sp3 full name` | ISL 等需要轨道的场景使用 |
+| 观测输入 | `PFD data directory`、`ISL data directory` | 选择实际使用的观测目录 |
+| 输出方式与日志 | `Distributed output mode`、`Clock state output flag`、`Log level` | 按核心支持的取值配置 |
+
+例如，从 2026-01-01 00:00:00 开始，运行到 2026-01-11 00:00:00：
+
+```text
+ Start time&session length   = 2026 01 01 00 00 00 864000 [GPST]
+ Processing interval         = 10
+
++File Directory
+ Project directory           = results/custom_run
+ LEO Clk full name           = input/clk/SIM0MGNFIN_-YEARDOY-0000_01D_10S_CLK.CLK
+ GNSS Clk full name          = input/clk/SIM0MGNFIN_-YEARDOY-0000_01D_10S_CLK.CLK
+ PFD data directory          = input/pfd
+-File Directory
+
++Timescale Section
+ Timescale scope             = satellite
+ Estimation architecture     = distributed_if
+ Clock Trend state num       = 2
+ Clock Harmonics state num   = 0
+ Rank deficiency remedy      = GREENHALL
+-Timescale Section
+```
+
+这是需要修改的字段片段，不是独立完整配置。建议从 `prepare` 生成的完整配置开始。实际输出历元还取决于输入覆盖、插值和初始化，不保证所有边界时刻都有输出。
+
+## 实际操作
+
+先生成一个可修改的完整示例，或把已有的标准输入和配置放到自己的实验目录：
+
+```powershell
+.\.venv\Scripts\python.exe lab.py prepare --output Runs/custom_case
+```
+
+编辑 `Runs/custom_case/config/Timescale.cfg` 及必要的其它文件。配置预览不需要核心程序或科学计算依赖：
+
+```powershell
+.\.venv\Scripts\python.exe lab.py inspect --workdir Runs/custom_case
+```
+
+预览显示计算出的开始/结束时刻、架构、采样、输入路径、结果目录和辅助表路径。检查确认后运行：
+
+```powershell
+.\.venv\Scripts\python.exe lab.py execute --workdir Runs/custom_case
+```
+
+如果文件索引不叫 `config/file_table`，可以指定：
+
+```powershell
+.\.venv\Scripts\python.exe lab.py execute --workdir Runs/custom_case --file-table config/file_table_custom --timeout 3600
+```
+
+`--workdir` 可以是绝对路径；相对路径从本仓库根目录解析。`--file-table` 的相对路径和文件内所有相对路径，都从 workdir 解析。核心配置中的路径支持无空格的绝对路径，也可以使用 `../` 指向其它数据目录。
+
+为防止覆盖结果，execute 要求 `Project directory` 不存在或为空。重跑时修改为新目录。控制台与执行记录放在 `logs/execute_<唯一编号>/`；记录包含配置路径、起止时间、配置与程序哈希、退出码和执行状态。输入和配置不会被启动器改写。
+
+## 需要注意的边界
+
+- **年份限制**：当前核心版本会拒绝起始年份大于 2026 的任务。这是核心已有行为，与电脑当前日期无关；运行更晚数据需要维护者提供支持该日期的核心版本。
+- **路径格式**：核心按空白分隔读取配置中的路径，不支持路径值内的空格或引号。工作目录本身可以带空格，此时在文件内用不带空格的相对路径。不要给 Project directory 使用日期占位符；输入文件名的日期占位符可以保留。
+- **输入覆盖**：改起止时间不会自动生成对应日期的数据。CLK、PFD/ISL 及需要的轨道必须覆盖所选时间段。
+- **观测匹配**：PFD 使用 `satellite + OBS P`；ISL 使用 `constellation + OBS I`，并需要轨道和正确的距离观测。不能只修改 scope 或一个字母就转换数据类型。
+- **分析范围**：execute 只检查退出码与日志错误，不把“执行完成”当作完整科学验证。自定义钟数、状态、时间和结果路径需要相应的结果完整性检查与 DataProcess 分析。
+- **报告范围**：`lab.py report` 仍服务于内置四钟案例，读取其 manifest 和标准 results 目录。不要把改过时间、模型或路径的自定义结果直接交给旧 manifest 生成报告。
+
+当前配置入口支持已有标准数据的运行，不提供任意输入格式转换，也不宣称所有模式组合都已验证。已验证范围见 [validation.md](validation.md)。

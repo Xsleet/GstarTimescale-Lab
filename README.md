@@ -1,10 +1,10 @@
-# GstarTimescale Lab · 时间尺度科研入门
+# GstarTimescale Lab · 时间尺度实验与分析工具
 
-**给本科生的实验入口：生成时钟数据 → 运行组合时间尺度 → 打开报告 → 比较五条 ADEV 曲线。**
+**时钟组合与时间尺度分析工具：生成时钟数据 → 运行组合时间尺度 → 打开报告 → 比较五条 ADEV 曲线。**
 
-这里公开教程、实验配置、数据生成和分析脚本。GSTAR 的核心求解程序由教师单独发给学生，不在这个仓库、Git 历史或 GitHub Releases 中。学生不需要接触核心 C++ 源码，也不需要安装 C++ 编译器。
+本项目提供 GSTAR 时间尺度的运行接口、实验配置、数据生成与结果分析工具。核心求解程序通过授权渠道单独提供，不在这个仓库、Git 历史或 GitHub Releases 中。安装运行包后即可使用，无需 C++ 编译环境。
 
-默认实验是 **2 只 CSAC + 2 只 mRO、10 天、10 秒采样**；另有四只同类白相位噪声模型的基础案例。两者都是合成数据实验。当前教学入口使用 PFD 时钟比对，不需要 STK、轨道数据或 Jupyter。
+可以运行内置合成案例，也可以通过 `file_table` 和 `Timescale.cfg` 接入已有标准数据。默认示例为 **2 只 CSAC + 2 只 mRO、10 天、10 秒采样**；另有四只同类白相位噪声模型的基础案例。内置案例使用 PFD 时钟比对，不需要 STK、轨道数据或 Jupyter。
 
 ![异构案例的四只原始钟和组合时间尺度 ADEV](docs/images/heterogeneous-adev.svg)
 
@@ -21,7 +21,7 @@ git clone https://github.com/Xsleet/GstarTimescale-Lab.git
 cd GstarTimescale-Lab
 ```
 
-下载仓库的 ZIP 和教师发的程序 ZIP 是两个不同的文件。不要把教师的程序包上传到 GitHub。
+公开仓库 ZIP 和独立运行包是两个不同的文件。不要把受限分发的程序包上传到 GitHub。
 
 ### 2. 安装 Python，创建独立环境
 
@@ -37,12 +37,12 @@ python -m venv .venv
 
 后续一直使用 `.\.venv\Scripts\python.exe`，**不需要执行 Activate.ps1**，也不需要修改 PowerShell 执行策略。独立环境可避免与已有 Anaconda、NumPy 等发生版本冲突。
 
-### 3. 安装教师提供的核心程序包
+### 3. 安装核心运行包
 
-向任课教师领取 `GstarTimescale-engine-0.1.0-windows-x64.zip`。它没有公开下载地址。将下面引号里的内容替换成你收到的 ZIP 的实际路径，**无需先解压**：
+通过维护者认可的授权渠道获取 `GstarTimescale-engine-0.1.0-windows-x64.zip`。它没有公开下载地址。将下面引号里的内容替换为运行包的实际路径，**无需先解压**：
 
 ```powershell
-.\.venv\Scripts\python.exe lab.py install-engine "教师发给你的程序包.zip"
+.\.venv\Scripts\python.exe lab.py install-engine "GstarTimescale-engine-0.1.0-windows-x64.zip"
 ```
 
 安装器校验整个 ZIP 和内部文件的 SHA256，安装到 `engine/`。版本不匹配、文件损坏或存在额外文件时会拒绝安装。安装不会执行 ZIP 中的程序。
@@ -98,25 +98,42 @@ Start-Process .\Runs\heterogeneous_10days\report.html
 .\.venv\Scripts\python.exe lab.py run --help
 ```
 
-`prepare` 生成的目录不能直接传给 `run`，因为 `run` 会创建全新的实验。准备后手动修改输入并运行，见 [进阶实验说明](docs/student-guide.md#修改生成后的输入)。
+`prepare` 生成的目录不能再交给 `run`，因为 `run` 会创建全新的实验。编辑已准备的配置后，使用下面的 `execute` 入口。
 
-## 学习路线
+## 自己的数据、运行模式和时间范围
+
+**这些参数可以调整，不需要重新编译核心程序。** `Timescale.cfg` 指定运行架构、开始时间、运行秒数、采样间隔、输入文件和结果目录；`session.obj` 指定对象和噪声参数。
+
+```powershell
+# 查看已有配置实际解析出的起止时间、架构和路径
+.\.venv\Scripts\python.exe lab.py inspect --workdir Runs/inputs_only
+
+# 按已有配置运行，不重新生成数据或改写配置
+.\.venv\Scripts\python.exe lab.py execute --workdir Runs/inputs_only
+```
+
+结束时刻由“开始时刻 + 运行秒数”确定。内置案例生成器的起点仍固定为 2026-01-01；自定义时间范围通过已有配置入口运行。当前核心会拒绝起始年份大于 2026 的任务。
+
+完整字段、路径规则和运行示例见 **[配置指南](docs/configuration.md)**。自定义运行只检查退出码和日志，不自动套用内置案例的 HTML 分析模板。
+
+## 文档导航
 
 | 你要做什么 | 看哪里 |
 |---|---|
-| 认识时钟、PFD、时间尺度和文件结构 | [学生指南](docs/student-guide.md) |
+| 认识时钟、PFD、时间尺度和文件结构 | [用户指南](docs/user-guide.md) |
+| 调整模式、时间、采样和输入输出路径 | [配置指南](docs/configuration.md) |
 | 从零开展几个小课题 | [分级实验任务](docs/experiments.md) |
 | 理解相位、ADEV、长 τ 样本数 | [结果说明](docs/results.md) |
 | 理解 2 CSAC + 2 mRO 的具体参数 | [异构案例](examples/heterogeneous/README.md) |
 | 安装失败、没有图、运行目录已存在 | [故障排查](docs/troubleshooting.md) |
-| 教师发包、升级、保护私有工程 | [教师指南](docs/instructor-guide.md) |
+| 管理运行包、升级与私有工程 | [维护者指南](docs/maintainer-guide.md) |
 | 查看哪些内容已经验证 | [验证范围](docs/validation.md) |
 
 ## 公开范围与适用边界
 
-这是**公开教学仓库，不是核心算法的开源仓库**。核心程序是独立的 Windows x64 可执行文件；生成器与分析脚本可读可改，滤波、融合等求解实现在程序内部。没有私有程序包也可阅读教程、生成输入；实际求解需要教师提供程序。
+公开内容覆盖使用接口、配置和分析工具，核心求解实现通过独立 Windows x64 程序提供。没有运行包也可以阅读文档、预览配置和生成输入；实际求解需要授权运行包。
 
-首版围绕四钟、二状态、PFD 实验组织。ISL、轨道仿真、任意卫星数量和其它状态模型未封装为本仓库的一键课程。分布式架构作为进阶选项，不代表已在所有参数组合下完成验证。
+自动生成与报告流程目前围绕四钟、二状态、PFD 示例组织。自定义配置入口不限制为该示例，但 ISL、轨道、其它钟数和状态模型需要自行准备匹配数据与分析。分布式架构及其它模式不代表已在所有参数组合下完成验证。
 
 `engine/`、`Runs/` 和二进制文件默认被 Git 忽略；提交钩子与 CI 检查公开文件。它们用于减少误提交，不是防拷贝或授权控制。请勿将私有程序包添加到公开仓库、Issue、Release 或 CI 附件。编译后的程序也不是不可逆的加密。
 

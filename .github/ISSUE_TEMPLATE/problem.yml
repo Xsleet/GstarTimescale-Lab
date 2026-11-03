@@ -3,7 +3,7 @@ description: 反馈安装、生成、运行或报告问题，请勿上传私有�
 body:
   - type: markdown
     attributes:
-      value: 请只使用可公开的合成案例。不要上传 engine、教师 ZIP、私有源码或带敏感路径的整个工程。
+      value: 请只使用可公开的合成案例。不要上传 engine、维护者 ZIP、私有源码或带敏感路径的整个工程。
   - type: textarea
     id: environment
     attributes:
@@ -15,7 +15,7 @@ body:
     id: reproduce
     attributes:
       label: 复现命令与现象
-      description: 写明 case、days、seed、architecture，以及期待行为与实际行为
+      description: 写明命令、架构、时间范围；内置案例附 case/seed，自定义配置请脱敏后附相关字段
     validations:
       required: true
   - type: textarea

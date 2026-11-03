@@ -17,7 +17,7 @@ class RuntimeInstallationTests(unittest.TestCase):
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name)
         self.files = {"GstarTimescale.exe": b"test fixture, not executable", "licenses/notice.txt": b"notice"}
-        self.archive = self.root / "teacher.zip"
+        self.archive = self.root / "runtime.zip"
         self.make_archive()
 
     def make_archive(self, extra=None, symlink=False, duplicate=False):
@@ -35,7 +35,7 @@ class RuntimeInstallationTests(unittest.TestCase):
                 if duplicate:
                     package.writestr("GstarTimescale.exe", b"duplicate")
         self.manifest = {
-            "version": "test", "platform": "windows-x64", "distribution": "instructor-only",
+            "version": "test", "platform": "windows-x64", "distribution": "restricted",
             "archive_sha256": lab.sha256(self.archive),
             "files": {name: {"size": len(data), "sha256": hashlib.sha256(data).hexdigest()}
                       for name, data in self.files.items()}}
@@ -109,8 +109,8 @@ class RuntimeInstallationTests(unittest.TestCase):
 
 
 class PublicationAuditTests(unittest.TestCase):
-    def test_teaching_text_allowed(self):
-        self.assertEqual(audit_file("docs/guide.md", b"Use the instructor runtime."), [])
+    def test_public_text_allowed(self):
+        self.assertEqual(audit_file("docs/guide.md", b"Use the maintainer runtime."), [])
         self.assertEqual(audit_file("tools/generate.py", b"print('hello')"), [])
 
     def test_core_source_archives_and_runtime_denied(self):
