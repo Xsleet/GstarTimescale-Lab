@@ -305,7 +305,7 @@ def analyze(data: Path, output: Path) -> None:
         'five_group_exact':'五组直接重算', 'four_plotted_group_exact':'图示四组直接重算',
         'difference_percent':'五组相对差异 (%)', 'matches_printed_rounding':'匹配论文印刷精度'
     }).to_html(index=False,float_format=lambda x:f'{x:.4e}')
-    summary = recomputed.rename(columns=LABELS).rename_axis('平均时间 τ (s)').reset_index().to_html(
+    summary = recomputed.rename(columns=LABELS).rename_axis(index='平均时间 τ (s)', columns=None).reset_index().to_html(
         index=False, float_format=lambda x: f'{x:.3e}', formatters={'平均时间 τ (s)': lambda x: f'{x:g}'})
     captions = {
         'fig4_7': ('图 4.7：为什么需要秩亏补偿？',
