@@ -22,7 +22,7 @@ TEST_DURATION = 3600
 
 
 class RunDemoTests(unittest.TestCase):
-    def create_products(self, root, architecture="centralized", clock_profile="basic"):
+    def create_products(self, root, architecture="centralized", clock_profile="csac-mro"):
         series = demo.prepare_case(root, architecture, duration_s=TEST_DURATION, clock_profile=clock_profile)
         directories = [root / f"results/nodes/node{node}" for node in range(4)] if architecture == "distributed_ci" else [root / "results"]
         for directory in directories:
@@ -81,7 +81,7 @@ class RunDemoTests(unittest.TestCase):
                 self.assertEqual(len(series[prn]), 360)
                 self.assertTrue(all(math.isfinite(value) for value in series[prn]))
                 line = next(line for line in session.splitlines() if line.startswith(f" 000 {prn}"))
-                phase_std = float(re.search(r" Phase:\[[^,]+,([^\]]+)\]", line).group(1))
+                phase_std = float(re.search(r"[{,]\s*Phase:\[[^,]+,([^\]]+)\]", line).group(1))
                 frequency_std = float(re.search(r" Frequency:\[[^,]+,([^\]]+)\]", line).group(1))
                 self.assertEqual(phase_std, spec["wfm_coefficient"])
                 self.assertEqual(frequency_std, math.sqrt(6) * spec["rwfm_coefficient"])
@@ -126,9 +126,10 @@ class RunDemoTests(unittest.TestCase):
             self.assertIn("2 CSAC + 2 mRO", page)
             self.assertIn("config/clock_profile.json", page)
             before = {p: hashlib.sha256(p.read_bytes()).hexdigest() for p in root.rglob("*") if p.is_file()}
-            with redirect_stderr(io.StringIO()) as errors:
-                self.assertEqual(demo.main(["--report-only", "--clock-profile", "basic", "--output", str(root)]), 1)
-            self.assertIn("--clock-profile differs", errors.getvalue())
+            with redirect_stderr(io.StringIO()) as errors, self.assertRaises(SystemExit) as stopped:
+                demo.main(["--report-only", "--clock-profile", "basic", "--output", str(root)])
+            self.assertEqual(stopped.exception.code, 2)
+            self.assertIn("invalid choice", errors.getvalue())
             self.assertEqual(before, {p: hashlib.sha256(p.read_bytes()).hexdigest() for p in root.rglob("*") if p.is_file()})
 
     def test_phase_display_preserves_endpoints_and_isolated_extrema(self):
@@ -206,7 +207,11 @@ class RunDemoTests(unittest.TestCase):
                     satellite = demo.SATELLITES[row_index % 4]
                     self.assertEqual(row[3:7].strip(), str(int(satellite)))
                     global_step = day_offset * 8640 + row_index // 4
-                    self.assertAlmostEqual(float(row[40:60]), series[satellite][global_step], places=16)
+                    # CLK stores 12 significant digits; tolerance follows that
+                    # format instead of assuming the retired WPM phase scale.
+                    expected = series[satellite][global_step]
+                    quantum = 10.0 ** (math.floor(math.log10(abs(expected))) - 11)
+                    self.assertLessEqual(abs(float(row[40:60]) - expected), 0.5001 * quantum)
                 mjd = (day.date() - date(1858, 11, 17)).days
                 for left, right in pairs:
                     lines = (root / f"pfd/{left}_{right}_{year_doy}.txt").read_text().splitlines()

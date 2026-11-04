@@ -4,18 +4,18 @@
 
 本仓库公开实验配置、输入准备和绘图代码。核心求解器以独立 Windows 程序提供；使用者可以直接修改配置、调用程序和分析输出，无需阅读或编译核心 C++ 源码。
 
-建议从 **2 只 CSAC + 2 只 mRO、10 天、10 秒采样** 的 PFD 案例开始。它只使用时钟比对数据，不需要轨道或 STK。
+建议从 **4 只已有仿真 CSAC、10 天、10 秒采样** 的 PFD 案例开始。它只使用时钟比对数据，不需要轨道或 STK。
 
 ## 先看看运行后能得到什么
 
-下面是最初两个 **10 天、10 秒采样** 样例的实际 ADEV。每张图都包含四只原始钟和蓝色的组合时间尺度，纵轴越低通常表示相应平均时间上的稳定度越好。
+下面是两个 **10 天、10 秒采样** 样例的实际 ADEV。每张图都包含四只原始钟和蓝色的组合时间尺度，纵轴越低通常表示相应平均时间上的稳定度越好。
 
-| 基础四钟样例 | 2 CSAC + 2 mRO 异构样例 |
+| 4 CSAC 同构样例 | 2 CSAC + 2 mRO 异构样例 |
 |---|---|
-| ![基础样例五条 ADEV 曲线](docs/images/examples-basic-adev.svg) | ![异构样例五条 ADEV 曲线](docs/images/examples-heterogeneous-adev.svg) |
-| 学会读图：组合并非总优于最好的一只钟 | 观察互补：不同类型钟在短期与较长期各有所长 |
+| ![4 CSAC 样例五条 ADEV 曲线](docs/images/examples-csac-adev.svg) | ![异构样例五条 ADEV 曲线](docs/images/examples-heterogeneous-adev.svg) |
+| 观察组合：已有 CSAC 仿真钟的稳定度改善 | 观察互补：不同类型钟在短期与较长期各有所长 |
 
-**[查看两个样例的相位图、ADEV 图、数值对照和运行命令](docs/example-results.md)**。可以先看结果，再按下面步骤自己生成图片。
+**[查看两个样例的相位图、ADEV 图、数值对照和运行命令](docs/example-results.md)**。可以先看结果，再按下面步骤自己运行并绘图。
 
 ## 先认识这几个文件
 
@@ -48,10 +48,10 @@ python -m venv .venv
 
 ## 2. 准备一个有数据的实验目录
 
-没有自己的 CLK/PFD 数据时，先生成一套 10 天示例输入：
+没有自己的 CLK/PFD 数据时，先下载约 14 MB 的四只 CSAC 仿真输入和配置：
 
 ```powershell
-.\.venv\Scripts\python.exe tools/run_demo.py --prepare-only --clock-profile csac-mro --days 10 --output Runs/manual_case
+.\.venv\Scripts\python.exe tools/prepare_csac.py --output Runs/manual_case
 ```
 
 **这条命令只准备数据和初始配置。执行完成后停下来，打开配置文件看一看，再运行程序。** 后面每次改算法参数时，可以复用这份输入，不必重新生成。
@@ -191,6 +191,7 @@ ADEV 横轴是平均时间 τ，纵轴越低通常表示该 τ 上的稳定度�
 | 结果逐列解释、相位与 ADEV | [结果文件与图片](docs/results.md) |
 | 概念与实验目录说明 | [用户指南](docs/user-guide.md) |
 | 第 4.3 节论文数据与实验 | [论文实验教程](examples/thesis-section43/README.md) |
+| 4 CSAC 的数据来源和完整命令 | [CSAC 基础案例](examples/csac/README.md) |
 | 2 CSAC + 2 mRO 的输入参数 | [异构案例](examples/heterogeneous/README.md) |
 | 一键演示、自动检查和 HTML 报告 | [可选便利命令](docs/convenience-commands.md) |
 | 常见错误 | [故障排查](docs/troubleshooting.md) |

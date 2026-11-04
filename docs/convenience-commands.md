@@ -21,7 +21,7 @@
 Start-Process .\Runs\heterogeneous_10days\report.html
 ```
 
-默认一键案例为 `--case heterogeneous --days 10 --seed 2026 --architecture centralized`。另有 `--case basic` 基础噪声案例，可通过 `--output`、`--seed`、`--days` 调整生成任务。
+默认一键案例为 `--case heterogeneous --days 10 --seed 2026 --architecture centralized`。四只已有 CSAC 的基础案例使用 `tools/prepare_csac.py` 下载固定仿真数据，随后直接运行 exe，详见 [CSAC 教程](../examples/csac/README.md)。异构生成任务可通过 `--output`、`--seed`、`--days` 调整。
 
 `prepare`/`run` 使用生成器自己的配置逻辑，不读取你修改过的根目录模板。已生成并手动编辑的配置应直接调用 exe，或使用 `execute`；不要再次运行 `run` 期待它保留手动设置。
 

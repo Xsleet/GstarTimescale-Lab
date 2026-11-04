@@ -140,7 +140,8 @@ def main(argv: list[str] | None = None) -> int:
             command.add_argument("--timeout", type=float, default=1800)
     for name in ("run", "prepare"):
         command = commands.add_parser(name, help="Run a complete experiment" if name == "run" else "Generate input files only")
-        command.add_argument("--case", choices=("heterogeneous", "basic"), default="heterogeneous")
+        command.add_argument("--case", choices=("heterogeneous",), default="heterogeneous",
+                             help="Generated heterogeneous case; archived four-CSAC inputs: tools/prepare_csac.py")
         command.add_argument("--days", type=float, default=10)
         command.add_argument("--seed", type=int, default=2026)
         command.add_argument("--architecture", choices=("centralized", "distributed_if", "distributed_ci"), default="centralized")
@@ -193,7 +194,7 @@ def main(argv: list[str] | None = None) -> int:
             output = resolve_output(args.output, "heterogeneous", 10)
             return run_demo.main(["--report-only", "--output", str(output)])
         output = resolve_output(args.output, args.case, args.days)
-        forwarded = ["--output", str(output), "--clock-profile", "csac-mro" if args.case == "heterogeneous" else "basic",
+        forwarded = ["--output", str(output), "--clock-profile", "csac-mro",
                      "--days", str(args.days), "--seed", str(args.seed), "--architecture", args.architecture,
                      "--timeout", str(args.timeout)]
         if args.command == "prepare":

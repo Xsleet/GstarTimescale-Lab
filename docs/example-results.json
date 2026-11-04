@@ -1,371 +1,423 @@
 {
-  "description": "Published initial examples; exact-tau ADEV from saved results",
+  "description": "Four archived CSAC clocks and the heterogeneous example; exact-tau ADEV from validated results",
   "analysis_tool": "tools/plot_results.py",
   "phase_unit": "s",
   "adev_unit": "dimensionless fractional frequency",
   "cases": [
     {
-      "case": "basic",
-      "clock_profile": "basic",
-      "seed": 2026,
-      "duration_days": 10.0,
-      "interval_s": 10.0,
+      "case": "csac",
+      "clock_profile": "archived-csac4",
+      "clock_sources": [
+        {
+          "output": "SIM1",
+          "session_prn": "0101",
+          "clock_source": "CSAC_01",
+          "clock_type": "CSAC",
+          "seed": 20270443,
+          "phase_initial_std_s": 1e-07,
+          "frequency_initial_std": 1e-09,
+          "phase_process_std": 1.618e-10,
+          "frequency_process_std": 9.474e-14,
+          "link_noise_std_s": 1e-12
+        },
+        {
+          "output": "SIM2",
+          "session_prn": "0102",
+          "clock_source": "CSAC_02",
+          "clock_type": "CSAC",
+          "seed": 20270444,
+          "phase_initial_std_s": 1e-07,
+          "frequency_initial_std": 1e-09,
+          "phase_process_std": 1.646e-10,
+          "frequency_process_std": 9.262e-14,
+          "link_noise_std_s": 1e-12
+        },
+        {
+          "output": "SIM3",
+          "session_prn": "0103",
+          "clock_source": "CSAC_03",
+          "clock_type": "CSAC",
+          "seed": 20270445,
+          "phase_initial_std_s": 1e-07,
+          "frequency_initial_std": 1e-09,
+          "phase_process_std": 2.053e-10,
+          "frequency_process_std": 9.925e-14,
+          "link_noise_std_s": 1e-12
+        },
+        {
+          "output": "SIM4",
+          "session_prn": "0104",
+          "clock_source": "CSAC_04",
+          "clock_type": "CSAC",
+          "seed": 20270446,
+          "phase_initial_std_s": 1e-07,
+          "frequency_initial_std": 1e-09,
+          "phase_process_std": 1.969e-10,
+          "frequency_process_std": 9.642e-14,
+          "link_noise_std_s": 1e-12
+        }
+      ],
+      "duration_days": 10,
+      "interval_s": 10,
       "phase_samples": 86397,
       "architecture": "centralized",
       "rank_remedy": "GREENHALL",
       "first_epoch_gpst": "2026-01-01T00:00:30.000000",
       "last_epoch_gpst": "2026-01-10T23:59:50.000000",
       "images": {
-        "phase": "images/examples-basic-phase.svg",
-        "adev": "images/examples-basic-adev.svg"
+        "phase": "images/examples-csac-phase.svg",
+        "adev": "images/examples-csac-adev.svg"
       },
       "results_sha256": {
-        "IEM.txt": "ae49274a12562501eb82ad9dcd059083309dfd938f16880ec0aa5116579eed06",
-        "SIM1.txt": "0758263abf92fd7c83adaacb55a4ab9e1f092a348161ffaa1d25b1e400659c11",
-        "SIM2.txt": "89704b08caf77204b236e407550cb5e35c6f91f52da70a7582036ffef4998c12",
-        "SIM3.txt": "823a2be5418c24f803f08baa7e9ead2e428b47c9b8602d0935e8b893eb55a86f",
-        "SIM4.txt": "5dabff689ca72eed35a763c963128ffe5c029a6a4c477b9aaa37956413469b4a"
+        "IEM.txt": "dc3e3f274ab1982354fb35260c520aa2998f25d2df5d15790385a2644a8541fc",
+        "SIM1.txt": "d7626500ab47c0a0d0cea2ee8ad7fd48dd7f44164a13b7b8a983fe0791a09cd0",
+        "SIM2.txt": "2a4bfac5c1b86475ca3199010493b8be1058a51419442badc0ab279b2afdc4e5",
+        "SIM3.txt": "f6ebd15f4447b7e129f5af3ad4d7cbc7e1d96ebc2c649478e9583153e680cdec",
+        "SIM4.txt": "01eda978c22c8c887cc644dd05b41b77f52520d306884719ded6aa5e6cf543ac"
       },
+      "strict_validation_epochs": 86400,
+      "data_release": "csac4-example-data-v1",
+      "source_group": "csac_only_group01",
       "examples": [
         {
           "tau_s": 10,
           "best_clock": "SIM1",
-          "best_clock_adev": 1.727102827166191e-11,
-          "ensemble_adev": 2.6120936030996868e-11,
-          "ensemble_over_best": 1.5124134834435872,
-          "sample_count": 86395
+          "best_clock_adev": 5.112978451148929e-11,
+          "ensemble_adev": 2.8338850178566705e-11,
+          "sample_count": 86395,
+          "ensemble_over_best": 0.5542532684095065
         },
         {
           "tau_s": 1000,
           "best_clock": "SIM1",
-          "best_clock_adev": 1.6877219779594387e-13,
-          "ensemble_adev": 2.5755745481392844e-13,
-          "ensemble_over_best": 1.5260656564141655,
-          "sample_count": 862
+          "best_clock_adev": 6.471968985391895e-12,
+          "ensemble_adev": 3.438688776382012e-12,
+          "sample_count": 862,
+          "ensemble_over_best": 0.531320342254976
         },
         {
           "tau_s": 86400,
           "best_clock": "SIM1",
-          "best_clock_adev": 2.7646562993137546e-15,
-          "ensemble_adev": 2.54679491454468e-15,
-          "ensemble_over_best": 0.9211976603300915,
-          "sample_count": 8
+          "best_clock_adev": 2.0929414267968297e-11,
+          "ensemble_adev": 2.0884308626209155e-11,
+          "sample_count": 8,
+          "ensemble_over_best": 0.997844868414298
         }
       ],
       "target_adev": [
         {
           "series": "SIM1",
           "tau_s": 10.0,
-          "adev": 1.727102827166191e-11,
-          "adev_error": 5.875893161232452e-14,
+          "adev": 5.112978451148929e-11,
+          "adev_error": 1.7395209273051555e-13,
           "sample_count": 86395
         },
         {
           "series": "SIM1",
           "tau_s": 30.0,
-          "adev": 5.746852459785201e-12,
-          "adev_error": 3.386541674299656e-14,
+          "adev": 2.940693072171312e-11,
+          "adev_error": 1.7329102686942238e-13,
           "sample_count": 28797
         },
         {
           "series": "SIM1",
           "tau_s": 100.0,
-          "adev": 1.7124859970003953e-12,
-          "adev_error": 1.8425548673957543e-14,
+          "adev": 1.6500433801545696e-11,
+          "adev_error": 1.7753695311046934e-13,
           "sample_count": 8638
         },
         {
           "series": "SIM1",
           "tau_s": 300.0,
-          "adev": 5.641995522355993e-13,
-          "adev_error": 1.0516890262818024e-14,
+          "adev": 9.534826507604301e-12,
+          "adev_error": 1.777327253418471e-13,
           "sample_count": 2878
         },
         {
           "series": "SIM1",
           "tau_s": 1000.0,
-          "adev": 1.6877219779594387e-13,
-          "adev_error": 5.748403868941026e-15,
+          "adev": 6.471968985391895e-12,
+          "adev_error": 2.2043613842295538e-13,
           "sample_count": 862
         },
         {
           "series": "SIM1",
           "tau_s": 3000.0,
-          "adev": 5.343628489564749e-14,
-          "adev_error": 3.159753765440054e-15,
+          "adev": 8.503201504888169e-12,
+          "adev_error": 5.028048455433397e-13,
           "sample_count": 286
         },
         {
           "series": "SIM1",
           "tau_s": 10000.0,
-          "adev": 1.7801771359750383e-14,
-          "adev_error": 1.9308732055268466e-15,
+          "adev": 1.4176742431771324e-11,
+          "adev_error": 1.5376836130506614e-12,
           "sample_count": 85
         },
         {
           "series": "SIM1",
           "tau_s": 30000.0,
-          "adev": 5.702836838205446e-15,
-          "adev_error": 1.097511461227476e-15,
+          "adev": 2.3000023410697968e-11,
+          "adev_error": 4.426356569178056e-12,
           "sample_count": 27
         },
         {
           "series": "SIM1",
           "tau_s": 86400.0,
-          "adev": 2.7646562993137546e-15,
-          "adev_error": 9.774536084474303e-16,
+          "adev": 2.0929414267968297e-11,
+          "adev_error": 7.399665377571431e-12,
           "sample_count": 8
         },
         {
           "series": "SIM2",
           "tau_s": 10.0,
-          "adev": 3.444869291551361e-11,
-          "adev_error": 1.172002245215395e-13,
+          "adev": 5.194655554226214e-11,
+          "adev_error": 1.7673088461164843e-13,
           "sample_count": 86395
         },
         {
           "series": "SIM2",
           "tau_s": 30.0,
-          "adev": 1.1460000791595842e-11,
-          "adev_error": 6.753221966254716e-14,
+          "adev": 2.995860866635344e-11,
+          "adev_error": 1.7654198965886255e-13,
           "sample_count": 28797
         },
         {
           "series": "SIM2",
           "tau_s": 100.0,
-          "adev": 3.508834773580986e-12,
-          "adev_error": 3.775342164708885e-14,
+          "adev": 1.663024139237157e-11,
+          "adev_error": 1.7893362209766153e-13,
           "sample_count": 8638
         },
         {
           "series": "SIM2",
           "tau_s": 300.0,
-          "adev": 1.162563129266376e-12,
-          "adev_error": 2.167061070085221e-14,
+          "adev": 9.85908608395778e-12,
+          "adev_error": 1.8377704488741341e-13,
           "sample_count": 2878
         },
         {
           "series": "SIM2",
           "tau_s": 1000.0,
-          "adev": 3.448653143179781e-13,
-          "adev_error": 1.174615921922107e-14,
+          "adev": 6.518094416684301e-12,
+          "adev_error": 2.2200717684729602e-13,
           "sample_count": 862
         },
         {
           "series": "SIM2",
           "tau_s": 3000.0,
-          "adev": 1.0983353754219401e-13,
-          "adev_error": 6.49459322440316e-15,
+          "adev": 8.29584615436339e-12,
+          "adev_error": 4.905436666293434e-13,
           "sample_count": 286
         },
         {
           "series": "SIM2",
           "tau_s": 10000.0,
-          "adev": 3.9768007562153366e-14,
-          "adev_error": 4.313446043496855e-15,
+          "adev": 1.3474071526594199e-11,
+          "adev_error": 1.4614682524726998e-12,
           "sample_count": 85
         },
         {
           "series": "SIM2",
           "tau_s": 30000.0,
-          "adev": 1.1568632385174224e-14,
-          "adev_error": 2.2263843405787203e-15,
+          "adev": 2.1377715527613367e-11,
+          "adev_error": 4.11414327150894e-12,
           "sample_count": 27
         },
         {
           "series": "SIM2",
           "tau_s": 86400.0,
-          "adev": 2.999163722711208e-15,
-          "adev_error": 1.0603645031088927e-15,
+          "adev": 3.9923968918053847e-11,
+          "adev_error": 1.4115254576918413e-11,
           "sample_count": 8
         },
         {
           "series": "SIM3",
           "tau_s": 10.0,
-          "adev": 5.198810001645129e-11,
-          "adev_error": 1.7687222587282603e-13,
+          "adev": 6.496355361598586e-11,
+          "adev_error": 2.210168928087789e-13,
           "sample_count": 86395
         },
         {
           "series": "SIM3",
           "tau_s": 30.0,
-          "adev": 1.7298703703350675e-11,
-          "adev_error": 1.0193889857570573e-13,
+          "adev": 3.748856530329575e-11,
+          "adev_error": 2.209149958133089e-13,
           "sample_count": 28797
         },
         {
           "series": "SIM3",
           "tau_s": 100.0,
-          "adev": 5.180349928897713e-12,
-          "adev_error": 5.573814321999112e-14,
+          "adev": 2.044617663097128e-11,
+          "adev_error": 2.199913011669477e-13,
           "sample_count": 8638
         },
         {
           "series": "SIM3",
           "tau_s": 300.0,
-          "adev": 1.7273402218783128e-12,
-          "adev_error": 3.219826653187429e-14,
+          "adev": 1.2167275003214176e-11,
+          "adev_error": 2.2680254796249442e-13,
           "sample_count": 2878
         },
         {
           "series": "SIM3",
           "tau_s": 1000.0,
-          "adev": 5.18735016823138e-13,
-          "adev_error": 1.7668184787559715e-14,
+          "adev": 7.656482549569982e-12,
+          "adev_error": 2.6078083052305486e-13,
           "sample_count": 862
         },
         {
           "series": "SIM3",
           "tau_s": 3000.0,
-          "adev": 1.6348293476948902e-13,
-          "adev_error": 9.666948586187344e-15,
+          "adev": 8.482276821610755e-12,
+          "adev_error": 5.015675430829316e-13,
           "sample_count": 286
         },
         {
           "series": "SIM3",
           "tau_s": 10000.0,
-          "adev": 4.744361284009337e-14,
-          "adev_error": 5.145982326986265e-15,
+          "adev": 1.2976707963024752e-11,
+          "adev_error": 1.4075215996989805e-12,
           "sample_count": 85
         },
         {
           "series": "SIM3",
           "tau_s": 30000.0,
-          "adev": 1.542746764273178e-14,
-          "adev_error": 2.9690175321484776e-15,
+          "adev": 2.0595157786579268e-11,
+          "adev_error": 3.9635399640281195e-12,
           "sample_count": 27
         },
         {
           "series": "SIM3",
           "tau_s": 86400.0,
-          "adev": 6.213359044320673e-15,
-          "adev_error": 2.196754157092957e-15,
+          "adev": 3.575871949327041e-11,
+          "adev_error": 1.2642616520119547e-11,
           "sample_count": 8
         },
         {
           "series": "SIM4",
           "tau_s": 10.0,
-          "adev": 6.94751614317833e-11,
-          "adev_error": 2.363661384321584e-13,
+          "adev": 6.22424346339607e-11,
+          "adev_error": 2.1175919016022495e-13,
           "sample_count": 86395
         },
         {
           "series": "SIM4",
           "tau_s": 30.0,
-          "adev": 2.3072707219160065e-11,
-          "adev_error": 1.359643127840463e-13,
+          "adev": 3.564790357651577e-11,
+          "adev_error": 2.1006822762211417e-13,
           "sample_count": 28797
         },
         {
           "series": "SIM4",
           "tau_s": 100.0,
-          "adev": 7.1051452151500164e-12,
-          "adev_error": 7.644804058345414e-14,
+          "adev": 1.9549670964238407e-11,
+          "adev_error": 2.103453193441477e-13,
           "sample_count": 8638
         },
         {
           "series": "SIM4",
           "tau_s": 300.0,
-          "adev": 2.342329966410222e-12,
-          "adev_error": 4.3661904938485e-14,
+          "adev": 1.1579479975137591e-11,
+          "adev_error": 2.1584582922208297e-13,
           "sample_count": 2878
         },
         {
           "series": "SIM4",
           "tau_s": 1000.0,
-          "adev": 7.514410034683029e-13,
-          "adev_error": 2.559418214628436e-14,
+          "adev": 7.49171317504521e-12,
+          "adev_error": 2.5516876335576964e-13,
           "sample_count": 862
         },
         {
           "series": "SIM4",
           "tau_s": 3000.0,
-          "adev": 2.3329937217980345e-13,
-          "adev_error": 1.3795281074638828e-14,
+          "adev": 7.798937342682719e-12,
+          "adev_error": 4.611608326270449e-13,
           "sample_count": 286
         },
         {
           "series": "SIM4",
           "tau_s": 10000.0,
-          "adev": 6.831130271053246e-14,
-          "adev_error": 7.409401085592308e-15,
+          "adev": 1.3474127996006811e-11,
+          "adev_error": 1.461474377440465e-12,
           "sample_count": 85
         },
         {
           "series": "SIM4",
           "tau_s": 30000.0,
-          "adev": 2.5623958695165894e-14,
-          "adev_error": 4.931333150119294e-15,
+          "adev": 2.2824711990670822e-11,
+          "adev_error": 4.39261787066316e-12,
           "sample_count": 27
         },
         {
           "series": "SIM4",
           "tau_s": 86400.0,
-          "adev": 7.088955519372423e-15,
-          "adev_error": 2.506324259639022e-15,
+          "adev": 3.35681814804106e-11,
+          "adev_error": 1.1868144378449507e-11,
           "sample_count": 8
         },
         {
           "series": "Ensemble",
           "tau_s": 10.0,
-          "adev": 2.6120936030996868e-11,
-          "adev_error": 8.886780044321924e-14,
+          "adev": 2.8338850178566705e-11,
+          "adev_error": 9.641351594256179e-14,
           "sample_count": 86395
         },
         {
           "series": "Ensemble",
           "tau_s": 30.0,
-          "adev": 8.834701044041711e-12,
-          "adev_error": 5.206168676678401e-14,
+          "adev": 1.618035960646836e-11,
+          "adev_error": 9.534864953625059e-14,
           "sample_count": 28797
         },
         {
           "series": "Ensemble",
           "tau_s": 100.0,
-          "adev": 2.543093948354053e-12,
-          "adev_error": 2.7362501889020505e-14,
+          "adev": 9.048364093281828e-12,
+          "adev_error": 9.735616718179537e-14,
           "sample_count": 8638
         },
         {
           "series": "Ensemble",
           "tau_s": 300.0,
-          "adev": 7.954194444245076e-13,
-          "adev_error": 1.482691536492219e-14,
+          "adev": 5.4167021481964936e-12,
+          "adev_error": 1.0096935003444469e-13,
           "sample_count": 2878
         },
         {
           "series": "Ensemble",
           "tau_s": 1000.0,
-          "adev": 2.5755745481392844e-13,
-          "adev_error": 8.772441723589214e-15,
+          "adev": 3.438688776382012e-12,
+          "adev_error": 1.1712220451224994e-13,
           "sample_count": 862
         },
         {
           "series": "Ensemble",
           "tau_s": 3000.0,
-          "adev": 7.797632160810199e-14,
-          "adev_error": 4.610836556050206e-15,
+          "adev": 4.162822712382123e-12,
+          "adev_error": 2.461528672136445e-13,
           "sample_count": 286
         },
         {
           "series": "Ensemble",
           "tau_s": 10000.0,
-          "adev": 2.5914111982336573e-14,
-          "adev_error": 2.8107800881460987e-15,
+          "adev": 6.939359961533614e-12,
+          "adev_error": 7.526792667119697e-13,
           "sample_count": 85
         },
         {
           "series": "Ensemble",
           "tau_s": 30000.0,
-          "adev": 7.475723828347475e-15,
-          "adev_error": 1.4387037215612384e-15,
+          "adev": 1.3242273500511716e-11,
+          "adev_error": 2.548476723401029e-12,
           "sample_count": 27
         },
         {
           "series": "Ensemble",
           "tau_s": 86400.0,
-          "adev": 2.54679491454468e-15,
-          "adev_error": 9.004279771829786e-16,
+          "adev": 2.0884308626209155e-11,
+          "adev_error": 7.383718124992604e-12,
           "sample_count": 8
         }
       ]

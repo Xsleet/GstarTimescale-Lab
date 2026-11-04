@@ -29,7 +29,7 @@ INTERVAL = 10
 DURATION = 10 * 86400
 SATELLITES = ("0101", "0102", "0103", "0104")
 ARCHITECTURES = ("centralized", "distributed_if", "distributed_ci")
-CLOCK_PROFILES = ("basic", "csac-mro")
+CLOCK_PROFILES = ("csac-mro",)
 HETEROGENEOUS_PROFILE = REPO_ROOT / "examples/heterogeneous/clocks.json"
 SNAPSHOT_ROOT = Path(__file__).resolve().parent / "dataprocess_snapshot"
 TARGET_TAUS = (10, 30, 100, 300, 1000, 3000, 10000, 30000, 86400)
@@ -67,15 +67,6 @@ def duration_label(duration_s: int) -> str:
 
 def clock_specs(clock_profile: str, seed: int) -> list[dict]:
     """Describe profiles; csac-mro shares diffusion coefficients with the engine."""
-    if clock_profile == "basic":
-        return [{"session_prn": satellite, "clock_type": "synthetic WPM",
-                 "phase_offset_s": (index + 1) * 1e-6,
-                 "frequency_offset": (index - 1.5) * 2e-12,
-                 "white_phase_sigma_s": (index + 1) * 1e-10,
-                 "phase_initial_std_s": 1e-5, "frequency_initial_std": 1e-10,
-                 "phase_process_std": 1e-20, "frequency_process_std": 1e-26,
-                 "link_noise_std_s": 1e-9}
-                for index, satellite in enumerate(SATELLITES)]
     if clock_profile != "csac-mro":
         raise ValueError(f"Unsupported clock profile: {clock_profile}")
     if seed < 0:
@@ -120,7 +111,7 @@ def diffusion_step(phase: float, frequency: float, dt: float,
 
 
 def clock_series(seed: int = 2026, duration_s: int = DURATION,
-                 clock_profile: str = "basic") -> dict[str, list[float]]:
+                 clock_profile: str = "csac-mro") -> dict[str, list[float]]:
     """Generate phase seconds using the selected reproducible clock model."""
     validate_duration(duration_s)
     specs = clock_specs(clock_profile, seed)
@@ -136,16 +127,6 @@ def clock_series(seed: int = 2026, duration_s: int = DURATION,
                 phases.append(phase)
             series[spec["session_prn"]] = phases
         return series
-    rng = random.Random(seed)
-    return {
-        satellite: [
-            (index + 1) * 1e-6
-            + (index - 1.5) * 2e-12 * step * INTERVAL
-            + rng.gauss(0.0, (index + 1) * 1e-10)
-            for step in range(duration_s // INTERVAL)
-        ]
-        for index, satellite in enumerate(SATELLITES)
-    }
 
 
 def gstar_number(value: float) -> str:
@@ -160,7 +141,7 @@ def gstar_number(value: float) -> str:
 
 
 def prepare_case(root: Path, architecture: str, seed: int = 2026, duration_s: int = DURATION,
-                 clock_profile: str = "basic") -> dict[str, list[float]]:
+                 clock_profile: str = "csac-mro") -> dict[str, list[float]]:
     validate_duration(duration_s)
     specs = clock_specs(clock_profile, seed)
     if architecture not in ARCHITECTURES:
@@ -209,13 +190,9 @@ def prepare_case(root: Path, architecture: str, seed: int = 2026, duration_s: in
     session = ["+GNSS satellite", "-GNSS satellite", "", '+LEO used = ""']
     for spec in specs:
         satellite = spec["session_prn"]
-        parameters = (f"{{TotalPhase:[{spec['phase_initial_std_s']:.16e},{spec['phase_process_std']:.16e}], "
-                      f"Phase:[{spec['phase_initial_std_s']:.16e},{spec['phase_process_std']:.16e}], "
+        parameters = (f"{{Phase:[{spec['phase_initial_std_s']:.16e},{spec['phase_process_std']:.16e}], "
                       f"Frequency:[{spec['frequency_initial_std']:.16e},{spec['frequency_process_std']:.16e}], "
-                      f"Drift:[1e-11,0], Link_Noise:{{Default:{spec['link_noise_std_s']:.16e}}}}}")
-        if clock_profile == "basic":
-            parameters = ("{TotalPhase:[1e-5,1e-20], Phase:[1e-5,1e-20], "
-                          "Frequency:[1e-10,1e-26], Drift:[1e-11,0], WPM:1e-20, Link_Noise:{Default:1e-9}}")
+                      f"Link_Noise:{{Default:{spec['link_noise_std_s']:.16e}}}}}")
         session.append(
             f" 000 {satellite}  {satellite}  FIX FIX NON P    "
             "7.0 30000. 300.  10.0  10.0  10.0   0.10   0.10   0.10 "
@@ -284,9 +261,7 @@ def prepare_case(root: Path, architecture: str, seed: int = 2026, duration_s: in
                 "clk_files": len(daily_counts), "pfd_files": len(daily_counts) * 6,
                 "satellites": list(SATELLITES), "architecture": architecture, "seed": seed,
                 "clock_profile": clock_profile, "clock_specs": specs,
-                "clock_model": ("white frequency noise + random-walk frequency noise; exact two-state diffusion"
-                                if clock_profile == "csac-mro" else
-                                "nonzero phase offset + constant frequency + Gaussian phase noise")}
+                "clock_model": "white frequency noise + random-walk frequency noise; exact two-state diffusion"}
     if clock_profile == "csac-mro":
         definition = HETEROGENEOUS_PROFILE.read_text(encoding="utf-8")
         write_text(root / "config/clock_profile.json", definition)
@@ -681,7 +656,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--exe", type=Path, help="Path to the compiled GstarTimescale executable")
     parser.add_argument("--output", type=Path, help="New or empty run directory (default depends on clock profile)")
-    parser.add_argument("--clock-profile", choices=CLOCK_PROFILES, default=None, help="Default: basic; csac-mro selects two CSAC and two mRO clocks")
+    parser.add_argument("--clock-profile", choices=CLOCK_PROFILES, default=None, help="csac-mro: two CSAC and two mRO; archived CSAC inputs: tools/prepare_csac.py")
     parser.add_argument("--architecture", choices=ARCHITECTURES, default=None, help="Default: centralized; report-only reads the saved manifest")
     parser.add_argument("--seed", type=int, default=2026)
     parser.add_argument("--days", type=float, default=None, help="Simulation days (default: 10); report-only uses the saved duration if omitted")
@@ -693,7 +668,7 @@ def main(argv: list[str] | None = None) -> int:
     if not args.prepare_only and not args.report_only and args.exe is None:
         parser.error("--exe is required unless --prepare-only or --report-only is used")
     executable = args.exe.resolve() if args.exe else None
-    default_output = "Runs/heterogeneous_2csac2mro_10days" if args.clock_profile == "csac-mro" else "Runs/quickstart_10days"
+    default_output = "Runs/heterogeneous_2csac2mro_10days"
     root = (args.output or Path(default_output)).resolve()
     try:
         if not math.isfinite(args.timeout) or args.timeout <= 0:
@@ -721,7 +696,7 @@ def main(argv: list[str] | None = None) -> int:
             raise ValueError(f"Executable not found: {executable}. Install the maintainer runtime with lab.py or use --prepare-only.")
         architecture = args.architecture or "centralized"
         duration_s = requested_duration if requested_duration is not None else DURATION
-        prepare_case(root, architecture, args.seed, duration_s, args.clock_profile or "basic")
+        prepare_case(root, architecture, args.seed, duration_s, args.clock_profile or "csac-mro")
         print(f"Prepared 4 clocks, {duration_s // INTERVAL} epochs per clock, {math.ceil(duration_s / 86400) * 6} bidirectional PFD files: {root}", flush=True)
         if args.prepare_only:
             print("Inputs ready. Run the engine from this directory with argument config/file_table.")

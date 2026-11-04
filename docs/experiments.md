@@ -11,15 +11,15 @@
 ## 实验 2：同类模型与异构模型
 
 ```powershell
-.\.venv\Scripts\python.exe tools/run_demo.py --prepare-only --clock-profile basic --days 10 --output Runs/comparison_basic
+.\.venv\Scripts\python.exe tools/prepare_csac.py --output Runs/comparison_csac
 .\.venv\Scripts\python.exe tools/run_demo.py --prepare-only --clock-profile csac-mro --days 10 --output Runs/comparison_heterogeneous
 ```
 
 上面只准备数据。分别打开两组 config，进入各实验目录直接运行同一个 exe，再给 `tools/plot_results.py` 指定各自的 results 和输出目录。步骤与首页相同。
 
-基础案例是“初始钟差 + 固定频率偏差 + 白相位噪声”，四钟噪声标准差分别为 0.1、0.2、0.3、0.4 ns。异构案例加入白频噪声和频率随机游走，见 [参数说明](../examples/heterogeneous/README.md)。
+基础案例直接使用已有归档的 CSAC_01～CSAC_04，见 [CSAC 数据来源](../examples/csac/README.md)。异构案例加入白频噪声和频率随机游走，见 [参数说明](../examples/heterogeneous/README.md)。
 
-观察哪个模型在不同 τ 有不同排序。两组实验的生成模型和滤波配置都不同，因此这不是严格的单因素“异构一定优于同构”证明。请解释比较的局限。
+观察哪个模型在不同 τ 有不同排序。两组实验的数据来源和滤波配置都不同，因此这不是严格的单因素“异构一定优于同构”证明。请解释比较的局限。
 
 ## 实验 3：随机性与可重复性
 
