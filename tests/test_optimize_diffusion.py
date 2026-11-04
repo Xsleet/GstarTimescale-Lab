@@ -19,14 +19,14 @@ class DiffusionOptimizationTests(unittest.TestCase):
         self.case = self.root / 'train'
         initialize_case(self.case, opt.ROOT / 'config')
         path = self.case / 'config/Timescale.cfg'
-        text = path.read_text()
+        text = path.read_text(encoding='utf-8')
         import re
         text = re.sub(r'(?m)^([ \t]*Start time&session length[ \t]*=).*$',
                       r'\1 2026 01 01 00 00 00 864000 [GPST]', text)
-        path.write_text(text)
+        path.write_text(text, encoding='utf-8')
 
     def test_diffusion_is_squared_sigma_and_only_process_terms_change(self):
-        text = (self.case/'config/session.obj').read_text()
+        text = (self.case/'config/session.obj').read_text(encoding='utf-8')
         initial = opt.read_coefficients(text)
         values = {c: qs.copy() for c, qs in initial.items()}
         clock = next(iter(values))
@@ -68,32 +68,32 @@ class DiffusionOptimizationTests(unittest.TestCase):
     def test_search_calls_engine_per_trial_and_applies_to_future_window(self):
         config_path=self.root/'search.json'
         opt.initialize(self.case,config_path)
-        config=json.loads(config_path.read_text())
+        config=json.loads(config_path.read_text(encoding='utf-8'))
         engine=self.root/'test_runtime.exe'
         engine.write_bytes(b'fixture - never executed')
         config.update(engine='test_runtime.exe',trials=4,startup_trials=2)
         # Freeze q1 so that users can isolate a q2 experiment.
         for spec in config['parameters'].values():
             spec['q1']['enabled']=False
-        config_path.write_text(json.dumps(config))
+        config_path.write_text(json.dumps(config), encoding='utf-8')
         calls=[]
         def fake_evaluate(case,engine,timeout,taus):
-            coefficients=opt.read_coefficients((case/'config/session.obj').read_text())
+            coefficients=opt.read_coefficients((case/'config/session.obj').read_text(encoding='utf-8'))
             calls.append(coefficients)
             return {'loss':sum(math.log10(v['q2'])**2 for v in coefficients.values()),'seconds':.01}
         output=self.root/'search'
         with patch.object(opt,'input_fingerprints',return_value={'fixture':'hash'}), patch.object(opt,'evaluate',side_effect=fake_evaluate):
             opt.run_search(config_path,output)
         self.assertEqual(len(calls),4)
-        snapshot=json.loads((output/'search.json').read_text())
+        snapshot=json.loads((output/'search.json').read_text(encoding='utf-8'))
         self.assertEqual((output/snapshot['training_case']).resolve(),output/'template')
         self.assertEqual((output/snapshot['engine']).resolve(),engine)
         self.assertGreater(len({json.dumps(c,sort_keys=True) for c in calls}),1)
         for c in calls:
             for clock in c:
                 self.assertEqual(c[clock]['q1'],calls[0][clock]['q1'])
-        self.assertIn(',TPE,',(output/'trials.csv').read_text())
-        summary=json.loads((output/'summary.json').read_text())
+        self.assertIn(',TPE,',(output/'trials.csv').read_text(encoding='utf-8'))
+        summary=json.loads((output/'summary.json').read_text(encoding='utf-8'))
         self.assertFalse(summary['held_out_data_used_for_selection'])
         # No date overlap can accidentally become the independent validation.
         with self.assertRaisesRegex(ValueError,'training end'):
@@ -101,11 +101,11 @@ class DiffusionOptimizationTests(unittest.TestCase):
         future=self.root/'future'
         opt.clone_case(self.case,future)
         cfg=future/'config/Timescale.cfg'
-        cfg.write_text(cfg.read_text().replace('2026 01 01 00 00 00','2026 01 11 00 00 00'))
+        cfg.write_text(cfg.read_text(encoding='utf-8').replace('2026 01 01 00 00 00','2026 01 11 00 00 00'), encoding='utf-8')
         destination=self.root/'validation'
         opt.apply_best(output,future,destination)
-        selected=json.loads((output/'best_parameters.json').read_text())
-        actual=opt.read_coefficients((destination/'config/session.obj').read_text())
+        selected=json.loads((output/'best_parameters.json').read_text(encoding='utf-8'))
+        actual=opt.read_coefficients((destination/'config/session.obj').read_text(encoding='utf-8'))
         for c in selected:
             for q in opt.FIELDS:
                 self.assertAlmostEqual(actual[c][q]/selected[c][q],1)
@@ -114,9 +114,9 @@ class DiffusionOptimizationTests(unittest.TestCase):
     def test_invalid_bounds_and_no_tpe_budget_are_rejected(self):
         path=self.root/'search.json'
         opt.initialize(self.case,path)
-        config=json.loads(path.read_text())
+        config=json.loads(path.read_text(encoding='utf-8'))
         info=opt.inspect_case(self.case)
-        initial=opt.read_coefficients((self.case/'config/session.obj').read_text())
+        initial=opt.read_coefficients((self.case/'config/session.obj').read_text(encoding='utf-8'))
         config['trials']=config['startup_trials']
         with self.assertRaisesRegex(ValueError,'startup_trials'):
             opt.validate_search(config,initial,info)
@@ -129,30 +129,30 @@ class DiffusionOptimizationTests(unittest.TestCase):
     def test_failed_initial_run_is_not_a_successful_optimization(self):
         path=self.root/'search.json'
         opt.initialize(self.case,path)
-        config=json.loads(path.read_text());config['engine']='test_runtime.exe'
+        config=json.loads(path.read_text(encoding='utf-8'));config['engine']='test_runtime.exe'
         (self.root/'test_runtime.exe').write_bytes(b'fixture')
-        path.write_text(json.dumps(config))
+        path.write_text(json.dumps(config), encoding='utf-8')
         with patch.object(opt,'input_fingerprints',return_value={}), patch.object(opt,'evaluate',side_effect=ValueError('bad S')):
             with self.assertRaisesRegex(ValueError,'Initial configuration failed'):
                 opt.run_search(path,self.root/'failed')
         self.assertFalse((self.root/'failed/best_parameters.json').exists())
-        self.assertIn('FAIL',(self.root/'failed/trials.csv').read_text())
+        self.assertIn('FAIL',(self.root/'failed/trials.csv').read_text(encoding='utf-8'))
 
     def test_failed_candidates_are_kept_and_never_selected(self):
         path=self.root/'search.json'
         opt.initialize(self.case,path)
-        config=json.loads(path.read_text());config.update(engine='test_runtime.exe',trials=4,startup_trials=2)
+        config=json.loads(path.read_text(encoding='utf-8'));config.update(engine='test_runtime.exe',trials=4,startup_trials=2)
         (self.root/'test_runtime.exe').write_bytes(b'fixture')
-        path.write_text(json.dumps(config))
+        path.write_text(json.dumps(config), encoding='utf-8')
         scores=[{'loss':-12.,'seconds':.01}, ValueError('failed candidate'),
                 {'loss':-11.,'seconds':.01}, {'loss':-10.,'seconds':.01}]
         with patch.object(opt,'input_fingerprints',return_value={}), patch.object(opt,'evaluate',side_effect=scores):
             opt.run_search(path,self.root/'search')
-        summary=json.loads((self.root/'search/summary.json').read_text())
+        summary=json.loads((self.root/'search/summary.json').read_text(encoding='utf-8'))
         self.assertEqual(summary['best_trial'],0)
         self.assertEqual(summary['successful_trials'],3)
         import csv
-        with (self.root/'search/trials.csv').open() as stream:
+        with (self.root/'search/trials.csv').open(encoding='utf-8') as stream:
             history=list(csv.DictReader(stream))
         self.assertEqual(history[1]['status'],'FAIL')
         self.assertEqual(history[2]['stage'],'random')

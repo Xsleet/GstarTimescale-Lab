@@ -241,7 +241,7 @@ def evaluate(case: Path, engine: Path, timeout: float, taus: list) -> dict:
     innovation = pd.read_csv(strict, sep='\t', usecols=['epoch','status','nis'])
     if len(innovation) != info['duration_s'] / info['interval_s'] or set(innovation.status) != {'ok'} or not np.isfinite(innovation.nis).all():
         raise ValueError('Strict innovation validation failed')
-    n_clocks = len(read_coefficients((case/'config/session.obj').read_text()))
+    n_clocks = len(read_coefficients((case/'config/session.obj').read_text(encoding='utf-8')))
     ids = [f'SIM{i}' for i in range(1, n_clocks+1)]
     epochs, phases = plot.load_results(case/'results', ids,
         plot.dp.SchemaConfig(trend_state=2, num_harmonics=0, rate_hz=1/info['interval_s'], dev_mode='adev'))
@@ -357,7 +357,7 @@ def run_search(config_path: Path, output: Path) -> None:
     if input_fingerprints(info) != fingerprints:
         raise ValueError('Training input files changed during optimization')
     selected = output / 'trials' / f'trial_{study.best_trial.number:03d}'
-    coefficients = json.loads((selected / 'parameters.json').read_text())
+    coefficients = json.loads((selected / 'parameters.json').read_text(encoding='utf-8'))
     save_json(output / 'best_parameters.json', coefficients)
     clone_case(output / 'template', output / 'best_case', coefficients)
     save_json(output / 'summary.json', {'best_trial': study.best_trial.number, 'best_loss': study.best_value,
@@ -369,18 +369,18 @@ def run_search(config_path: Path, output: Path) -> None:
 
 
 def apply_best(search: Path, case: Path, output: Path) -> None:
-    summary = json.loads((search / 'summary.json').read_text())
+    summary = json.loads((search / 'summary.json').read_text(encoding='utf-8'))
     info = inspect_case(case)
     if datetime.fromisoformat(info['start']) < datetime.fromisoformat(summary['training_end']):
         raise ValueError('Validation must start at or after the training end; do not reuse training dates')
-    training = json.loads((search / 'provenance.json').read_text())['training']
+    training = json.loads((search / 'provenance.json').read_text(encoding='utf-8'))['training']
     for key in ('interval_s','rank_remedy','scope','architecture','trend_states','harmonic_states'):
         if info[key] != training[key]:
             raise ValueError(f'Validation {key} must match training for a parameter-only comparison')
     for key in ('LEO Clk full name','PFD data directory'):
         if info['inputs'][key] != training['inputs'][key]:
             raise ValueError('Use the same clock group for training and validation')
-    coefficients = json.loads((search / 'best_parameters.json').read_text())
+    coefficients = json.loads((search / 'best_parameters.json').read_text(encoding='utf-8'))
     clone_case(case, output, coefficients)
     save_json(output / 'selection.json', {'best_trial': summary['best_trial'], 'training_end': summary['training_end'],
                                          'validation_start': info['start']})
