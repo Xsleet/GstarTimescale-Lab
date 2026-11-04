@@ -1,5 +1,23 @@
 # 故障排查
 
+## 直接运行 exe 时找不到配置或输入
+
+先进入实验目录，再执行程序：`Push-Location Runs/manual_case`。`config/file_table` 以及配置内的 `clk/...`、`pfd/...` 都相对于这个目录。检查 file_table 的 `TimescaleCfg`、`object` 两行是否指向你实际编辑的文件，文件名和大小写是否一致。
+
+## 程序运行后没有图片
+
+直接运行 exe 只生成 IEM、SIM 和日志。等待控制台显示运行结束，再回到仓库根目录执行：
+
+```powershell
+.\.venv\Scripts\python.exe tools/plot_results.py --results Runs/manual_case/results --output Runs/manual_case
+```
+
+图片在 `figures/`，数值在 `analysis/`。如果修改了 `Project directory`，也要对应修改 `--results`。
+
+## 绘图提示 Epochs differ、gaps 或 interval
+
+先确认核心程序已经结束；正在写入中的文件长度可能不同。之后检查 IEM/SIM 是否来自同一次运行，`--interval` 是否等于文件中的实际采样间隔。不要混用两个结果目录的文件，或分别删除数据行。脚本不需要 `manifest.json`；错误指向实际结果和采样设置。
+
 ## python 找不到，或者版本不对
 
 在 PowerShell 运行 `python --version`。使用 64 位 Python 3.11/3.12，关闭并重新打开安装前的终端。安装了多个 Python 时，可用 `py -3.12 -m venv .venv` 明确选择版本；后续命令始终使用 `.\.venv\Scripts\python.exe`。
@@ -24,13 +42,13 @@
 
 ## Output directory is not empty
 
-`run` 和 `prepare` 都要求输出目录不存在或为空。换一个名字，例如 `--output Runs/heterogeneous_second_run`。如果只想重新绘图，使用 `lab.py report --output 原实验目录`。
+`run` 和 `prepare` 都要求输出目录不存在或为空。换一个名字，例如 `--output Runs/heterogeneous_second_run`。如果只想重新绘图，使用 `tools/plot_results.py --results 实际结果目录 --output 图片所在实验目录`；无需重新准备数据。
 
-init 同样拒绝覆盖非空实验目录，避免丢失已经编辑的参数。已有实验直接修改配置并使用 execute，不需要再次初始化。
+init 同样拒绝覆盖非空实验目录。已有实验直接修改配置并运行 exe，不需要再次初始化。
 
 ## 修改 config 后，一键示例为什么没有变化
 
-根目录 config 是公开原生模板，init 把它复制到实验目录；execute 读取实验里的实际配置。prepare/run 是合成示例生成器，会按照命令行选项独立生成配置。自己的实验请使用 init → 编辑实验目录里的配置并准备输入 → execute。
+根目录 config 是公开原生模板。prepare/run 是合成示例生成器，会按照命令行选项独立生成配置。自己的实验请编辑实验目录里的配置，再直接调用 exe；file_table 决定具体读取哪套 cfg/obj。
 
 如果改的是根目录模板，之前已经初始化的实验不会自动更新；请直接编辑那次实验的 config 文件。
 
@@ -38,7 +56,7 @@ init 同样拒绝覆盖非空实验目录，避免丢失已经编辑的参数。
 
 10 天案例生成完整 CLK/PFD 输入及多路结果，需要数百 MB 级空间；多组实验会累积。把仓库放在空间充足的磁盘，先检查 `Runs/` 下有哪些旧实验。确认完成归档后再自行清理，不要把程序包当作结果删除。
 
-运行阶段查看 `logs/console.log` 和 `results/gstar.log`。不要只因为暂时没有 HTML 就重复启动。默认核心程序超时为 1800 秒，确有需要可以使用 `--timeout 3600`。
+直接运行时查看控制台和实际结果目录的 `gstar.log`，完成后再画图。启动器和一键入口另外保存控制台日志，并默认设置 1800 秒超时；该超时不适用于原生 exe 命令。
 
 首次安装科学计算库时 pip 可能在系统临时目录解包；C 盘紧张时，可先在另一磁盘建立临时目录，并在当前 PowerShell 会话把 `TEMP`、`TMP` 指向该目录。安装时添加 `--no-cache-dir` 可减少持久缓存。
 
@@ -48,7 +66,7 @@ init 同样拒绝覆盖非空实验目录，避免丢失已经编辑的参数。
 
 ## execute 完成后没有 HTML
 
-这是自定义配置入口的预期行为。它保留配置，检查退出码与日志，不默认把自定义结果交给四钟示例报告。使用对应的数据完整性检查和分析流程，见 [配置指南](configuration.md)。
+这是预期行为；启动器只完成求解。接着用 `tools/plot_results.py` 生成图片，见[首页](../README.md)。HTML 是可选一键案例的额外产物。
 
 ## Project directory is not empty / start years after 2026
 

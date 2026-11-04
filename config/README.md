@@ -15,13 +15,14 @@
 
 ## 推荐使用方式
 
-在仓库根目录复制出一个独立实验：
+已有自己的数据时，在仓库根目录复制出一个独立实验：
 
 ```powershell
-.\.venv\Scripts\python.exe lab.py init --output Runs/my_case
+New-Item -ItemType Directory -Path Runs/my_case
+Copy-Item -Recurse config Runs/my_case/config
 ```
 
-这个命令只复制六个原生配置/表文件，创建空的实验目录，不生成模拟数据、不调用核心。初始化后直接编辑：
+这会复制配置目录，不生成数据，也不调用程序。目录里多带一个说明文件不影响运行。随后直接编辑：
 
 ```text
 Runs/my_case/config/Timescale.cfg
@@ -32,13 +33,17 @@ Runs/my_case/config/file_table
 把自己的标准 CLK/PFD 数据放到该实验的 `clk/`、`pfd/`，或在 Timescale.cfg 中指向已有数据位置。随后运行：
 
 ```powershell
-.\.venv\Scripts\python.exe lab.py inspect --workdir Runs/my_case
-.\.venv\Scripts\python.exe lab.py execute --workdir Runs/my_case
+Push-Location Runs/my_case
+& ..\..\engine\GstarTimescale.exe config/file_table
+Pop-Location
+.\.venv\Scripts\python.exe tools/plot_results.py --results Runs/my_case/results --output Runs/my_case
 ```
 
-也可以用文件管理器手动把本目录复制到实验目录，命名为 `config`，再使用同样的 inspect/execute 命令。脚本读取这些原生文件，不会用另一套参数格式覆盖它们。修改仓库根目录的模板只影响以后初始化的实验；已经复制出来的实验配置是独立的。
+也可以用文件管理器把整个配置目录复制过去。`file_table` 的 `TimescaleCfg`、`object` 两行指定实际读取的文件，所以可以保存多套 `.cfg`/`.obj`，再修改索引来切换。文件名大小写应保持一致。修改仓库根目录模板不会影响已经复制出的实验。
 
-没有自己的数据时，可以先使用 README 的一键合成案例。`prepare`/`run` 是示例生成入口，会按脚本生成配置，**不会读取你编辑过的这套模板**。自己的实验使用 `init → 编辑配置和准备数据 → execute`。
+没有自己的数据时，先按[首页](../README.md)生成 10 天输入，再编辑该实验的配置、直接调用 exe、单独绘图。`--prepare-only` 负责初次准备，不要在手动改配置之后再次生成同一个实验。
+
+`lab.py init/inspect/execute` 仍可使用，见[可选便利命令](../docs/convenience-commands.md)。
 
 ## 怎么修改
 

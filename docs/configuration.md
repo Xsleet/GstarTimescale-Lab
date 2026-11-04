@@ -2,12 +2,14 @@
 
 核心程序从 `file_table`、`Timescale.cfg` 和 `session.obj` 读取配置。可执行文件封装了求解实现，**没有把运行模式、起始时间和数据路径固定在程序中**。
 
-完整、可直接编辑的原生文件已放在公开的 [config 目录](../config/README.md)，无需先生成数据才能获得配置。推荐先用 `lab.py init --output Runs/my_case` 复制一份，再编辑实验目录里的配置。也可以直接用文件管理器复制，无需使用初始化脚本。
+完整、可直接编辑的原生文件已放在公开的 [config 目录](../config/README.md)。将整个目录复制到自己的实验中，或者先按首页准备示例输入，然后直接编辑实验目录里的配置。主要流程是“编辑配置 → 直接运行 exe → 单独绘图”。
 
-## 两种运行入口
+## 运行与绘图入口
 
 | 入口 | 适用情况 | 行为 |
 |---|---|---|
+| `GstarTimescale.exe config/file_table` | 主要入口，直接执行编辑过的配置 | 读取标准输入并写出 IEM、SIM 和日志 |
+| `tools/plot_results.py` | 对实际结果单独画图 | 可编辑路径、钟名、采样参数；输出图片与数值表 |
 | `lab.py run` | 使用内置的四钟合成案例 | 生成输入和配置，运行核心，生成五线 ADEV 与 HTML |
 | `lab.py execute` | 已有自己的配置与标准输入 | 按原配置运行核心，保留配置和输入；保存执行日志，不自动套用示例报告 |
 
@@ -74,7 +76,22 @@
 
 这是需要修改的字段片段，不是独立完整配置。完整模板见 [Timescale.cfg](../config/Timescale.cfg)。实际输出历元还取决于输入覆盖、插值和初始化，不保证所有边界时刻都有输出。
 
-## 实际操作
+## 实际操作：直接运行
+
+在已准备好的实验中编辑三个配置文件，随后在仓库根目录执行：
+
+```powershell
+Push-Location Runs/manual_case
+& ..\..\engine\GstarTimescale.exe config/file_table
+Pop-Location
+.\.venv\Scripts\python.exe tools/plot_results.py --results Runs/manual_case/results --output Runs/manual_case
+```
+
+`file_table` 是程序的参数。若想使用另一套配置，把其中 `TimescaleCfg`、`object` 两行改为新的文件名，例如 `config/Timescale_noise.cfg` 和 `config/session_noise.obj`；程序命令可以保持不变。
+
+原生命令中的相对路径都以 `Push-Location` 进入的实验目录为基准。`Project directory` 决定结果位置；它改变后，绘图脚本的 `--results` 也要对应改变。每个实验使用新的结果目录以保留旧结果；直接运行 exe 没有启动器的目录覆盖保护。
+
+## 可选：通过启动器预览或记录执行
 
 先复制一套原生配置，或把已有配置放到自己的实验目录：
 
@@ -112,7 +129,7 @@ init 不生成模拟数据，也不调用核心。直接编辑 `Runs/custom_case
 - **路径格式**：核心按空白分隔读取配置中的路径，不支持路径值内的空格或引号。工作目录本身可以带空格，此时在文件内用不带空格的相对路径。不要给 Project directory 使用日期占位符；输入文件名的日期占位符可以保留。
 - **输入覆盖**：改起止时间不会自动生成对应日期的数据。CLK、PFD/ISL 及需要的轨道必须覆盖所选时间段。
 - **观测匹配**：PFD 使用 `satellite + OBS P`；ISL 使用 `constellation + OBS I`，并需要轨道和正确的距离观测。不能只修改 scope 或一个字母就转换数据类型。
-- **分析范围**：execute 只检查退出码与日志错误，不把“执行完成”当作完整科学验证。自定义钟数、状态、时间和结果路径需要相应的结果完整性检查与 DataProcess 分析。
+- **独立绘图**：`plot_results.py` 从实际文件读取日期和相位，并核对你指定的钟名及采样间隔；不依赖生成案例时的旧 manifest。首次使用按首页的集中式四钟案例操作。
 - **报告范围**：`lab.py report` 仍服务于内置四钟案例，读取其 manifest 和标准 results 目录。不要把改过时间、模型或路径的自定义结果直接交给旧 manifest 生成报告。
 
 当前配置入口支持已有标准数据的运行，不提供任意输入格式转换，也不宣称所有模式组合都已验证。已验证范围见 [validation.md](validation.md)。

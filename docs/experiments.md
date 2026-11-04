@@ -6,14 +6,16 @@
 
 ## 实验 1：跑通并解释结果
 
-运行默认 10 天案例。指出四只钟与 Ensemble，解释相位图和 ADEV 的不同含义。在精确 τ 表中取 10、1000、86400 秒三个点，记录 Ensemble、最佳单钟、二者比值及有效项数。说明为什么最长 τ 的证据比较弱。
+按首页直接运行默认 10 天案例，单独执行绘图脚本。先在原始 IEM/SIM 文件中找到相位，再在图上指出四只钟与 Ensemble，解释两张图的不同含义。在数值表中取 10、1000、86400 秒三个点，记录 Ensemble 与单钟的 ADEV。
 
 ## 实验 2：同类模型与异构模型
 
 ```powershell
-.\.venv\Scripts\python.exe lab.py run --case basic --output Runs/comparison_basic
-.\.venv\Scripts\python.exe lab.py run --case heterogeneous --output Runs/comparison_heterogeneous
+.\.venv\Scripts\python.exe tools/run_demo.py --prepare-only --clock-profile basic --days 10 --output Runs/comparison_basic
+.\.venv\Scripts\python.exe tools/run_demo.py --prepare-only --clock-profile csac-mro --days 10 --output Runs/comparison_heterogeneous
 ```
+
+上面只准备数据。分别打开两组 config，进入各实验目录直接运行同一个 exe，再给 `tools/plot_results.py` 指定各自的 results 和输出目录。步骤与首页相同。
 
 基础案例是“初始钟差 + 固定频率偏差 + 白相位噪声”，四钟噪声标准差分别为 0.1、0.2、0.3、0.4 ns。异构案例加入白频噪声和频率随机游走，见 [参数说明](../examples/heterogeneous/README.md)。
 
@@ -22,32 +24,29 @@
 ## 实验 3：随机性与可重复性
 
 ```powershell
-.\.venv\Scripts\python.exe lab.py run --seed 2026 --output Runs/repeat_seed2026
-.\.venv\Scripts\python.exe lab.py run --seed 2027 --output Runs/repeat_seed2027
-.\.venv\Scripts\python.exe lab.py run --seed 2028 --output Runs/repeat_seed2028
+.\.venv\Scripts\python.exe tools/run_demo.py --prepare-only --clock-profile csac-mro --seed 2026 --output Runs/repeat_seed2026
+.\.venv\Scripts\python.exe tools/run_demo.py --prepare-only --clock-profile csac-mro --seed 2027 --output Runs/repeat_seed2027
+.\.venv\Scripts\python.exe tools/run_demo.py --prepare-only --clock-profile csac-mro --seed 2028 --output Runs/repeat_seed2028
 ```
 
-选定相同 τ，比较不同种子的 ADEV。先描述单次实验，再汇总多次实验。三个种子只适合练习；正式统计研究应根据目标误差设计更多重复。不要只保留结果最好的种子。
+分别运行并画图，再选相同 τ 比较不同种子的 ADEV。先描述单次实验，再观察多次结果的变化。默认仍是 10 天、10 秒采样；保留每组结果供比较。
 
 ## 实验 4：集中式与分布式（进阶）
 
-```powershell
-.\.venv\Scripts\python.exe lab.py run --architecture distributed_if --output Runs/architecture_if
-.\.venv\Scripts\python.exe lab.py run --architecture distributed_ci --output Runs/architecture_ci
-```
+复用同一份输入，在不同的 Timescale.cfg 副本中将 `Estimation architecture` 分别改为 `centralized`、`distributed_if`、`distributed_ci`，每套指定独立的 `Project directory`。用 file_table 切换配置后直接运行程序。
 
 保持种子、时长和时钟参数相同，先检查各架构日志，再比较输出。在 CI 架构中同时记录选定节点和其它节点，不能只取一个节点就评价全网。默认实验验收以 centralized 为基准；这些选项供探索，不宣称所有异构参数下都已经通过性能验证。
 
 ## 实验 5：研究时长与统计支持
 
-以 10 天为起点，再尝试 20 天，使用新目录。比较公共 τ 的有效项数及数值变化；长记录并不自动消除模型误差。启动器允许使用 `--days` 改时长，但起点固定在 2026 年，不能跨过该年的支持边界。
+以 10 天为起点，再用输入准备命令的 `--days 20` 准备 20 天数据，使用新目录。读取生成的起始时间与运行秒数后再运行程序。比较公共 τ 的有效项数及数值变化；生成器起点固定在 2026 年。
 
 ## 每次实验的记录模板
 
 | 项目 | 填写内容 |
 |---|---|
 | 研究问题 | 你要检验什么，而不只是“运行成功” |
-| 版本与环境 | 仓库版本、runtime.json、Python 依赖 |
+| 版本与环境 | 仓库版本、engine-release.json 中的程序版本、Python 依赖 |
 | 输入条件 | 模型、种子、时长、采样、架构 |
 | 改动 | 相对基准只改变了什么 |
 | 检查 | 日志、完整性、公共区间、数值有限 |

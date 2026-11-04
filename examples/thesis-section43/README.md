@@ -133,20 +133,28 @@ for name in ["clock1_s", "GREENHALL"]:
 
 ## 5. 可选：自己运行一次核心解算
 
-想从 CLK/PFD 观测开始运行，需要先按[首页](../../README.md)安装单独提供的授权运行包，并通过 `lab.py doctor`。核心运行包支持 Windows x64；公开数据下载不包含程序。
+想从 CLK/PFD 观测开始运行，先按[首页](../../README.md)安装单独提供的授权运行包；需要时可用 `lab.py doctor` 检查安装。核心运行包支持 Windows x64；公开数据下载不包含程序。
 
 第一遍使用已经跑通的 **异构第 1 组 + Greenhall**，保持 10 天、10 秒采样：
 
 ```powershell
 .\.venv\Scripts\python.exe tools/thesis_section43.py fetch --kind inputs --output Runs/thesis43/inputs
 .\.venv\Scripts\python.exe tools/thesis_section43.py prepare-case --inputs Runs/thesis43/inputs --group mixed_2plus2_group01 --method GREENHALL --output Runs/thesis43/rerun
-.\.venv\Scripts\python.exe lab.py inspect --workdir Runs/thesis43/rerun
-.\.venv\Scripts\python.exe lab.py execute --workdir Runs/thesis43/rerun
-.\.venv\Scripts\python.exe tools/thesis_section43.py compare-rerun --data Runs/thesis43/data --workdir Runs/thesis43/rerun --group mixed_2plus2_group01 --method GREENHALL --output Runs/thesis43/rerun_comparison
-Start-Process .\Runs\thesis43\rerun_comparison\report.html
 ```
 
-这个报告展示 **4 只原始钟 + 历史时间尺度 + 本次时间尺度，共 6 条 ADEV 曲线**。已验证的入门算例中，新旧时间尺度 ADEV 的最大相对差异约 0.014%，曲线基本重合。解算结果在 `rerun/results/`，运行日志在 `rerun/logs/`。
+准备后打开 `Runs/thesis43/rerun/config/`，查看并编辑 `file_table`、`Timescale.cfg`、`session.obj`。随后直接运行程序，再单独绘图：
+
+```powershell
+Push-Location Runs/thesis43/rerun
+& ..\..\..\engine\GstarTimescale.exe config/file_table
+Pop-Location
+.\.venv\Scripts\python.exe tools/plot_results.py --results Runs/thesis43/rerun/results --output Runs/thesis43/rerun
+Start-Process .\Runs\thesis43\rerun\figures\adev.png
+```
+
+这张图展示 **4 只原始钟 + 本次组合时间尺度，共 5 条 ADEV 曲线**。文本结果和 `gstar.log` 在 `rerun/results/`，图片在 `rerun/figures/`，数值表在 `rerun/analysis/`。[结果说明](../../docs/results.md)解释 IEM/SIM 的列和单位。
+
+如果需要对照历史时间尺度，可以在一个新实验目录用可选的 `lab.py execute` 启动器保留执行记录，再运行 `compare-rerun`。该比较入口需要启动器记录；直接运行 exe 的结果用上面的独立脚本即可。已验证的默认异构 Greenhall 算例中，新旧 ADEV 的最大相对差异约 0.014%。
 
 ### 我能修改哪些配置？
 
@@ -158,7 +166,7 @@ Start-Process .\Runs\thesis43\rerun_comparison\report.html
 | 成员钟、观测类型和噪声参数 | `session.obj` |
 | 运行配置及基础表的入口 | `file_table` |
 
-字段说明和示例见[配置指南](../../docs/configuration.md)。先用默认值跑通，再一次只改一项。所选时间段应在输入数据范围内，采样间隔应与数据一致；修改后先运行 `inspect` 查看解析结果，再运行 `execute`。每次实验使用新目录，便于对比。
+字段说明和示例见[配置指南](../../docs/configuration.md)。先用默认值跑通，再一次只改一项。所选时间段应在输入数据范围内，采样间隔应与数据一致；修改后直接运行 exe，再指定实际结果目录绘图。每次实验使用新目录，便于对比。
 
 同构配置名是 `csac_only`、`mro_only`，异构配置名是 `mixed_2plus2`，各有 `group01`～`group05`。切换方法和组属于进一步探索；当前程序对其他组合的运行记录见下面的进阶说明。若命令提示解算错误，先查看日志和[故障排查](../../docs/troubleshooting.md)，再继续分析。
 
