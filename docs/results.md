@@ -2,6 +2,8 @@
 
 直接运行程序后，先看 `Timescale.cfg` 中的 `Project directory`。首页默认设为 `results`，因此结果在实验目录的 `results/` 下。绘图单独进行，命令见[首页](../README.md)。
 
+想先对照实际图片理解文件，请看[两个初始样例的相位、ADEV 与数值对照](example-results.md)。
+
 ## 程序输出在哪里，分别是什么？
 
 | 文件 | 内容 | 初次使用重点 |
