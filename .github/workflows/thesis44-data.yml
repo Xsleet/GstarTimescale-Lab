@@ -25,6 +25,8 @@ jobs:
       - run: python tools/thesis_section44.py fetch --kind inputs --output Runs/thesis44/inputs
       - run: python tools/thesis_section44.py prepare-case --inputs Runs/thesis44/inputs --variant adjusted --output Runs/thesis44/config-check
       - run: python lab.py inspect --workdir Runs/thesis44/config-check
+      - run: python tools/thesis_section44.py prepare-case --inputs Runs/thesis44/inputs --variant baseline --window train --output Runs/thesis44/train-check
+      - run: python tools/optimize_diffusion.py init --case Runs/thesis44/train-check --output Runs/thesis44/search-check.json
       - uses: actions/upload-artifact@v4
         with:
           name: thesis-section44-archive-report

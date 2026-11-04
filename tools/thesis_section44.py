@@ -71,12 +71,14 @@ def runtime_session(content: str, initialization: str) -> str:
 
 
 def prepare_case(inputs: Path, output: Path, group: str, variant: str, method: str,
-                 initialization: str = 'portable') -> None:
+                 initialization: str = 'portable', window: str = 'evaluation') -> None:
     archive.verify(inputs, 'inputs', catalog=release())
     if group not in [f'mixed_2plus2_group{i:02d}' for i in range(1, 6)] or variant not in VARIANTS or method not in RANK_REMEDIES:
         raise ValueError('Unknown group, parameter variant or rank remedy')
     if output.exists():
         raise ValueError(f'Output already exists: {output}')
+    if window not in ('train', 'evaluation'):
+        raise ValueError('Unknown data window')
     recipes = json.loads((inputs / 'recipes' / f'{group}.json').read_text(encoding='utf-8'))[variant]
     clk = os.path.relpath(inputs / 'groups' / group / 'clk/SIM0MGNFIN_-YEARDOY-0000_01D_10S_CLK.CLK', output).replace('\\', '/')
     pfd = os.path.relpath(inputs / 'groups' / group / 'pfd', output).replace('\\', '/')
@@ -91,13 +93,15 @@ def prepare_case(inputs: Path, output: Path, group: str, variant: str, method: s
             # In this two-state case TotalPhase duplicates Phase. Retain a single
             # editable Phase field to avoid the runtime's substring alias lookup.
             content = runtime_session(content, initialization)
+        if name == 'Timescale.cfg' and window == 'train':
+            content = content.replace('2026 01 11 00 00 00 864000', '2026 01 01 00 00 00 864000')
         (config / name).write_text(content.replace('@CLK@', clk).replace('@PFD@', pfd), encoding='utf-8', newline='\n')
     set_rank_remedy(config / 'Timescale.cfg', method)
     with (config / 'Timescale.cfg').open('a', encoding='utf-8') as out:
         out.write('\n* Rank deficiency remedy: NONE | SUMZERO | BROWN | GREENHALL | KPW\n')
     (output / 'case.json').write_text(json.dumps({'group': group, 'variant': variant, 'rank_remedy': method,
         'initialization': initialization,
-        'data_window': '2026-01-11 through 2026-01-20 GPST',
+        'data_window': '2026-01-01 through 2026-01-10 GPST' if window == 'train' else '2026-01-11 through 2026-01-20 GPST',
         'note': 'adjusted uses the paper plotting archive FREQFIX, not the best search trial'}, indent=2) + '\n', encoding='utf-8')
     print(f'Created editable native configuration: {config}')
     print('Edit file_table, Timescale.cfg and session.obj; run the engine from the case directory.')
@@ -276,14 +280,14 @@ def analyze(data: Path, output: Path) -> None:
     (output / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n', encoding='utf-8')
     captions = {'fig4_12': '图 4.12：16 只 CSAC、16 只 mRO 的平均 ADEV 与模型曲线。',
                 'fig4_13': '图 4.13：三种钟组配置相对同类型原始钟的改善率。',
-                'fig4_15': '图 4.15：归档搜索损失和最佳记录。第四面板是 group03；记录目标不是 NIS。',
+                'fig4_15': '图 4.15：归档搜索损失和最佳记录。第四面板是 group03。',
                 'fig4_16': '图 4.16：每个面板有四只原始钟和两种参数配置，共六条 ADEV。',
                 'fig4_17': '图 4.17：先取 ADEV 算术平均，再算改善率。负值表示组合不如该类原始钟。'}
     sections = ''.join(f'<h2>{caption}</h2><img src="figures/{name}.svg" alt="{caption}">' for name, caption in captions.items())
     page = '<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>论文 4.4 实验报告</title>'
     page += '<style>body{font:16px/1.7 system-ui;max-width:1120px;margin:40px auto;padding:0 20px;color:#223}img{width:100%}table{border-collapse:collapse}td,th{padding:8px;border:1px solid #ccc}</style>'
     page += '<h1>第 4.4 节：理解噪声参数怎样影响时间尺度</h1><p>前 10 天用于训练/分析，后 10 天用于对比；采样间隔 10 秒。相同 τ 下 ADEV 越小越稳定。</p>'
-    page += '<p><b>来源说明：</b>原图的参数调整曲线来自 GREENHALL_FREQFIX；搜索历史独立展示，不能把两者视为 NIS/GP-EI 搜索到验证的完整复现。核心算法未修改。</p>'
+    page += '<p>这是保存数据的重画结果。亲自修改扩散系数和执行参数搜索，请按仓库第 4.4 节教程运行 tools/optimize_diffusion.py。</p>'
     page += '<h2>后 10 天：四组组合时间尺度平均 ADEV</h2>' + mean.to_html(float_format=lambda x: f'{x:.6g}')
     page += '<p>baseline 为原参数，adjusted 为调整参数；reduction_percent 为 ADEV 降低百分比。详细值和误差估计见 tables/adev_exact.csv。</p>' + sections
     page += '<p>图 4.14 为方法流程示意，见仓库教程；不是一张数据曲线。全部输出：figures/ 的 SVG、PNG、PDF；tables/ 的 CSV。</p></html>'
@@ -321,7 +325,8 @@ def compare_runs(baseline: Path, adjusted: Path, output: Path) -> None:
     fig, ax = plt.subplots(figsize=(9, 6))
     for name, phase in series.items():
         tau, sigma, _, _ = archive.adev(phase)
-        ax.loglog(tau, sigma, '--' if name.startswith('SIM') else '-', label=LABELS.get(name, name))
+        ax.loglog(tau, sigma, '--' if name.startswith('SIM') else '-',
+                  label={'baseline': 'Initial parameters', 'adjusted': 'New parameters'}.get(name, name))
     ax.set(xlabel='Averaging time τ (s)', ylabel='ADEV', title='Four original clocks and two parameter configurations')
     ax.grid(True, which='both', alpha=.2)
     ax.legend()
@@ -350,6 +355,7 @@ def main() -> int:
     prepare.add_argument('--group', choices=[f'mixed_2plus2_group{i:02d}' for i in range(1, 6)], default='mixed_2plus2_group01')
     prepare.add_argument('--variant', choices=VARIANTS, default='adjusted')
     prepare.add_argument('--method', choices=RANK_REMEDIES, default='GREENHALL')
+    prepare.add_argument('--window', choices=('train', 'evaluation'), default='evaluation')
     prepare.add_argument('--initialization', choices=('portable', 'archived'), default='portable',
                          help='portable stabilizes priors/link sigma; archived preserves the old values')
     compare = sub.add_parser('compare-runs', help='Plot four clocks plus two native results')
@@ -363,7 +369,7 @@ def main() -> int:
         elif args.command == 'analyze':
             analyze(args.data.resolve(), args.output.resolve())
         elif args.command == 'prepare-case':
-            prepare_case(args.inputs.resolve(), args.output.resolve(), args.group, args.variant, args.method, args.initialization)
+            prepare_case(args.inputs.resolve(), args.output.resolve(), args.group, args.variant, args.method, args.initialization, args.window)
         else:
             compare_runs(args.baseline.resolve(), args.adjusted.resolve(), args.output.resolve())
     except (OSError, ValueError, KeyError) as exc:

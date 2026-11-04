@@ -47,7 +47,7 @@ class Thesis44Tests(unittest.TestCase):
             (inputs / 'recipes').mkdir()
             for name in ('file_table', 'svinf.dat', 'leap.sec', 'pan_info'):
                 (inputs / 'tables' / name).write_text('fixture')
-            recipes = {v: {'Timescale.cfg': ' Rank deficiency remedy = GREENHALL\n PFD data directory = @PFD@\n',
+            recipes = {v: {'Timescale.cfg': ' Rank deficiency remedy = GREENHALL\n PFD data directory = @PFD@\n Start time&session length = 2026 01 11 00 00 00 864000 [GPST]\n',
                            'session.obj': '{TotalPhase:[1e-4,2e-11], Phase:[1e-4,2e-11], Frequency:[1e-6,' + q + ']}\n'}
                        for v, q in [('baseline', '1e-13'), ('adjusted', '2e-13')]}
             (inputs / 'recipes/mixed_2plus2_group01.json').write_text(json.dumps(recipes))
@@ -64,6 +64,10 @@ class Thesis44Tests(unittest.TestCase):
                         self.assertIn('1e-13' if variant == 'baseline' else '2e-13', session)
                 with self.assertRaisesRegex(ValueError, 'already exists'):
                     thesis.prepare_case(inputs, dest, 'mixed_2plus2_group01', variant, method)
+                train = root / 'training_window'
+                thesis.prepare_case(inputs, train, 'mixed_2plus2_group01', 'baseline', 'GREENHALL', window='train')
+                self.assertIn('2026 01 01 00 00 00 864000', (train/'config/Timescale.cfg').read_text())
+                self.assertIn('2026 01 11 00 00 00 864000', (dest/'config/Timescale.cfg').read_text())
 
     def test_release_and_group_mapping_are_explicit(self):
         self.assertEqual(thesis.PLOTTED, (1, 2, 4, 5))

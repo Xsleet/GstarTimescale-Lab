@@ -1,0 +1,178 @@
+{
+  "date": "2026-11-04",
+  "engine_sha256": "cdbbc9afef1fd941467e37e65e17b8c1c0153f00eafcbbb8e4506dc5594a7153",
+  "group": "mixed_2plus2_group01",
+  "sample_interval_s": 10,
+  "rank_remedy": "GREENHALL",
+  "training_start": "2026-01-01T00:00:00",
+  "training_end": "2026-01-11T00:00:00",
+  "validation_start": "2026-01-11T00:00:00",
+  "validation_end": "2026-01-21T00:00:00",
+  "trials": [
+    {
+      "trial": 0,
+      "stage": "initial",
+      "loss": -11.253354521906493,
+      "strict_epochs": 86400,
+      "result_epochs": 86397,
+      "seconds": 145.15700000000652,
+      "parameters": {
+        "0101": {
+          "q1": 9.909904e-22,
+          "q2": 8.392609000000001e-26
+        },
+        "0102": {
+          "q1": 7.823209000000001e-22,
+          "q2": 7.650756e-26
+        },
+        "0103": {
+          "q1": 2.617924e-20,
+          "q2": 8.975667599999998e-27
+        },
+        "0104": {
+          "q1": 2.709316e-20,
+          "q2": 8.5784644e-27
+        }
+      }
+    },
+    {
+      "trial": 1,
+      "stage": "random",
+      "loss": -11.178506073153086,
+      "strict_epochs": 86400,
+      "result_epochs": 86397,
+      "seconds": 145.78200000000652,
+      "parameters": {
+        "0101": {
+          "q1": 6.998431199165281e-22,
+          "q2": 5.9709015386299554e-24
+        },
+        "0102": {
+          "q1": 1.4884473387931433e-21,
+          "q2": 4.782773388351374e-25
+        },
+        "0103": {
+          "q1": 1.0087004297304413e-20,
+          "q2": 2.6366368757928895e-27
+        },
+        "0104": {
+          "q1": 7.956815877412993e-21,
+          "q2": 3.403595890675819e-25
+        }
+      }
+    },
+    {
+      "trial": 2,
+      "stage": "TPE",
+      "loss": -11.06920463171601,
+      "strict_epochs": 86400,
+      "result_epochs": 86397,
+      "seconds": 145.7039999999979,
+      "parameters": {
+        "0101": {
+          "q1": 2.6309888004596184e-21,
+          "q2": 1.8616263181324555e-26
+        },
+        "0102": {
+          "q1": 3.146116786011701e-22,
+          "q2": 8.661437549484667e-27
+        },
+        "0103": {
+          "q1": 5.747101631468445e-20,
+          "q2": 1.4212215824551822e-25
+        },
+        "0104": {
+          "q1": 5.728668180287769e-20,
+          "q2": 1.7953588630656494e-27
+        }
+      }
+    },
+    {
+      "trial": 3,
+      "stage": "TPE",
+      "loss": -11.20724440229157,
+      "strict_epochs": 86400,
+      "result_epochs": 86397,
+      "seconds": 145.59299999999348,
+      "parameters": {
+        "0101": {
+          "q1": 3.241690150336351e-22,
+          "q2": 1.0718218812642864e-25
+        },
+        "0102": {
+          "q1": 6.142934953780266e-22,
+          "q2": 2.831542990552807e-26
+        },
+        "0103": {
+          "q1": 2.3583887722529437e-20,
+          "q2": 6.69730178248768e-27
+        },
+        "0104": {
+          "q1": 1.9891367911348308e-20,
+          "q2": 7.731580885232531e-27
+        }
+      }
+    }
+  ],
+  "best_trial": 0,
+  "best_parameters_equal_observed_trial": true,
+  "held_out_data_used_for_selection": false,
+  "training_inputs_unchanged": true,
+  "initial_validation": {
+    "loss": -11.257452477399418,
+    "objective": "mean(log10 ADEV) at exact selected taus",
+    "adev": [
+      {
+        "tau_s": 300.0,
+        "adev": 4.380360883820081e-12,
+        "error": 8.165156201229902e-14,
+        "terms": 2878
+      },
+      {
+        "tau_s": 1000.0,
+        "adev": 5.869974836276931e-12,
+        "error": 1.9993213633585641e-13,
+        "terms": 862
+      },
+      {
+        "tau_s": 3000.0,
+        "adev": 6.568957260076867e-12,
+        "error": 3.884305856605932e-13,
+        "terms": 286
+      }
+    ],
+    "strict_epochs": 86400,
+    "result_epochs": 86397,
+    "seconds": 146.48399999999674
+  },
+  "selected_validation": {
+    "loss": -11.257452477399418,
+    "objective": "mean(log10 ADEV) at exact selected taus",
+    "adev": [
+      {
+        "tau_s": 300.0,
+        "adev": 4.380360883820081e-12,
+        "error": 8.165156201229902e-14,
+        "terms": 2878
+      },
+      {
+        "tau_s": 1000.0,
+        "adev": 5.869974836276931e-12,
+        "error": 1.9993213633585641e-13,
+        "terms": 862
+      },
+      {
+        "tau_s": 3000.0,
+        "adev": 6.568957260076867e-12,
+        "error": 3.884305856605932e-13,
+        "terms": 286
+      }
+    ],
+    "strict_epochs": 86400,
+    "result_epochs": 86397,
+    "seconds": 144.96799999999348
+  },
+  "conclusion": "Four full-window trials validate the actual search/run/apply/plot pipeline. Initial parameters remained best in this small budget; convergence or improved performance is not claimed.",
+  "public_tests_passed": 74,
+  "core_algorithm_changed": false
+}
