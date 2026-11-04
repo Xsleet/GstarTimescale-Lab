@@ -15,7 +15,7 @@ class DiffusionOptimizationTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
-        self.root = Path(self.temp.name)
+        self.root = Path(self.temp.name).resolve()  # Normalize Windows short-name TEMP paths.
         self.case = self.root / 'train'
         initialize_case(self.case, opt.ROOT / 'config')
         path = self.case / 'config/Timescale.cfg'
