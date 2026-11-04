@@ -146,18 +146,23 @@ def initialize(case: Path, output: Path) -> None:
     clocks = read_coefficients(Path(info['tables']['object']).read_text(encoding='utf-8'))
     if output.exists():
         raise ValueError(f'Output already exists: {output}')
-    parameters = {clock: {q: {'enabled': True, 'min': value*(.25 if q == 'q1' else .1),
-                              'max': value*(4 if q == 'q1' else 100)} for q, value in values.items()}
+    # Keep the initial short-term noise model while calibrating frequency diffusion.
+    # A common frequency scale preserves the initial differences between clocks.
+    parameters = {clock: {q: {'enabled': q == 'q2', 'min': value*.25,
+                              'max': value*(4 if q == 'q1' else 16)} for q, value in values.items()}
                   for clock, values in clocks.items()}
     output.parent.mkdir(parents=True, exist_ok=True)
     save_json(output, {'training_case': relative(case, output.parent, native=False),
         'engine': relative(ROOT / 'engine/GstarTimescale.exe', output.parent, native=False),
-        'trials': 12, 'startup_trials': 4, 'seed': 42, 'timeout_seconds': 1800,
-        'objective_taus_s': [300, 1000, 3000], 'parameters': parameters})
+        'trials': 16, 'startup_trials': 4, 'seed': 42, 'timeout_seconds': 1800,
+        'objective_taus_s': [100, 300, 1000, 3000], 'shared_q2_scale': True,
+        'parameters': parameters})
     print(f'Created {output}. Edit q bounds, enabled flags, taus and trial count, then run the search.')
 
 
 def validate_search(config: dict, initial: dict, info: dict) -> None:
+    if type(config.get('shared_q2_scale', False)) is not bool:
+        raise ValueError('shared_q2_scale must be true or false')
     for key in ('trials', 'startup_trials', 'seed'):
         if type(config[key]) is not int:
             raise ValueError(f'{key} must be an integer')
@@ -190,6 +195,41 @@ def validate_search(config: dict, initial: dict, info: dict) -> None:
             active += 1
     if not active:
         raise ValueError('Enable at least one diffusion coefficient')
+    search_space(config, initial)
+
+
+def search_space(config: dict, initial: dict) -> dict:
+    """Return log-search bounds; an optional shared q2 scale preserves clock ratios."""
+    bounds = {}
+    shared = []
+    for clock, qs in config['parameters'].items():
+        for q, spec in qs.items():
+            if not spec['enabled']:
+                continue
+            low, high = positive(spec['min']), positive(spec['max'])
+            if q == 'q2' and config.get('shared_q2_scale', False):
+                shared.append((low/initial[clock][q], high/initial[clock][q]))
+            else:
+                bounds[f'{clock}.{q}'] = (low, high)
+    if shared:
+        low, high = max(v[0] for v in shared), min(v[1] for v in shared)
+        if not low < high:
+            raise ValueError('Shared q2 bounds must have an overlapping scale interval')
+        bounds['q2_scale'] = (low, high)
+    return bounds
+
+
+def trial_coefficients(initial: dict, config: dict, params: dict) -> dict:
+    coefficients = {clock: values.copy() for clock, values in initial.items()}
+    for key, value in params.items():
+        if key == 'q2_scale':
+            for clock in coefficients:
+                if config['parameters'][clock]['q2']['enabled']:
+                    coefficients[clock]['q2'] = initial[clock]['q2'] * value
+        else:
+            clock, q = key.split('.')
+            coefficients[clock][q] = value
+    return coefficients
 
 
 def input_fingerprints(info: dict) -> dict:
@@ -296,9 +336,15 @@ def plot_search(search: Path) -> None:
     for suffix in ('png','svg','pdf'):
         fig.savefig(figures / f'convergence.{suffix}', dpi=160)
     plt.close(fig)
+    columns = ['trial','stage','status']
+    scales = frame['parameters'].map(lambda value: json.loads(value).get('q2_scale'))
+    if scales.notna().any():
+        frame['q2_scale'] = scales
+        columns.append('q2_scale')
+    columns.extend(['loss','best_so_far'])
     (search / 'report.html').write_text('<!doctype html><meta charset="utf-8"><title>扩散系数优化</title>'
         '<h1>实际运行的扩散系数搜索</h1><p>每个点对应一次真实 GSTAR 解算。目标越小越好；失败试验在 trials.csv 中保留。训练最优不保证验证期最优。</p>'
-        '<img src="figures/convergence.svg" style="max-width:100%">' + frame[['trial','stage','status','loss','best_so_far']].to_html(index=False), encoding='utf-8')
+        '<img src="figures/convergence.svg" style="max-width:100%">' + frame[columns].to_html(index=False), encoding='utf-8')
 
 
 def run_search(config_path: Path, output: Path) -> None:
@@ -322,20 +368,18 @@ def run_search(config_path: Path, output: Path) -> None:
     save_json(output / 'provenance.json', {'training': info, 'input_sha256': fingerprints,
                                           'engine_sha256': sha256(engine)})
     save_json(output / 'initial_parameters.json', initial)
-    distributions = {f'{clock}.{q}': optuna.distributions.FloatDistribution(positive(spec['min']),positive(spec['max']),log=True)
-        for clock, qs in config['parameters'].items() for q,spec in qs.items() if spec['enabled']}
+    distributions = {key: optuna.distributions.FloatDistribution(low,high,log=True)
+                     for key,(low,high) in search_space(config, initial).items()}
     sampler = optuna.samplers.TPESampler(seed=config['seed'], n_startup_trials=config['startup_trials'])
     study = optuna.create_study(direction='minimize', sampler=sampler)
-    study.enqueue_trial({key:initial[key.split('.')[0]][key.split('.')[1]] for key in distributions})
+    study.enqueue_trial({key: 1.0 if key == 'q2_scale' else initial[key.split('.')[0]][key.split('.')[1]]
+                         for key in distributions})
     for number in range(config['trials']):
         completed_count = sum(t.state.name == 'COMPLETE' for t in study.trials)
         stage = 'initial' if number == 0 else ('random' if completed_count < config['startup_trials'] else 'TPE')
         trial = study.ask(distributions)
         trial.set_user_attr('stage', stage)
-        coefficients = {clock:values.copy() for clock,values in initial.items()}
-        for key, value in trial.params.items():
-            clock, q = key.split('.')
-            coefficients[clock][q] = value
+        coefficients = trial_coefficients(initial, config, trial.params)
         destination = output / 'trials' / f'trial_{number:03d}'
         clone_case(output / 'template', destination, coefficients)
         save_json(destination / 'parameters.json', coefficients)

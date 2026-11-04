@@ -71,10 +71,8 @@ class DiffusionOptimizationTests(unittest.TestCase):
         config=json.loads(config_path.read_text(encoding='utf-8'))
         engine=self.root/'test_runtime.exe'
         engine.write_bytes(b'fixture - never executed')
-        config.update(engine='test_runtime.exe',trials=4,startup_trials=2)
-        # Freeze q1 so that users can isolate a q2 experiment.
-        for spec in config['parameters'].values():
-            spec['q1']['enabled']=False
+        config.update(engine='test_runtime.exe',trials=4,startup_trials=2,shared_q2_scale=False)
+        # The default search must keep the initial q1 values during every trial.
         config_path.write_text(json.dumps(config), encoding='utf-8')
         calls=[]
         def fake_evaluate(case,engine,timeout,taus):
@@ -121,10 +119,79 @@ class DiffusionOptimizationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'startup_trials'):
             opt.validate_search(config,initial,info)
         config['trials']=12
-        spec=config['parameters'][next(iter(initial))]['q1']
+        spec=config['parameters'][next(iter(initial))]['q2']
         spec['min']=spec['max']
         with self.assertRaisesRegex(ValueError,'bounds'):
             opt.validate_search(config,initial,info)
+
+    def test_phase_diffusion_can_be_enabled_without_changing_fixed_frequencies(self):
+        path=self.root/'search.json'
+        opt.initialize(self.case,path)
+        config=json.loads(path.read_text(encoding='utf-8'))
+        config.update(engine='test_runtime.exe',trials=4,startup_trials=2)
+        (self.root/'test_runtime.exe').write_bytes(b'fixture - never executed')
+        clock=next(iter(config['parameters']))
+        for specs in config['parameters'].values():
+            specs['q2']['enabled']=False
+        config['parameters'][clock]['q1']['enabled']=True
+        path.write_text(json.dumps(config),encoding='utf-8')
+        calls=[]
+        def fake_evaluate(case,engine,timeout,taus):
+            values=opt.read_coefficients((case/'config/session.obj').read_text(encoding='utf-8'))
+            calls.append(values)
+            return {'loss':math.log10(values[clock]['q1']),'seconds':.01}
+        with patch.object(opt,'input_fingerprints',return_value={}), patch.object(opt,'evaluate',side_effect=fake_evaluate):
+            opt.run_search(path,self.root/'phase_search')
+        self.assertGreater(len({values[clock]['q1'] for values in calls}),1)
+        for values in calls:
+            for other in values:
+                self.assertEqual(values[other]['q2'],calls[0][other]['q2'])
+                if other != clock:
+                    self.assertEqual(values[other]['q1'],calls[0][other]['q1'])
+
+    def test_shared_frequency_search_preserves_ratios_and_respects_disabled_clocks(self):
+        path=self.root/'search.json'
+        opt.initialize(self.case,path)
+        config=json.loads(path.read_text(encoding='utf-8'))
+        config.update(engine='test_runtime.exe',trials=4,startup_trials=2,shared_q2_scale=True)
+        (self.root/'test_runtime.exe').write_bytes(b'fixture - never executed')
+        fixed=next(iter(config['parameters']))
+        config['parameters'][fixed]['q2']['enabled']=False
+        path.write_text(json.dumps(config),encoding='utf-8')
+        initial=opt.read_coefficients((self.case/'config/session.obj').read_text(encoding='utf-8'))
+        calls=[]
+        def fake_evaluate(case,engine,timeout,taus):
+            values=opt.read_coefficients((case/'config/session.obj').read_text(encoding='utf-8'))
+            calls.append(values)
+            return {'loss':sum(math.log10(v['q2']) for v in values.values()),'seconds':.01}
+        with patch.object(opt,'input_fingerprints',return_value={}), patch.object(opt,'evaluate',side_effect=fake_evaluate):
+            opt.run_search(path,self.root/'shared_search')
+        self.assertIn('q2_scale',(self.root/'shared_search/report.html').read_text(encoding='utf-8'))
+        active=[c for c in initial if c != fixed]
+        self.assertGreater(len({values[active[0]]['q2'] for values in calls}),1)
+        for values in calls:
+            ratios=[values[c]['q2']/initial[c]['q2'] for c in active]
+            for ratio in ratios:
+                self.assertAlmostEqual(ratio,ratios[0])
+                self.assertGreaterEqual(ratio,.25)
+                self.assertLessEqual(ratio,16)
+            self.assertAlmostEqual(values[fixed]['q2']/initial[fixed]['q2'],1)
+            for c in initial:
+                self.assertAlmostEqual(values[c]['q1']/initial[c]['q1'],1)
+
+    def test_shared_bounds_use_intersection_and_reject_disjoint_intervals(self):
+        path=self.root/'search.json'
+        opt.initialize(self.case,path)
+        config=json.loads(path.read_text(encoding='utf-8'))
+        config['shared_q2_scale']=True
+        initial=opt.read_coefficients((self.case/'config/session.obj').read_text(encoding='utf-8'))
+        first,second=list(initial)[:2]
+        config['parameters'][first]['q2']['max']=initial[first]['q2']*4
+        self.assertEqual(opt.search_space(config,initial),{'q2_scale':(.25,4)})
+        config['parameters'][first]['q2']['max']=initial[first]['q2']
+        config['parameters'][second]['q2']['min']=initial[second]['q2']
+        with self.assertRaisesRegex(ValueError,'overlapping'):
+            opt.validate_search(config,initial,opt.inspect_case(self.case))
 
     def test_failed_initial_run_is_not_a_successful_optimization(self):
         path=self.root/'search.json'
