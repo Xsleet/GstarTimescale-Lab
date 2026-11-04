@@ -1,0 +1,32 @@
+name: Thesis Section 4.4 archived data
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+permissions:
+  contents: read
+jobs:
+  reproduce-archive:
+    if: github.event_name == 'workflow_dispatch' || github.event.release.tag_name == 'thesis-section44-data-v1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: requirements-demo.txt
+      - run: python -m pip install -r requirements-demo.txt
+      - run: python tools/check_public_tree.py
+      - run: python tools/thesis_section44.py fetch --kind analysis --output Runs/thesis44/data
+      - run: python tools/thesis_section44.py analyze --data Runs/thesis44/data --output Runs/thesis44/analysis
+      - run: python tools/thesis_section44.py fetch --kind inputs --output Runs/thesis44/inputs
+      - run: python tools/thesis_section44.py prepare-case --inputs Runs/thesis44/inputs --variant adjusted --output Runs/thesis44/config-check
+      - run: python lab.py inspect --workdir Runs/thesis44/config-check
+      - uses: actions/upload-artifact@v4
+        with:
+          name: thesis-section44-archive-report
+          path: Runs/thesis44/analysis/
+          retention-days: 14

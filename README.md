@@ -6,6 +6,8 @@
 
 建议从 **4 只已有仿真 CSAC、10 天、10 秒采样** 的 PFD 案例开始。它只使用时钟比对数据，不需要轨道或 STK。
 
+论文实验入口：[第 4.3 节：秩亏补偿](examples/thesis-section43/README.md) · [第 4.4 节：噪声参数与异构钟组](examples/thesis-section44/README.md)。均提供公开数据、配置修改说明、绘图脚本和结果预览。
+
 ## 先看看运行后能得到什么
 
 下面是两个 **10 天、10 秒采样** 样例的实际 ADEV。每张图都包含四只原始钟和蓝色的组合时间尺度，纵轴越低通常表示相应平均时间上的稳定度越好。
@@ -206,6 +208,7 @@ ADEV 横轴是平均时间 τ，纵轴越低通常表示该 τ 上的稳定度�
 | 结果逐列解释、相位与 ADEV | [结果文件与图片](docs/results.md) |
 | 概念与实验目录说明 | [用户指南](docs/user-guide.md) |
 | 第 4.3 节论文数据与实验 | [论文实验教程](examples/thesis-section43/README.md) |
+| 第 4.4 节噪声参数与异构组合实验 | [下载数据、调整参数、重画论文图表](examples/thesis-section44/README.md) |
 | 4 CSAC 的数据来源和完整命令 | [CSAC 基础案例](examples/csac/README.md) |
 | 2 CSAC + 2 mRO 的输入参数 | [异构案例](examples/heterogeneous/README.md) |
 | 一键演示、自动检查和 HTML 报告 | [可选便利命令](docs/convenience-commands.md) |

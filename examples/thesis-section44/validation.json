@@ -1,0 +1,195 @@
+{
+  "archive_figures": [
+    12,
+    13,
+    15,
+    16,
+    17
+  ],
+  "figure14": "conceptual workflow in tutorial",
+  "native_solver_sha256": "cdbbc9afef1fd941467e37e65e17b8c1c0153f00eafcbbb8e4506dc5594a7153",
+  "core_algorithm_changed": false,
+  "native_runs": [
+    {
+      "variant": "baseline",
+      "group": "mixed_2plus2_group01",
+      "rank_remedy": "GREENHALL",
+      "initialization": "portable",
+      "strict_epochs": 86400,
+      "strict_statuses": [
+        "ok"
+      ],
+      "result_epochs": 86397,
+      "start": "2026-01-11T00:00:30.000000",
+      "end": "2026-01-20T23:59:50.000000",
+      "original_clock_values_equal_archive": true,
+      "max_adev_relative_difference_from_archive": 0.00033596106099742507,
+      "exact_adev": [
+        {
+          "tau_s": 10.0,
+          "current": 6.59053908056244e-12,
+          "archived": 6.590492575440442e-12,
+          "terms": 86395
+        },
+        {
+          "tau_s": 100.0,
+          "current": 3.3867127651845426e-12,
+          "archived": 3.3863901466189543e-12,
+          "terms": 8638
+        },
+        {
+          "tau_s": 300.0,
+          "current": 4.380360883820081e-12,
+          "archived": 4.38099686293277e-12,
+          "terms": 2878
+        },
+        {
+          "tau_s": 1000.0,
+          "current": 5.869974836276931e-12,
+          "archived": 5.86913669429166e-12,
+          "terms": 862
+        },
+        {
+          "tau_s": 3000.0,
+          "current": 6.568957260076867e-12,
+          "archived": 6.568575367212343e-12,
+          "terms": 286
+        },
+        {
+          "tau_s": 10000.0,
+          "current": 9.339422413129661e-12,
+          "archived": 9.336285784651675e-12,
+          "terms": 85
+        },
+        {
+          "tau_s": 100000.0,
+          "current": 3.072051768490952e-11,
+          "archived": 3.072701450859467e-11,
+          "terms": 7
+        }
+      ]
+    },
+    {
+      "variant": "adjusted",
+      "group": "mixed_2plus2_group01",
+      "rank_remedy": "GREENHALL",
+      "initialization": "portable",
+      "strict_epochs": 86400,
+      "strict_statuses": [
+        "ok"
+      ],
+      "result_epochs": 86397,
+      "start": "2026-01-11T00:00:30.000000",
+      "end": "2026-01-20T23:59:50.000000",
+      "original_clock_values_equal_archive": true,
+      "max_adev_relative_difference_from_archive": 0.0006091809457036135,
+      "exact_adev": [
+        {
+          "tau_s": 10.0,
+          "current": 6.653040087544135e-12,
+          "archived": 6.6529918451078836e-12,
+          "terms": 86395
+        },
+        {
+          "tau_s": 100.0,
+          "current": 3.774067373932314e-12,
+          "archived": 3.773667917659447e-12,
+          "terms": 8638
+        },
+        {
+          "tau_s": 300.0,
+          "current": 4.427534526582528e-12,
+          "archived": 4.427103867520609e-12,
+          "terms": 2878
+        },
+        {
+          "tau_s": 1000.0,
+          "current": 4.73696600796227e-12,
+          "archived": 4.734082095354383e-12,
+          "terms": 862
+        },
+        {
+          "tau_s": 3000.0,
+          "current": 5.542280515039835e-12,
+          "archived": 5.54145124354343e-12,
+          "terms": 286
+        },
+        {
+          "tau_s": 10000.0,
+          "current": 9.228889159307798e-12,
+          "archived": 9.225993429211598e-12,
+          "terms": 85
+        },
+        {
+          "tau_s": 100000.0,
+          "current": 3.043043411446288e-11,
+          "archived": 3.0435897866742694e-11,
+          "terms": 7
+        }
+      ]
+    }
+  ],
+  "archive_initialization": {
+    "status": "failed_strict_check",
+    "epoch": "2026-01-11T00:00:00.000",
+    "reason": "nonpositive_S"
+  },
+  "configurations_checked": [
+    {
+      "group": "mixed_2plus2_group01",
+      "variant": "baseline",
+      "status": "configuration_checked_only"
+    },
+    {
+      "group": "mixed_2plus2_group01",
+      "variant": "adjusted",
+      "status": "configuration_checked_only"
+    },
+    {
+      "group": "mixed_2plus2_group02",
+      "variant": "baseline",
+      "status": "configuration_checked_only"
+    },
+    {
+      "group": "mixed_2plus2_group02",
+      "variant": "adjusted",
+      "status": "configuration_checked_only"
+    },
+    {
+      "group": "mixed_2plus2_group03",
+      "variant": "baseline",
+      "status": "configuration_checked_only"
+    },
+    {
+      "group": "mixed_2plus2_group03",
+      "variant": "adjusted",
+      "status": "configuration_checked_only"
+    },
+    {
+      "group": "mixed_2plus2_group04",
+      "variant": "baseline",
+      "status": "configuration_checked_only"
+    },
+    {
+      "group": "mixed_2plus2_group04",
+      "variant": "adjusted",
+      "status": "configuration_checked_only"
+    },
+    {
+      "group": "mixed_2plus2_group05",
+      "variant": "baseline",
+      "status": "configuration_checked_only"
+    },
+    {
+      "group": "mixed_2plus2_group05",
+      "variant": "adjusted",
+      "status": "configuration_checked_only"
+    }
+  ],
+  "figure13_max_difference_percentage_points": 5.684341886080802e-14,
+  "figure17_max_difference_percentage_points": 0.3891765674852401,
+  "figure17_difference_reason": "Original clock phases use the same 86397 epochs as the ensemble; notebook used 86400 raw samples",
+  "all_five_search_groups": true,
+  "end_to_end_nis_gp_ei_search_reproduced": false,
+  "scope": "Archive reanalysis plus two full 10-day group01 Greenhall runs, no new Bayesian search"
+}

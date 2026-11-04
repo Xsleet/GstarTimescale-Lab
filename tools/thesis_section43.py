@@ -42,8 +42,8 @@ def release() -> dict:
     return json.loads((EXAMPLE / 'data-release.json').read_text(encoding='utf-8'))
 
 
-def verify(data: Path, kind: str) -> dict:
-    descriptor = release()['assets'][kind]
+def verify(data: Path, kind: str, *, catalog: dict | None = None) -> dict:
+    descriptor = (release() if catalog is None else catalog)['assets'][kind]
     manifest_path = data / 'manifest.json'
     if sha256(manifest_path) != descriptor['manifest_sha256']:
         raise ValueError('Data manifest checksum mismatch')
@@ -102,17 +102,18 @@ def extract_archive(archive: Path, target: Path, info: dict) -> None:
         stage.rename(target)
 
 
-def fetch(kind: str, output: Path, archive: Path | None) -> None:
+def fetch(kind: str, output: Path, archive: Path | None, *, catalog: dict | None = None) -> None:
     if output.exists():
         raise ValueError(f'Output already exists: {output}')
-    info = release()['assets'][kind]
+    catalog = release() if catalog is None else catalog
+    info = catalog['assets'][kind]
     if archive is not None:
         extract_archive(archive.resolve(), output, info)
     else:
         output.parent.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(prefix='.thesis43-download-', dir=output.parent) as temporary:
             downloaded = Path(temporary) / info['filename']
-            url = f"https://github.com/Xsleet/GstarTimescale-Lab/releases/download/{release()['release_tag']}/{info['filename']}"
+            url = f"https://github.com/Xsleet/GstarTimescale-Lab/releases/download/{catalog['release_tag']}/{info['filename']}"
             print(f'Downloading {info["bytes"] / 1e6:.1f} MB: {url}', flush=True)
             request = urllib.request.Request(url, headers={'User-Agent': 'GstarTimescale-Lab'})
             with urllib.request.urlopen(request, timeout=60) as response, downloaded.open('wb') as out:

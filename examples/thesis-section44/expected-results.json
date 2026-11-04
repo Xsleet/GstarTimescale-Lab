@@ -1,0 +1,54 @@
+{
+  "note": "Frozen reference from the verified initial archive reanalysis; exact requested taus, aligned phase epochs.",
+  "evaluation_adev_mean": [
+    {
+      "tau_s": 10.0,
+      "adjusted": 6.602349159491333e-12,
+      "baseline": 6.5463422980481424e-12,
+      "reduction_percent": -0.8555443466481849
+    },
+    {
+      "tau_s": 100.0,
+      "adjusted": 3.773408525669059e-12,
+      "baseline": 3.372079199740246e-12,
+      "reduction_percent": -11.901539144149641
+    },
+    {
+      "tau_s": 300.0,
+      "adjusted": 4.5232643879386694e-12,
+      "baseline": 4.392514402745861e-12,
+      "reduction_percent": -2.976654672118406
+    },
+    {
+      "tau_s": 1000.0,
+      "adjusted": 4.901187383084241e-12,
+      "baseline": 5.940423786333519e-12,
+      "reduction_percent": 17.494314221152628
+    },
+    {
+      "tau_s": 3000.0,
+      "adjusted": 5.66751217465698e-12,
+      "baseline": 6.726170424961826e-12,
+      "reduction_percent": 15.7393908185259
+    },
+    {
+      "tau_s": 10000.0,
+      "adjusted": 9.168826341945618e-12,
+      "baseline": 9.44720584987652e-12,
+      "reduction_percent": 2.9466861668367317
+    },
+    {
+      "tau_s": 100000.0,
+      "adjusted": 2.7744717055444228e-11,
+      "baseline": 2.7807608636732184e-11,
+      "reduction_percent": 0.2261668096295022
+    }
+  ],
+  "best_trials": {
+    "mixed_2plus2_group01": 321,
+    "mixed_2plus2_group02": 57,
+    "mixed_2plus2_group03": 350,
+    "mixed_2plus2_group04": 397,
+    "mixed_2plus2_group05": 87
+  }
+}

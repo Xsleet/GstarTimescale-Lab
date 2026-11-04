@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "release_tag": "thesis-section44-data-v1",
+  "assets": {
+    "analysis": {
+      "filename": "thesis-section44-analysis-v1.zip",
+      "sha256": "12b3f8202c6cccafbb2ec5b691af06aa27c58b739b849a5df89b65f412809b11",
+      "bytes": 70656692,
+      "expanded_bytes": 225343832,
+      "file_count": 32,
+      "manifest_sha256": "800fbbff0001d9c1a99649a7a4c25d5d9bc18cefe724f3de62761bb78d8a6347"
+    },
+    "inputs": {
+      "filename": "thesis-section44-inputs-v1.zip",
+      "sha256": "7a95c28f07390e9c4a8b041e666013111f77cf891a8bc6b6dee7717386d1e145",
+      "bytes": 116192007,
+      "expanded_bytes": 850393704,
+      "file_count": 712,
+      "manifest_sha256": "df29a0bc54e81a7618bb0c40227207aaec6d29fe28b53346539c399a253e52e2"
+    }
+  }
+}
