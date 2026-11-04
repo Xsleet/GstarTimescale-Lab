@@ -1,7 +1,8 @@
 """Download four existing simulated CSAC clocks and editable native configuration.
 
 Run from the repository root: python tools/prepare_csac.py --output Runs/csac_10days
-Use --archive csac4-10days-inputs-v1.zip for an offline installation.
+Use --method BROWN to select a method, or edit Timescale.cfg after preparation.
+Use --archive csac4-10days-inputs-v2.zip for an offline installation.
 """
 from __future__ import annotations
 
@@ -17,14 +18,19 @@ ROOT = Path(__file__).resolve().parents[1]
 if __package__ in (None, ""):
     sys.path.insert(0, str(ROOT))
 from tools.thesis_section43 import extract_archive
+from tools.run_config import RANK_REMEDIES, set_rank_remedy
 
 
 def descriptor() -> dict:
     return json.loads((ROOT / "examples/csac/data-release.json").read_text(encoding="utf-8"))
 
 
-def prepare(output: Path, archive: Path | None = None) -> None:
-    """Install pinned inputs unchanged; never generate clocks or run the solver."""
+def prepare(output: Path, archive: Path | None = None, method: str | None = None) -> None:
+    """Install pinned inputs, optionally select the method; never run the solver."""
+    if method is not None:
+        method = method.upper()
+        if method not in RANK_REMEDIES:
+            raise ValueError(f"Unsupported rank deficiency remedy: {method}")
     output = output.resolve()
     if output.exists():
         raise ValueError(f"Output already exists: {output}. Choose a new experiment directory.")
@@ -47,7 +53,10 @@ def prepare(output: Path, archive: Path | None = None) -> None:
                         raise ValueError("Download exceeds the pinned archive size")
                     stream.write(block)
             extract_archive(downloaded, output, info)
+    if method is not None:
+        set_rank_remedy(output / "config/Timescale.cfg", method)
     print(f"Ready: {output}")
+    print(f"Rank deficiency remedy: {method or 'GREENHALL'}; choices: {', '.join(RANK_REMEDIES)}")
     print("Edit config/file_table, config/Timescale.cfg and config/session.obj, then run the engine.")
     print("Results: results/IEM.txt and SIM1.txt through SIM4.txt; plot them with tools/plot_results.py.")
 
@@ -56,9 +65,11 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=Path("Runs/csac_10days"))
     parser.add_argument("--archive", type=Path, help="Previously downloaded data ZIP; skips the network")
+    parser.add_argument("--method", type=str.upper, choices=RANK_REMEDIES,
+                        help="Rank deficiency remedy (default: GREENHALL); also editable in Timescale.cfg")
     args = parser.parse_args(argv)
     try:
-        prepare(args.output, args.archive)
+        prepare(args.output, args.archive, args.method)
         return 0
     except (OSError, ValueError, KeyError, zipfile.BadZipFile) as error:
         print(f"ERROR: {error}", file=sys.stderr)

@@ -15,6 +15,8 @@
 
 ## 推荐使用方式
 
+`Timescale.cfg` 的 `Rank deficiency remedy` 可以选择 **NONE / SUMZERO / BROWN / GREENHALL / KPW**。默认 GREENHALL，改这一行就能换方法；同时更换 `Project directory` 保留各方法的结果。SUMZERO 的约束标准差和 KPW 的权重上限也已列在配置中，详见[方法切换步骤](../docs/configuration.md#切换秩亏补偿方法)。
+
 已有自己的数据时，在仓库根目录复制出一个独立实验：
 
 ```powershell

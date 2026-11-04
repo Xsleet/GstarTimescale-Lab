@@ -1,5 +1,12 @@
 # 更新记录
 
+## 0.6.1 — 2026-11-04
+
+- 在首页、配置注释和 CSAC 教程显式列出 NONE / SUMZERO / BROWN / GREENHALL / KPW 及切换步骤。
+- CSAC 准备工具、异构生成器和 lab.py prepare/run 新增 `--method`；运行记录与 HTML 标注实际选定方法。
+- 更新 CSAC 数据包 v2，仅改配置说明及显式列出默认 KPW 参数，70 个 CLK/PFD 输入文件不变。
+- 同一四 CSAC 输入下，SUMZERO/BROWN/KPW 完成 10 天严格验证；NONE 保留为无补偿对照。核心算法未改动。
+
 ## 0.6.0 — 2026-11-04
 
 - 删除旧 basic 白相位噪声样例及生成入口，基础案例改用已有 CSAC_01～CSAC_04 仿真数据。

@@ -92,11 +92,26 @@ Runs/manual_case/
  LEO Clk full name           = clk/SIM0MGNFIN_-YEARDOY-0000_01D_10S_CLK.CLK
  PFD data directory          = pfd
  Timescale scope             = satellite
+* 可选 NONE / SUMZERO / BROWN / GREENHALL / KPW，只改下一行的值
  Rank deficiency remedy      = GREENHALL
  Estimation architecture     = centralized
 ```
 
 上面是从完整文件中摘出的关键字段；在原位置修改，保留原有段落标记。`864000` 秒等于 10 天，结束时刻是开始时刻加运行时长。`-YEARDOY-` 会替换为年份和年积日，例如 `2026001`。
+
+**秩亏补偿方法可以直接切换。** 在当前实验的 `Timescale.cfg` 中修改 `Rank deficiency remedy`：
+
+| 配置值 | 含义 |
+|---|---|
+| `NONE` | 不做补偿，用作对照 |
+| `SUMZERO` | 显式约束，论文中的 Centroid |
+| `BROWN` | Brown 方法 |
+| `GREENHALL` | Greenhall 方法，样例默认值 |
+| `KPW` | KPW 方法 |
+
+例如改为 `BROWN`，同时将 `Project directory` 改为 `results/brown`，再运行同一个 exe。新结果绘图时用 `--results Runs/manual_case/results/brown --output Runs/manual_case/brown`。切换方法不需要重新生成钟数据，也不需要重新编译程序。完整步骤见[方法切换与结果目录](docs/configuration.md#切换秩亏补偿方法)。
+
+准备新 CSAC 实验时，也可直接指定方法：`python tools/prepare_csac.py --method BROWN --output Runs/csac_brown`。
 
 `session.obj` 每个对象行最后的参数可以调整，例如：
 

@@ -25,4 +25,6 @@ Start-Process .\Runs\heterogeneous_10days\report.html
 
 `prepare`/`run` 使用生成器自己的配置逻辑，不读取你修改过的根目录模板。已生成并手动编辑的配置应直接调用 exe，或使用 `execute`；不要再次运行 `run` 期待它保留手动设置。
 
+秩亏补偿选项在各准备入口均可指定：`--method NONE|SUMZERO|BROWN|GREENHALL|KPW`（这里的竖线表示任选一个，不要原样输入）。例如 `lab.py run --method BROWN --output Runs/heterogeneous_brown`；四 CSAC 数据则用 `tools/prepare_csac.py --method KPW --output Runs/csac_kpw`。准备后也可直接修改 Timescale.cfg。已有结果的 `report` 不重新解算，不能用它把某方法的输出改名为另一种方法。
+
 自动 HTML 依据内置案例的生成记录标注实验。自己改过时间、路径、对象或参数后，使用独立的 `tools/plot_results.py`，按实际结果文件绘图。它不依赖生成记录，也不要求先运行 `lab.py`。

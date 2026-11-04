@@ -76,6 +76,46 @@
 
 这是需要修改的字段片段，不是独立完整配置。完整模板见 [Timescale.cfg](../config/Timescale.cfg)。实际输出历元还取决于输入覆盖、插值和初始化，不保证所有边界时刻都有输出。
 
+## 切换秩亏补偿方法
+
+五个选项始终开放，默认 GREENHALL 只表示初始选择。编辑实际实验目录中的 `Timescale.cfg`，在下面五个值中选一个；只保留一条生效的 `Rank deficiency remedy` 行。
+
+| 值 | 对应方法 | 相关参数 |
+|---|---|---|
+| `NONE` | 无补偿对照 | 无 |
+| `SUMZERO` | 显式约束 / Centroid | `SUMZERO constraint sigma`，默认 `1e-14` |
+| `BROWN` | Brown | 本两状态案例无需增加参数 |
+| `GREENHALL` | Greenhall | 本案例默认方法 |
+| `KPW` | KPW | `KPW max weight`，默认 `0.5` |
+
+例如从 Greenhall 切换到 Brown，复用同一份输入、保留两状态和其它参数，仅修改两行（分别在原来的 File Directory 和 Timescale Section 内）：
+
+```text
+ Project directory           = results/brown
+ Rank deficiency remedy      = BROWN
+```
+
+在实验目录运行同一个 `GstarTimescale.exe config/file_table`。回到仓库根目录，对新结果绘图：
+
+```powershell
+.\.venv\Scripts\python.exe tools/plot_results.py --results Runs/manual_case/results/brown --output Runs/manual_case/brown
+```
+
+继续比较其它方法时，分别使用 `results/sumzero`、`results/greenhall`、`results/kpw`、`results/none`。不要把几个方法写进同一条配置；每次运行选择一个方法。也可以保存多套 cfg，由 file_table 的 TimescaleCfg 行切换。
+
+如果想在准备时指定方法，可以使用下面任一种入口；它们都把选择写入可编辑的 Timescale.cfg：
+
+```powershell
+# 已有四 CSAC 数据
+.\.venv\Scripts\python.exe tools/prepare_csac.py --method BROWN --output Runs/csac_brown
+# 新生成的 2 CSAC + 2 mRO 数据；--method 同样接受上述五个值
+.\.venv\Scripts\python.exe tools/run_demo.py --prepare-only --method KPW --output Runs/heterogeneous_kpw
+# 可选的一键入口
+.\.venv\Scripts\python.exe lab.py run --method SUMZERO --output Runs/heterogeneous_sumzero
+```
+
+手动编辑之后，直接运行 exe 或 `lab.py execute` 即可；再次执行准备命令不会替你切换已有实验。NONE 用于研究不补偿时的表现，不能因为它能完成运行就把它当成有效补偿结果。具体运行验证见[验证范围](validation.md)。
+
 ## 实际操作：直接运行
 
 在已准备好的实验中编辑三个配置文件，随后在仓库根目录执行：

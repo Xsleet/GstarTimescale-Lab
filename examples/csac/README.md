@@ -16,10 +16,10 @@
 
 自动下载约 **14 MB** 的数据包，校验并解压到实验目录。该命令只准备数据和配置，不运行算法。数据包里没有核心源码或程序。
 
-也可从[数据下载页](https://github.com/Xsleet/GstarTimescale-Lab/releases/tag/csac4-example-data-v1)手动下载，然后离线准备：
+也可从[数据下载页](https://github.com/Xsleet/GstarTimescale-Lab/releases/tag/csac4-example-data-v2)手动下载，然后离线准备：
 
 ```powershell
-.\.venv\Scripts\python.exe tools/prepare_csac.py --archive csac4-10days-inputs-v1.zip --output Runs/csac_10days
+.\.venv\Scripts\python.exe tools/prepare_csac.py --archive csac4-10days-inputs-v2.zip --output Runs/csac_10days
 ```
 
 目录已存在时，请换一个新名字，避免覆盖自己修改过的配置。
@@ -45,6 +45,24 @@ Start-Process .\Runs\csac_10days\figures\phase.png
 ```
 
 两张图均有 **四只原始钟 + Ensemble，共五条曲线**。相位图看钟差如何累积；ADEV 图比较相同平均时间 τ 上的稳定性，越低越好。数值保存在 `analysis/adev.tsv` 和 `analysis/stability_summary.tsv`，结果解释见[读图指南](../../docs/results.md)。
+
+## 切换秩亏补偿方法
+
+在 `config/Timescale.cfg` 中把 `Rank deficiency remedy = GREENHALL` 改为 **NONE、SUMZERO、BROWN、GREENHALL、KPW** 中的一个。NONE 是无补偿对照，SUMZERO 对应论文中的 Centroid，其余为同名方法。算法选项没有锁定。
+
+例如改成 `BROWN`，同时把 `Project directory` 改为 `results/brown`。再次运行相同 exe 命令，绘图命令改为：
+
+```powershell
+.\.venv\Scripts\python.exe tools/plot_results.py --results Runs/csac_10days/results/brown --output Runs/csac_10days/brown
+```
+
+也可以准备一个独立的 Brown 实验目录：
+
+```powershell
+.\.venv\Scripts\python.exe tools/prepare_csac.py --method BROWN --output Runs/csac_brown
+```
+
+`--method` 接受上述全部五个选项，输入钟数据相同。SUMZERO 和 KPW 的附加参数在配置中已列出，详见[方法切换说明](../../docs/configuration.md#切换秩亏补偿方法)。
 
 本案例固定使用已有数据，没有重新抽取随机数；改变随机种子不会产生另一组 CSAC。想探索不同随机实现，可使用另一个[2 CSAC + 2 mRO 案例](../heterogeneous/README.md)。
 

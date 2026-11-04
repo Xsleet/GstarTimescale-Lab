@@ -144,6 +144,9 @@ def main(argv: list[str] | None = None) -> int:
                              help="Generated heterogeneous case; archived four-CSAC inputs: tools/prepare_csac.py")
         command.add_argument("--days", type=float, default=10)
         command.add_argument("--seed", type=int, default=2026)
+        from tools.run_config import RANK_REMEDIES
+        command.add_argument("--method", type=str.upper, choices=RANK_REMEDIES, default="GREENHALL",
+                             help="Rank deficiency remedy; also editable in Timescale.cfg")
         command.add_argument("--architecture", choices=("centralized", "distributed_if", "distributed_ci"), default="centralized")
         command.add_argument("--output", type=Path, help="New/empty folder; relative paths are resolved from this repository")
         command.add_argument("--timeout", type=float, default=1800)
@@ -196,7 +199,7 @@ def main(argv: list[str] | None = None) -> int:
         output = resolve_output(args.output, args.case, args.days)
         forwarded = ["--output", str(output), "--clock-profile", "csac-mro",
                      "--days", str(args.days), "--seed", str(args.seed), "--architecture", args.architecture,
-                     "--timeout", str(args.timeout)]
+                     "--timeout", str(args.timeout), "--method", args.method]
         if args.command == "prepare":
             forwarded.append("--prepare-only")
         else:

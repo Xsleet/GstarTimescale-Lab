@@ -24,6 +24,9 @@ import sys
 import types
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+if __package__ in (None, ""):
+    sys.path.insert(0, str(REPO_ROOT))
+from tools.run_config import RANK_REMEDIES
 START = datetime(2026, 1, 1)
 INTERVAL = 10
 DURATION = 10 * 86400
@@ -141,8 +144,11 @@ def gstar_number(value: float) -> str:
 
 
 def prepare_case(root: Path, architecture: str, seed: int = 2026, duration_s: int = DURATION,
-                 clock_profile: str = "csac-mro") -> dict[str, list[float]]:
+                 clock_profile: str = "csac-mro", rank_remedy: str = "GREENHALL") -> dict[str, list[float]]:
     validate_duration(duration_s)
+    rank_remedy = rank_remedy.upper()
+    if rank_remedy not in RANK_REMEDIES:
+        raise ValueError(f"Unsupported rank deficiency remedy: {rank_remedy}")
     specs = clock_specs(clock_profile, seed)
     if architecture not in ARCHITECTURES:
         raise ValueError(f"Unsupported architecture: {architecture}")
@@ -229,10 +235,12 @@ def prepare_case(root: Path, architecture: str, seed: int = 2026, duration_s: in
  Timescale scope             = satellite
  Clock Trend state num       = 2
  Clock Harmonics state num   = 0
- Rank deficiency remedy      = GREENHALL
+* Options: NONE / SUMZERO / BROWN / GREENHALL / KPW. Edit the next line to switch.
+ Rank deficiency remedy      = {rank_remedy}
  Estimation architecture     = {architecture}
  Distributed output mode     = auto
  SUMZERO constraint sigma    = 1e-14
+ KPW max weight              = 0.5
 -Timescale Section
 +Orbit and Clock Section
  GNSS Apriori orbit          = spp
@@ -260,6 +268,7 @@ def prepare_case(root: Path, architecture: str, seed: int = 2026, duration_s: in
                 "daily_samples_per_clock": daily_counts,
                 "clk_files": len(daily_counts), "pfd_files": len(daily_counts) * 6,
                 "satellites": list(SATELLITES), "architecture": architecture, "seed": seed,
+                "rank_remedy": rank_remedy,
                 "clock_profile": clock_profile, "clock_specs": specs,
                 "clock_model": "white frequency noise + random-walk frequency noise; exact two-state diffusion"}
     if clock_profile == "csac-mro":
@@ -535,6 +544,7 @@ def write_report(root: Path, architecture: str, *, engine_ran: bool = False) -> 
         for index, (elapsed, value) in enumerate(rows):
             writer.writerow([elapsed, *[origins[f"SIM{clock}"][index] for clock in range(1, 5)], value])
     summary = {"status": "passed", "architecture": architecture,
+               "rank_remedy": manifest.get("rank_remedy", "GREENHALL"),
                "clock_profile": clock_profile, "clock_specs": specs,
                "duration_s": duration_s, "duration_days": duration_s / 86400,
                "input_epochs": duration_s // INTERVAL, "interval_s": INTERVAL,
@@ -624,7 +634,7 @@ def write_report(root: Path, architecture: str, *, engine_ran: bool = False) -> 
 <title>GSTAR · Quick-start results</title>
 <style>body{{max-width:1100px;margin:40px auto;padding:0 24px;color:#172033;background:#f5f7fb;font:16px/1.7 system-ui,sans-serif}}h1{{line-height:1.2}}svg{{width:100%;height:auto;border-radius:12px}}section{{background:white;padding:24px;margin:24px 0;border-radius:12px}}a{{color:#1d4ed8}}code{{background:#e8edf5;padding:2px 6px}}.ok{{color:#047857}}.adev-figure{{max-width:760px;margin:auto}}.table-wrap{{overflow-x:auto}}table{{border-collapse:collapse;white-space:nowrap;width:100%;font-size:14px}}th,td{{padding:8px;border-bottom:1px solid #e2e8f0;text-align:right}}</style>
 <h1>GSTAR Timescale · {case_title}</h1><p class="ok">{status_text}</p>
-<p>4 个合成钟 · 2026-01-01 GPST · {period_label} · 10 秒采样 · {html.escape(architecture)}</p>
+<p>4 个合成钟 · 2026-01-01 GPST · {period_label} · 10 秒采样 · {html.escape(architecture)} · {html.escape(summary['rank_remedy'])}</p>
 {model_section}
 <section><h2>1. 相位随时间的变化</h2><p>每条曲线减去自己的首个有效相位，纵轴单位为纳秒。原始数据及 IEM 的绝对相位仍保存在 CSV 和原始输出中。此图用于认识数据，不证明某种算法更优。</p>
 <p>{legend}</p>{svg}<p>IEM 来源：<code>{html.escape(selected.relative_to(root).as_posix())}</code>。有效结果 {len(rows)} 行，时间 {rows[0][0]:g}–{rows[-1][0]:g} 秒；输入边界可能因插值被略去。</p><p>{display_note}</p></section>
@@ -658,6 +668,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output", type=Path, help="New or empty run directory (default depends on clock profile)")
     parser.add_argument("--clock-profile", choices=CLOCK_PROFILES, default=None, help="csac-mro: two CSAC and two mRO; archived CSAC inputs: tools/prepare_csac.py")
     parser.add_argument("--architecture", choices=ARCHITECTURES, default=None, help="Default: centralized; report-only reads the saved manifest")
+    parser.add_argument("--method", type=str.upper, choices=RANK_REMEDIES, default=None,
+                        help="Rank deficiency remedy (default: GREENHALL)")
     parser.add_argument("--seed", type=int, default=2026)
     parser.add_argument("--days", type=float, default=None, help="Simulation days (default: 10); report-only uses the saved duration if omitted")
     parser.add_argument("--timeout", type=float, default=1800, help="Engine timeout in seconds (default: 1800)")
@@ -685,6 +697,8 @@ def main(argv: list[str] | None = None) -> int:
                 raise ValueError("--days differs from saved duration; create a new run to change the simulation length")
             if args.clock_profile and args.clock_profile != manifest.get("clock_profile", "basic"):
                 raise ValueError("--clock-profile differs from saved profile; create a new run to change the clocks")
+            if args.method and args.method != manifest.get("rank_remedy", "GREENHALL"):
+                raise ValueError("--method differs from saved method; run the engine with the new configuration first")
             architecture = manifest.get("architecture")
             if architecture not in ARCHITECTURES or (args.architecture and args.architecture != architecture):
                 raise ValueError("Requested architecture does not match the saved demo manifest")
@@ -696,7 +710,7 @@ def main(argv: list[str] | None = None) -> int:
             raise ValueError(f"Executable not found: {executable}. Install the maintainer runtime with lab.py or use --prepare-only.")
         architecture = args.architecture or "centralized"
         duration_s = requested_duration if requested_duration is not None else DURATION
-        prepare_case(root, architecture, args.seed, duration_s, args.clock_profile or "csac-mro")
+        prepare_case(root, architecture, args.seed, duration_s, args.clock_profile or "csac-mro", args.method or "GREENHALL")
         print(f"Prepared 4 clocks, {duration_s // INTERVAL} epochs per clock, {math.ceil(duration_s / 86400) * 6} bidirectional PFD files: {root}", flush=True)
         if args.prepare_only:
             print("Inputs ready. Run the engine from this directory with argument config/file_table.")

@@ -11,6 +11,20 @@ import subprocess
 import uuid
 
 CONFIG_FILES = ("file_table", "Timescale.cfg", "session.obj", "svinf.dat", "leap.sec", "pan_info")
+RANK_REMEDIES = ("NONE", "SUMZERO", "BROWN", "GREENHALL", "KPW")
+
+
+def set_rank_remedy(config: Path, method: str) -> None:
+    """Change only the explicit method field in a newly prepared configuration."""
+    method = method.upper()
+    if method not in RANK_REMEDIES:
+        raise ValueError(f"Unsupported rank deficiency remedy: {method}")
+    text = config.read_text(encoding="utf-8")
+    pattern = r"(?m)^([ \t]+Rank deficiency remedy[ \t]*=[ \t]*)[A-Za-z_]+([ \t]*)$"
+    updated, count = re.subn(pattern, lambda match: match[1] + method + match[2], text)
+    if count != 1:
+        raise ValueError("Expected exactly one Rank deficiency remedy field")
+    config.write_text(updated, encoding="utf-8", newline="\n")
 
 
 def initialize_case(destination: Path, template_dir: Path) -> Path:

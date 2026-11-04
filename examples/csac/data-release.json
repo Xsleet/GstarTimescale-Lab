@@ -1,11 +1,11 @@
 {
-  "release_tag": "csac4-example-data-v1",
-  "filename": "csac4-10days-inputs-v1.zip",
-  "sha256": "09eb8090587dd74191015a3865af56353af701ad77aa03c836f770cc684a3766",
-  "bytes": 13971812,
-  "manifest_sha256": "2b19ae96668cea4b991c5bdaa5d568355424ab1b413a6b248e68ecc0405eafd9",
+  "release_tag": "csac4-example-data-v2",
+  "filename": "csac4-10days-inputs-v2.zip",
+  "sha256": "65cb52ef4d6aebb5404be96612263dbbb01e8a277c2ede4abacb886b12c9181f",
+  "bytes": 13972386,
+  "manifest_sha256": "08c77ec4caa913dfce043a6b9b0ccfe6a3ca79f4c37443b8ab3a47c4d38dca97",
   "file_count": 85,
-  "expanded_bytes": 93473183,
+  "expanded_bytes": 93474242,
   "source_group": "csac_only_group01",
   "clocks": [
     "CSAC_01",
