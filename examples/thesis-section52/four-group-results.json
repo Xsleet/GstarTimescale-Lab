@@ -1,0 +1,293 @@
+{
+  "groups": [
+    "group01",
+    "group02",
+    "group04",
+    "group05"
+  ],
+  "statistic": "mean of absolute per-group jumps",
+  "methods_present_in_all_groups": [
+    "csac_fixed1",
+    "csac_fixed10000",
+    "csac_robust",
+    "mro_fixed1",
+    "mro_fixed10000",
+    "mro_robust"
+  ],
+  "rows": [
+    {
+      "case": "csac_fixed1",
+      "groups": 4,
+      "mean_abs_phase_jump_ns": 77.91313202639367,
+      "mean_abs_frequency_jump": 7.791313202639367e-09
+    },
+    {
+      "case": "csac_fixed10000",
+      "groups": 4,
+      "mean_abs_phase_jump_ns": 0.007810838486975213,
+      "mean_abs_frequency_jump": 7.810838486975214e-13
+    },
+    {
+      "case": "csac_robust",
+      "groups": 4,
+      "mean_abs_phase_jump_ns": 7.485018396649439e-09,
+      "mean_abs_frequency_jump": 7.485018396649438e-19
+    },
+    {
+      "case": "mro_fixed1",
+      "groups": 4,
+      "mean_abs_phase_jump_ns": 77.9131320472743,
+      "mean_abs_frequency_jump": 7.79131320472743e-09
+    },
+    {
+      "case": "mro_fixed10000",
+      "groups": 4,
+      "mean_abs_phase_jump_ns": 0.007810858545774195,
+      "mean_abs_frequency_jump": 7.810858545774196e-13
+    },
+    {
+      "case": "mro_robust",
+      "groups": 4,
+      "mean_abs_phase_jump_ns": 7.56209839484958e-09,
+      "mean_abs_frequency_jump": 7.56209839484958e-19
+    }
+  ],
+  "group_transients": [
+    {
+      "group": "group01",
+      "transients": [
+        {
+          "case": "csac_fixed1",
+          "event_gpst": "2026-01-06T00:00:00",
+          "joint_gpst": "2026-01-06T00:00:00.000",
+          "active_gpst": "2026-01-06T00:00:00.000",
+          "pre_event_max_difference_s": 0.0,
+          "phase_jump_s": -2.0890272960559454e-07,
+          "frequency_jump": -2.0890272960559454e-08
+        },
+        {
+          "case": "csac_fixed10000",
+          "event_gpst": "2026-01-06T00:00:00",
+          "joint_gpst": "2026-01-06T00:00:00.000",
+          "active_gpst": "2026-01-06T00:00:00.000",
+          "pre_event_max_difference_s": 0.0,
+          "phase_jump_s": -2.094249970110377e-11,
+          "frequency_jump": -2.094249970110377e-12
+        },
+        {
+          "case": "csac_robust",
+          "event_gpst": "2026-01-06T00:00:00",
+          "joint_gpst": "2026-01-06T00:03:00.000",
+          "active_gpst": "2026-01-06T00:12:50.000",
+          "pre_event_max_difference_s": 0.0,
+          "phase_jump_s": -2.981555974335137e-17,
+          "frequency_jump": -2.9815559743351372e-18
+        },
+        {
+          "case": "mro_fixed1",
+          "event_gpst": "2026-01-06T00:00:00",
+          "joint_gpst": "2026-01-06T00:00:00.000",
+          "active_gpst": "2026-01-06T00:00:00.000",
+          "pre_event_max_difference_s": 0.0,
+          "phase_jump_s": -2.0890272968921363e-07,
+          "frequency_jump": -2.0890272968921363e-08
+        },
+        {
+          "case": "mro_fixed10000",
+          "event_gpst": "2026-01-06T00:00:00",
+          "joint_gpst": "2026-01-06T00:00:00.000",
+          "active_gpst": "2026-01-06T00:00:00.000",
+          "pre_event_max_difference_s": 0.0,
+          "phase_jump_s": -2.094257994561706e-11,
+          "frequency_jump": -2.094257994561706e-12
+        },
+        {
+          "case": "mro_robust",
+          "event_gpst": "2026-01-06T00:00:00",
+          "joint_gpst": "2026-01-06T00:03:00.000",
+          "active_gpst": "2026-01-06T00:12:50.000",
+          "pre_event_max_difference_s": 0.0,
+          "phase_jump_s": -3.0113715340784886e-17,
+          "frequency_jump": -3.0113715340784884e-18
+        }
+      ]
+    },
+    {
+      "group": "group02",
+      "transients": [
+        {
+          "case": "csac_fixed1",
+          "event_gpst": "2026-01-06T00:00:00",
+          "joint_gpst": "2026-01-06T00:00:00.000",
+          "active_gpst": "2026-01-06T00:00:00.000",
+          "pre_event_max_difference_s": 0.0,
+          "phase_jump_s": -1.722619258994633e-08,
+          "frequency_jump": -1.7226192589946331e-09
+        },
+        {
+          "case": "csac_fixed10000",
+          "event_gpst": "2026-01-06T00:00:00",
+          "joint_gpst": "2026-01-06T00:00:00.000",
+          "active_gpst": "2026-01-06T00:00:00.000",
+          "pre_event_max_difference_s": 0.0,
+          "phase_jump_s": -1.7269582489168106e-12,
+          "frequency_jump": -1.7269582489168107e-13
+        },
+        {
+          "case": "csac_robust",
+          "event_gpst": "2026-01-06T00:00:00",
+          "joint_gpst": "2026-01-06T00:03:00.000",
+          "active_gpst": "2026-01-06T00:12:50.000",
+          "pre_event_max_difference_s": 0.0,
+          "phase_jump_s": -6.183340514956392e-20,
+          "frequency_jump": -6.183340514956392e-21
+        },
+        {
+          "case": "mro_fixed1",
+          "event_gpst": "2026-01-06T00:00:00",
+          "joint_gpst": "2026-01-06T00:00:00.000",
+          "active_gpst": "2026-01-06T00:00:00.000",
+          "pre_event_max_difference_s": 0.0,
+          "phase_jump_s": -1.7226192589985295e-08,
+          "frequency_jump": -1.7226192589985295e-09
+        },
+        {
+          "case": "mro_fixed10000",
+          "event_gpst": "2026-01-06T00:00:00",
+          "joint_gpst": "2026-01-06T00:00:00.000",
+          "active_gpst": "2026-01-06T00:00:00.000",
+          "pre_event_max_difference_s": 0.0,
+          "phase_jump_s": -1.7269582463757117e-12,
+          "frequency_jump": -1.7269582463757117e-13
+        },
+        {
+          "case": "mro_robust",
+          "event_gpst": "2026-01-06T00:00:00",
+          "joint_gpst": "2026-01-06T00:03:00.000",
+          "active_gpst": "2026-01-06T00:12:50.000",
+          "pre_event_max_difference_s": 0.0,
+          "phase_jump_s": -7.877406409464993e-20,
+          "frequency_jump": -7.877406409464994e-21
+        }
+      ]
+    },
+    {
+      "group": "group04",
+      "transients": [
+        {
+          "case": "csac_fixed1",
+          "event_gpst": "2026-01-06T00:00:00",
+          "joint_gpst": "2026-01-06T00:00:00.000",
+          "active_gpst": "2026-01-06T00:00:00.000",
+          "pre_event_max_difference_s": 0.0,
+          "phase_jump_s": -5.586785416108897e-08,
+          "frequency_jump": -5.5867854161088975e-09
+        },
+        {
+          "case": "csac_fixed10000",
+          "event_gpst": "2026-01-06T00:00:00",
+          "joint_gpst": "2026-01-06T00:00:00.000",
+          "active_gpst": "2026-01-06T00:00:00.000",
+          "pre_event_max_difference_s": 0.0,
+          "phase_jump_s": -5.600855001818396e-12,
+          "frequency_jump": -5.600855001818396e-13
+        },
+        {
+          "case": "csac_robust",
+          "event_gpst": "2026-01-06T00:00:00",
+          "joint_gpst": "2026-01-06T00:03:00.000",
+          "active_gpst": "2026-01-06T00:12:50.000",
+          "pre_event_max_difference_s": 0.0,
+          "phase_jump_s": -6.776263578034403e-21,
+          "frequency_jump": -6.776263578034403e-22
+        },
+        {
+          "case": "mro_fixed1",
+          "event_gpst": "2026-01-06T00:00:00",
+          "joint_gpst": "2026-01-06T00:00:00.000",
+          "active_gpst": "2026-01-06T00:00:00.000",
+          "pre_event_max_difference_s": 0.0,
+          "phase_jump_s": -5.586785416103815e-08,
+          "frequency_jump": -5.586785416103815e-09
+        },
+        {
+          "case": "mro_fixed10000",
+          "event_gpst": "2026-01-06T00:00:00",
+          "joint_gpst": "2026-01-06T00:00:00.000",
+          "active_gpst": "2026-01-06T00:00:00.000",
+          "pre_event_max_difference_s": 0.0,
+          "phase_jump_s": -5.6008549984302644e-12,
+          "frequency_jump": -5.600854998430264e-13
+        },
+        {
+          "case": "mro_robust",
+          "event_gpst": "2026-01-06T00:00:00",
+          "joint_gpst": "2026-01-06T00:03:00.000",
+          "active_gpst": "2026-01-06T00:12:50.000",
+          "pre_event_max_difference_s": 0.0,
+          "phase_jump_s": 0.0,
+          "frequency_jump": 0.0
+        }
+      ]
+    },
+    {
+      "group": "group05",
+      "transients": [
+        {
+          "case": "csac_fixed1",
+          "event_gpst": "2026-01-06T00:00:00",
+          "joint_gpst": "2026-01-06T00:00:00.000",
+          "active_gpst": "2026-01-06T00:00:00.000",
+          "pre_event_max_difference_s": 0.0,
+          "phase_jump_s": 2.9655751748944846e-08,
+          "frequency_jump": 2.9655751748944846e-09
+        },
+        {
+          "case": "csac_fixed10000",
+          "event_gpst": "2026-01-06T00:00:00",
+          "joint_gpst": "2026-01-06T00:00:00.000",
+          "active_gpst": "2026-01-06T00:00:00.000",
+          "pre_event_max_difference_s": 0.0,
+          "phase_jump_s": 2.9730409960618785e-12,
+          "frequency_jump": 2.9730409960618786e-13
+        },
+        {
+          "case": "csac_robust",
+          "event_gpst": "2026-01-06T00:00:00",
+          "joint_gpst": "2026-01-06T00:03:00.000",
+          "active_gpst": "2026-01-06T00:12:50.000",
+          "pre_event_max_difference_s": 0.0,
+          "phase_jump_s": -5.590417451878382e-20,
+          "frequency_jump": -5.590417451878382e-21
+        },
+        {
+          "case": "mro_fixed1",
+          "event_gpst": "2026-01-06T00:00:00",
+          "joint_gpst": "2026-01-06T00:00:00.000",
+          "active_gpst": "2026-01-06T00:00:00.000",
+          "pre_event_max_difference_s": 0.0,
+          "phase_jump_s": 2.9655751748860142e-08,
+          "frequency_jump": 2.9655751748860142e-09
+        },
+        {
+          "case": "mro_fixed10000",
+          "event_gpst": "2026-01-06T00:00:00",
+          "joint_gpst": "2026-01-06T00:00:00.000",
+          "active_gpst": "2026-01-06T00:00:00.000",
+          "pre_event_max_difference_s": 0.0,
+          "phase_jump_s": 2.9730409926737467e-12,
+          "frequency_jump": 2.9730409926737465e-13
+        },
+        {
+          "case": "mro_robust",
+          "event_gpst": "2026-01-06T00:00:00",
+          "joint_gpst": "2026-01-06T00:03:00.000",
+          "active_gpst": "2026-01-06T00:12:50.000",
+          "pre_event_max_difference_s": 0.0,
+          "phase_jump_s": -5.590417451878382e-20,
+          "frequency_jump": -5.590417451878382e-21
+        }
+      ]
+    }
+  ]
+}

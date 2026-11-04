@@ -104,3 +104,5 @@ PNG 可直接打开，PDF/SVG 适合插入报告。TSV 可以用文本编辑器�
 可选一键案例会额外产生 HTML、根目录 `phase.csv`、`summary.json` 等。这些是[自动报告功能](convenience-commands.md)的输出，直接运行 exe 并不需要它们。
 
 分布式输出可能分布在多个节点/分量子目录。请明确选择其中包含 `IEM.txt` 和对应钟文件的目录，再传给 `--results`；该图代表所选输出，不会自动平均所有节点。
+
+第 5.2 节动态成员实验使用 `tools/thesis_section52.py analyze` 对比多次真实运行。它读取变长 `IEM.txt`、`centralized_membership_events.tsv` 和接入状态记录，分别计算全时段、事件后、完全接入后的 ADEV；各方法采用共同时间区间。`tables/event_metrics.tsv` 给出实际进入联合滤波时的相位与频率跳变，`tables/adev_exact.tsv` 给出直接计算的 ADEV、误差估计及有效项数。详见[成员变化实验教程](../examples/thesis-section52/README.md)。

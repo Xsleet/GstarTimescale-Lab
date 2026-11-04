@@ -1,0 +1,63 @@
+name: Thesis Section 5.2 membership data
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+permissions:
+  contents: read
+jobs:
+  reproduce-membership-data:
+    if: github.event_name == 'workflow_dispatch' || github.event.release.tag_name == 'thesis-section52-data-v1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: requirements-demo.txt
+      - run: python -m pip install -r requirements-demo.txt
+      - run: python tools/check_public_tree.py
+      - run: python tools/thesis_section52.py fetch --kind analysis --output Runs/thesis52/data
+      - run: python tools/thesis_section52.py analyze-archive --data Runs/thesis52/data --output Runs/thesis52/analysis
+      - name: Check archived quantitative results
+        run: |
+          python - <<'PY'
+          import json, math
+          from pathlib import Path
+          expected = json.loads(Path('examples/thesis-section52/expected-results.json').read_text())
+          actual = json.loads(Path('Runs/thesis52/analysis/validation.json').read_text())
+          assert actual['samples'] == expected['samples']
+          assert actual['post_event_start'] == expected['post_event_start']
+          assert actual['post_active_start'] == expected['post_active_start']
+          for item in expected['adev_comparisons']:
+              row = next(r for r in actual['adev_comparisons'] if all(r[k] == item[k] for k in ('segment','case','tau_s')))
+              for key in ('baseline_adev','case_adev'):
+                  assert math.isclose(row[key],item[key],rel_tol=1e-10), (item,key,row[key])
+          for item in expected['transients']:
+              row = next(r for r in actual['transients'] if r['case'] == item['case'])
+              for key in ('phase_jump_s','frequency_jump'):
+                  assert math.isclose(row[key],item[key],rel_tol=1e-10,abs_tol=1e-25), (item,key,row[key])
+          PY
+      - run: python tools/thesis_section52.py fetch --kind inputs --output Runs/thesis52/inputs
+      - name: Prepare editable cases for all four groups
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from tools.thesis_section52 import GROUPS, SCENARIOS, prepare_case
+          from tools.run_config import inspect_config
+          for group in GROUPS:
+              for scenario in SCENARIOS:
+                  output = Path('Runs/thesis52/config-check') / group / scenario
+                  prepare_case(Path('Runs/thesis52/inputs').resolve(), output.resolve(), group=group, scenario=scenario)
+                  info = inspect_config(output.resolve() / 'config/file_table', output.resolve())
+                  assert info['duration_s'] == 864000 and info['interval_s'] == 10
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: thesis-section52-report
+          path: Runs/thesis52/analysis/
+          retention-days: 14
+      # The private solver and its source are never available to this workflow.

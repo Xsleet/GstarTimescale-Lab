@@ -6,7 +6,7 @@
 
 建议从 **4 只已有仿真 CSAC、10 天、10 秒采样** 的 PFD 案例开始。它只使用时钟比对数据，不需要轨道或 STK。
 
-论文实验入口：[第 4.3 节：秩亏补偿](examples/thesis-section43/README.md) · [第 4.4 节：默认运行、贝叶斯优化与结果比较](examples/thesis-section44/README.md)。均提供公开数据、可编辑配置、绘图脚本和结果预览；第 4.4 节先运行默认参数，再实际搜索噪声参数、运行优化参数，最后比较两次结果。
+论文实验入口：[第 4.3 节：秩亏补偿](examples/thesis-section43/README.md) · [第 4.4 节：贝叶斯优化](examples/thesis-section44/README.md) · [第 5.2 节：成员钟退出与加入](examples/thesis-section52/README.md)。均提供公开数据、可编辑配置、绘图脚本和结果预览；第 4.4 节实际搜索噪声参数，第 5.2 节修改成员日程、比较固定协方差与短窗初始化。
 
 ## 先看看运行后能得到什么
 
@@ -209,6 +209,7 @@ ADEV 横轴是平均时间 τ，纵轴越低通常表示该 τ 上的稳定度�
 | 概念与实验目录说明 | [用户指南](docs/user-guide.md) |
 | 第 4.3 节论文数据与实验 | [论文实验教程](examples/thesis-section43/README.md) |
 | 第 4.4 节扩散系数实验 | [默认运行、贝叶斯优化与结果比较](examples/thesis-section44/README.md) |
+| 第 5.2 节动态成员实验 | [成员钟退出、新钟加入与初始化对比](examples/thesis-section52/README.md) |
 | 4 CSAC 的数据来源和完整命令 | [CSAC 基础案例](examples/csac/README.md) |
 | 2 CSAC + 2 mRO 的输入参数 | [异构案例](examples/heterogeneous/README.md) |
 | 一键演示、自动检查和 HTML 报告 | [可选便利命令](docs/convenience-commands.md) |

@@ -173,3 +173,9 @@ init 不生成模拟数据，也不调用核心。直接编辑 `Runs/custom_case
 - **报告范围**：`lab.py report` 仍服务于内置四钟案例，读取其 manifest 和标准 results 目录。不要把改过时间、模型或路径的自定义结果直接交给旧 manifest 生成报告。
 
 当前配置入口支持已有标准数据的运行，不提供任意输入格式转换，也不宣称所有模式组合都已验证。已验证范围见 [validation.md](validation.md)。
+
+## 成员钟退出与加入
+
+[第 5.2 节实验](../examples/thesis-section52/README.md)提供四个异构钟组的完整输入，仍使用上述原生文件。额外的 `membership_schedule.tsv` 定义哪些钟在什么时段参与，`Timescale.cfg` 可修改固定协方差倍率或短窗初始化窗口。
+
+修改日程后，执行 `tools/thesis_section52.py sync-pfd --case 实验目录`，使 PFD 观测端点与日程一致，再运行程序。同步只筛选现有观测、更新 PFD 路径，保留旧数据目录。动态成员使用集中式、PFD、二状态、Greenhall、无谐波；其他案例的补偿选项保持不变。
