@@ -1,0 +1,719 @@
+{
+  "start": "2026-06-02T00:00:00",
+  "days": 22,
+  "interval_s": 30,
+  "satellite_count": 31,
+  "satellites": [
+    "G01",
+    "G02",
+    "G03",
+    "G04",
+    "G05",
+    "G06",
+    "G07",
+    "G08",
+    "G09",
+    "G10",
+    "G11",
+    "G12",
+    "G14",
+    "G15",
+    "G16",
+    "G17",
+    "G18",
+    "G19",
+    "G20",
+    "G21",
+    "G22",
+    "G23",
+    "G24",
+    "G25",
+    "G26",
+    "G27",
+    "G28",
+    "G29",
+    "G30",
+    "G31",
+    "G32"
+  ],
+  "absent_satellites": [
+    "G13"
+  ],
+  "clock_specs": [
+    {
+      "satellite": "G01",
+      "session_prn": "0101",
+      "clk_prn": "101",
+      "fitted_R0": 2.513645522455895e-22,
+      "diffusion_intensities": [
+        1.0604620912937002e-22,
+        0.0,
+        0.0
+      ],
+      "process_std": [
+        1.0297874010171712e-11,
+        0.0,
+        0.0
+      ],
+      "valid_epochs": 63240,
+      "completeness": 0.9981060606060606,
+      "fit_relative_residual_norm": 0.29980385314492175,
+      "fit_condition": 15.573822574295372
+    },
+    {
+      "satellite": "G02",
+      "session_prn": "0102",
+      "clk_prn": "102",
+      "fitted_R0": 1.3903595208940365e-21,
+      "diffusion_intensities": [
+        1.1997502634410816e-22,
+        0.0,
+        0.0
+      ],
+      "process_std": [
+        1.0953311204567693e-11,
+        0.0,
+        0.0
+      ],
+      "valid_epochs": 63329,
+      "completeness": 0.9995107323232323,
+      "fit_relative_residual_norm": 0.8411502281672747,
+      "fit_condition": 17.48133828320724
+    },
+    {
+      "satellite": "G03",
+      "session_prn": "0103",
+      "clk_prn": "103",
+      "fitted_R0": 5.2520076834263634e-23,
+      "diffusion_intensities": [
+        4.917437246409612e-22,
+        0.0,
+        0.0
+      ],
+      "process_std": [
+        2.2175295367614864e-11,
+        0.0,
+        0.0
+      ],
+      "valid_epochs": 63089,
+      "completeness": 0.9957228535353535,
+      "fit_relative_residual_norm": 0.06532614011683516,
+      "fit_condition": 11.31561814104375
+    },
+    {
+      "satellite": "G04",
+      "session_prn": "0104",
+      "clk_prn": "104",
+      "fitted_R0": 3.259000494070827e-22,
+      "diffusion_intensities": [
+        5.773685898791475e-23,
+        0.0,
+        4.783324944940456e-40
+      ],
+      "process_std": [
+        7.598477412476446e-12,
+        0.0,
+        2.187081375930136e-20
+      ],
+      "valid_epochs": 63329,
+      "completeness": 0.9995107323232323,
+      "fit_relative_residual_norm": 0.30806068668878983,
+      "fit_condition": 10.276291784564147
+    },
+    {
+      "satellite": "G05",
+      "session_prn": "0105",
+      "clk_prn": "105",
+      "fitted_R0": 5.328905468221143e-21,
+      "diffusion_intensities": [
+        1.617155706389092e-22,
+        0.0,
+        3.1380327414147763e-38
+      ],
+      "process_std": [
+        1.2716743712087194e-11,
+        0.0,
+        1.7714493335725909e-19
+      ],
+      "valid_epochs": 63329,
+      "completeness": 0.9995107323232323,
+      "fit_relative_residual_norm": 0.988403070875858,
+      "fit_condition": 9.28535725735483
+    },
+    {
+      "satellite": "G06",
+      "session_prn": "0106",
+      "clk_prn": "106",
+      "fitted_R0": 6.385368883390259e-23,
+      "diffusion_intensities": [
+        6.759781139879972e-23,
+        1.8181585016839687e-31,
+        0.0
+      ],
+      "process_std": [
+        8.221788819885836e-12,
+        4.2639869860073083e-16,
+        0.0
+      ],
+      "valid_epochs": 63329,
+      "completeness": 0.9995107323232323,
+      "fit_relative_residual_norm": 0.041078206588672894,
+      "fit_condition": 11.298968343600144
+    },
+    {
+      "satellite": "G07",
+      "session_prn": "0107",
+      "clk_prn": "107",
+      "fitted_R0": 2.3024056075894826e-21,
+      "diffusion_intensities": [
+        2.1678529708236935e-22,
+        0.0,
+        0.0
+      ],
+      "process_std": [
+        1.4723630567301306e-11,
+        0.0,
+        0.0
+      ],
+      "valid_epochs": 63329,
+      "completeness": 0.9995107323232323,
+      "fit_relative_residual_norm": 0.7667077978018767,
+      "fit_condition": 11.565704436969895
+    },
+    {
+      "satellite": "G08",
+      "session_prn": "0108",
+      "clk_prn": "108",
+      "fitted_R0": 1.7538104602031644e-22,
+      "diffusion_intensities": [
+        8.079232540034258e-23,
+        0.0,
+        0.0
+      ],
+      "process_std": [
+        8.988455117557331e-12,
+        0.0,
+        0.0
+      ],
+      "valid_epochs": 63329,
+      "completeness": 0.9995107323232323,
+      "fit_relative_residual_norm": 0.2058428240154431,
+      "fit_condition": 11.260847363681801
+    },
+    {
+      "satellite": "G09",
+      "session_prn": "0109",
+      "clk_prn": "109",
+      "fitted_R0": 1.6331917440131776e-22,
+      "diffusion_intensities": [
+        7.074525913269294e-23,
+        0.0,
+        0.0
+      ],
+      "process_std": [
+        8.411020100599745e-12,
+        0.0,
+        0.0
+      ],
+      "valid_epochs": 63329,
+      "completeness": 0.9995107323232323,
+      "fit_relative_residual_norm": 0.16619202945144246,
+      "fit_condition": 12.55185642211089
+    },
+    {
+      "satellite": "G10",
+      "session_prn": "0110",
+      "clk_prn": "110",
+      "fitted_R0": 1.8104761283532665e-22,
+      "diffusion_intensities": [
+        6.949020866541529e-23,
+        0.0,
+        0.0
+      ],
+      "process_std": [
+        8.336078734357978e-12,
+        0.0,
+        0.0
+      ],
+      "valid_epochs": 63089,
+      "completeness": 0.9957228535353535,
+      "fit_relative_residual_norm": 0.11636572155014965,
+      "fit_condition": 12.073064612529565
+    },
+    {
+      "satellite": "G11",
+      "session_prn": "0111",
+      "clk_prn": "111",
+      "fitted_R0": 1.2375374435198408e-22,
+      "diffusion_intensities": [
+        7.309591449226599e-23,
+        0.0,
+        0.0
+      ],
+      "process_std": [
+        8.549614873914848e-12,
+        0.0,
+        0.0
+      ],
+      "valid_epochs": 63329,
+      "completeness": 0.9995107323232323,
+      "fit_relative_residual_norm": 0.08727702115078495,
+      "fit_condition": 11.525792409787242
+    },
+    {
+      "satellite": "G12",
+      "session_prn": "0112",
+      "clk_prn": "112",
+      "fitted_R0": 2.2124905519225978e-21,
+      "diffusion_intensities": [
+        1.0427697385920222e-22,
+        0.0,
+        0.0
+      ],
+      "process_std": [
+        1.0211609758466205e-11,
+        0.0,
+        0.0
+      ],
+      "valid_epochs": 63329,
+      "completeness": 0.9995107323232323,
+      "fit_relative_residual_norm": 0.9556453653840428,
+      "fit_condition": 10.783375328240098
+    },
+    {
+      "satellite": "G14",
+      "session_prn": "0113",
+      "clk_prn": "113",
+      "fitted_R0": 2.0471324923164318e-22,
+      "diffusion_intensities": [
+        6.31980959649982e-23,
+        0.0,
+        0.0
+      ],
+      "process_std": [
+        7.949723011841243e-12,
+        0.0,
+        0.0
+      ],
+      "valid_epochs": 63329,
+      "completeness": 0.9995107323232323,
+      "fit_relative_residual_norm": 0.3593171698117715,
+      "fit_condition": 11.109251767693928
+    },
+    {
+      "satellite": "G15",
+      "session_prn": "0114",
+      "clk_prn": "114",
+      "fitted_R0": 1.79634276041106e-21,
+      "diffusion_intensities": [
+        9.395492094031316e-23,
+        0.0,
+        5.1439897671455504e-39
+      ],
+      "process_std": [
+        9.693034661049818e-12,
+        0.0,
+        7.172161297088592e-20
+      ],
+      "valid_epochs": 63089,
+      "completeness": 0.9957228535353535,
+      "fit_relative_residual_norm": 1.008007289137338,
+      "fit_condition": 11.846758688384805
+    },
+    {
+      "satellite": "G16",
+      "session_prn": "0115",
+      "clk_prn": "115",
+      "fitted_R0": 2.1645163614626667e-21,
+      "diffusion_intensities": [
+        1.0096493470139504e-22,
+        0.0,
+        0.0
+      ],
+      "process_std": [
+        1.0048130905864784e-11,
+        0.0,
+        0.0
+      ],
+      "valid_epochs": 63329,
+      "completeness": 0.9995107323232323,
+      "fit_relative_residual_norm": 0.8677670565320365,
+      "fit_condition": 11.495340377811942
+    },
+    {
+      "satellite": "G17",
+      "session_prn": "0116",
+      "clk_prn": "116",
+      "fitted_R0": 3.026127356515508e-21,
+      "diffusion_intensities": [
+        1.3921859152819445e-22,
+        0.0,
+        0.0
+      ],
+      "process_std": [
+        1.1799092826492825e-11,
+        0.0,
+        0.0
+      ],
+      "valid_epochs": 32638,
+      "completeness": 0.5151199494949495,
+      "fit_relative_residual_norm": 1.0839632902492866,
+      "fit_condition": 12.660832411731567
+    },
+    {
+      "satellite": "G18",
+      "session_prn": "0117",
+      "clk_prn": "117",
+      "fitted_R0": 2.919729955960008e-22,
+      "diffusion_intensities": [
+        8.523774660737609e-23,
+        0.0,
+        0.0
+      ],
+      "process_std": [
+        9.232429074050669e-12,
+        0.0,
+        0.0
+      ],
+      "valid_epochs": 63329,
+      "completeness": 0.9995107323232323,
+      "fit_relative_residual_norm": 0.24400210649410703,
+      "fit_condition": 12.848362180153488
+    },
+    {
+      "satellite": "G19",
+      "session_prn": "0118",
+      "clk_prn": "118",
+      "fitted_R0": 1.6587282740949532e-21,
+      "diffusion_intensities": [
+        1.5188403382046723e-22,
+        0.0,
+        0.0
+      ],
+      "process_std": [
+        1.2324124058953124e-11,
+        0.0,
+        0.0
+      ],
+      "valid_epochs": 63089,
+      "completeness": 0.9957228535353535,
+      "fit_relative_residual_norm": 0.8153942691519709,
+      "fit_condition": 12.424590417379774
+    },
+    {
+      "satellite": "G20",
+      "session_prn": "0119",
+      "clk_prn": "119",
+      "fitted_R0": 1.1855058287366571e-22,
+      "diffusion_intensities": [
+        7.758635868330676e-23,
+        0.0,
+        5.565374985264376e-39
+      ],
+      "process_std": [
+        8.808311908833994e-12,
+        0.0,
+        7.46014409060869e-20
+      ],
+      "valid_epochs": 63271,
+      "completeness": 0.9985953282828283,
+      "fit_relative_residual_norm": 0.06981965793212651,
+      "fit_condition": 11.023121000790319
+    },
+    {
+      "satellite": "G21",
+      "session_prn": "0120",
+      "clk_prn": "120",
+      "fitted_R0": 1.134522417897506e-22,
+      "diffusion_intensities": [
+        8.348004893110921e-23,
+        0.0,
+        4.901778541850197e-39
+      ],
+      "process_std": [
+        9.136741702111821e-12,
+        0.0,
+        7.001270271779399e-20
+      ],
+      "valid_epochs": 63329,
+      "completeness": 0.9995107323232323,
+      "fit_relative_residual_norm": 0.09978408264548572,
+      "fit_condition": 10.469280281317506
+    },
+    {
+      "satellite": "G22",
+      "session_prn": "0121",
+      "clk_prn": "121",
+      "fitted_R0": 1.6109963244916542e-21,
+      "diffusion_intensities": [
+        1.0005986875895984e-22,
+        0.0,
+        0.0
+      ],
+      "process_std": [
+        1.000299299004852e-11,
+        0.0,
+        0.0
+      ],
+      "valid_epochs": 63329,
+      "completeness": 0.9995107323232323,
+      "fit_relative_residual_norm": 1.0887706814584273,
+      "fit_condition": 18.02014704185247
+    },
+    {
+      "satellite": "G23",
+      "session_prn": "0122",
+      "clk_prn": "122",
+      "fitted_R0": 1.8104161525220329e-22,
+      "diffusion_intensities": [
+        6.348552182720942e-23,
+        0.0,
+        0.0
+      ],
+      "process_std": [
+        7.96778023211041e-12,
+        0.0,
+        0.0
+      ],
+      "valid_epochs": 63329,
+      "completeness": 0.9995107323232323,
+      "fit_relative_residual_norm": 0.39363623301931383,
+      "fit_condition": 15.15492909490528
+    },
+    {
+      "satellite": "G24",
+      "session_prn": "0123",
+      "clk_prn": "123",
+      "fitted_R0": 1.1001238293199667e-22,
+      "diffusion_intensities": [
+        7.767868604694972e-23,
+        0.0,
+        0.0
+      ],
+      "process_std": [
+        8.813551273292152e-12,
+        0.0,
+        0.0
+      ],
+      "valid_epochs": 63089,
+      "completeness": 0.9957228535353535,
+      "fit_relative_residual_norm": 0.13123039767346403,
+      "fit_condition": 13.420884747492982
+    },
+    {
+      "satellite": "G25",
+      "session_prn": "0124",
+      "clk_prn": "124",
+      "fitted_R0": 1.415008371958184e-22,
+      "diffusion_intensities": [
+        5.270530192426255e-23,
+        0.0,
+        0.0
+      ],
+      "process_std": [
+        7.259841728595917e-12,
+        0.0,
+        0.0
+      ],
+      "valid_epochs": 63329,
+      "completeness": 0.9995107323232323,
+      "fit_relative_residual_norm": 0.2134579652393852,
+      "fit_condition": 13.618899170324163
+    },
+    {
+      "satellite": "G26",
+      "session_prn": "0125",
+      "clk_prn": "125",
+      "fitted_R0": 2.580368168333237e-22,
+      "diffusion_intensities": [
+        5.56181010732627e-23,
+        0.0,
+        0.0
+      ],
+      "process_std": [
+        7.457754425647354e-12,
+        0.0,
+        0.0
+      ],
+      "valid_epochs": 63329,
+      "completeness": 0.9995107323232323,
+      "fit_relative_residual_norm": 0.3498312987568479,
+      "fit_condition": 13.83655000653357
+    },
+    {
+      "satellite": "G27",
+      "session_prn": "0126",
+      "clk_prn": "126",
+      "fitted_R0": 0.0,
+      "diffusion_intensities": [
+        1.1453742077047362e-21,
+        1.2698760955838196e-30,
+        6.970490129350141e-38
+      ],
+      "process_std": [
+        3.3843377604854045e-11,
+        1.1268877919224344e-15,
+        2.6401685797217837e-19
+      ],
+      "valid_epochs": 63329,
+      "completeness": 0.9995107323232323,
+      "fit_relative_residual_norm": 0.057075605957032025,
+      "fit_condition": 10.705723961114423
+    },
+    {
+      "satellite": "G28",
+      "session_prn": "0127",
+      "clk_prn": "127",
+      "fitted_R0": 2.2600422054886793e-22,
+      "diffusion_intensities": [
+        4.788734473609205e-23,
+        0.0,
+        0.0
+      ],
+      "process_std": [
+        6.9200682609416546e-12,
+        0.0,
+        0.0
+      ],
+      "valid_epochs": 63329,
+      "completeness": 0.9995107323232323,
+      "fit_relative_residual_norm": 0.29234388556003965,
+      "fit_condition": 13.903764629118719
+    },
+    {
+      "satellite": "G29",
+      "session_prn": "0128",
+      "clk_prn": "128",
+      "fitted_R0": 2.068407987729224e-21,
+      "diffusion_intensities": [
+        2.9188956983973674e-22,
+        0.0,
+        0.0
+      ],
+      "process_std": [
+        1.7084775966916768e-11,
+        0.0,
+        0.0
+      ],
+      "valid_epochs": 63329,
+      "completeness": 0.9995107323232323,
+      "fit_relative_residual_norm": 0.5314164061154835,
+      "fit_condition": 12.019505771213252
+    },
+    {
+      "satellite": "G30",
+      "session_prn": "0129",
+      "clk_prn": "129",
+      "fitted_R0": 1.5015009453637826e-22,
+      "diffusion_intensities": [
+        7.094953235344289e-23,
+        0.0,
+        1.6703508117865864e-38
+      ],
+      "process_std": [
+        8.423154536956026e-12,
+        0.0,
+        1.2924205243598488e-19
+      ],
+      "valid_epochs": 63329,
+      "completeness": 0.9995107323232323,
+      "fit_relative_residual_norm": 0.1725845217286725,
+      "fit_condition": 8.619131754478724
+    },
+    {
+      "satellite": "G31",
+      "session_prn": "0130",
+      "clk_prn": "130",
+      "fitted_R0": 1.2820422231700095e-21,
+      "diffusion_intensities": [
+        2.6677731035784107e-22,
+        0.0,
+        0.0
+      ],
+      "process_std": [
+        1.6333319024553493e-11,
+        0.0,
+        0.0
+      ],
+      "valid_epochs": 63329,
+      "completeness": 0.9995107323232323,
+      "fit_relative_residual_norm": 0.47170599395563145,
+      "fit_condition": 14.202668763382983
+    },
+    {
+      "satellite": "G32",
+      "session_prn": "0131",
+      "clk_prn": "131",
+      "fitted_R0": 1.8844942057032692e-22,
+      "diffusion_intensities": [
+        6.520965551614652e-23,
+        0.0,
+        0.0
+      ],
+      "process_std": [
+        8.075249563706779e-12,
+        0.0,
+        0.0
+      ],
+      "valid_epochs": 63329,
+      "completeness": 0.9995107323232323,
+      "fit_relative_residual_norm": 0.3299245875623274,
+      "fit_condition": 14.12941716293718
+    }
+  ],
+  "calibration": "Each raw clock individually, all available records in the 22-day product; HVAR NNLS",
+  "states": 3,
+  "bayesian_optimization": false,
+  "held_out_evaluation": false,
+  "fit_taus_s": [
+    30.0,
+    60.0,
+    120.0,
+    300.0,
+    600.0,
+    1200.0,
+    3000.0,
+    6000.0,
+    10800.0
+  ],
+  "target_taus_s": [
+    30.0,
+    60.0,
+    120.0,
+    300.0,
+    900.0,
+    3000.0,
+    10800.0,
+    21600.0,
+    43200.0,
+    86400.0
+  ],
+  "common_valid_epochs": 31829,
+  "common_fraction": 0.5023516414141415,
+  "common_missing_epochs": 31531,
+  "pair_count": 465,
+  "per_product_sigma_s": 5e-12,
+  "effective_link_std_s": 2.7838821814150106e-11,
+  "link_noise_note": "Same per-product 5 ps assumption: complete-graph diagonal link std sqrt(number_of_clocks)*5 ps, preserving equivalent information in the observable subspace",
+  "R0_note": "White-phase term is nuisance-only; it does not replace native measurement-noise configuration",
+  "membership": "Fixed 31 clocks including G17; G13 absent from source, no invented records",
+  "gaps": "Omit all PFD at common-missing epochs; retain held CLK interface placeholders. SUMZERO still applies its 3 pseudo-observations; other methods predict only. Evaluation never crosses gaps.",
+  "evaluation": "Same all-31-valid mask for all plotted series; startup first three epochs excluded",
+  "preprocessing": "No jumps removed, no detrending, no per-day alignment, no parameter optimization",
+  "source_label": "User-provided BHU clock/SP3 products, 2026-06-02 through 2026-06-23",
+  "initialization": "First-epoch phase minus the normalized inverse-sqrt(D1) weighted phase mean",
+  "initial_std": [
+    1e-08,
+    1e-11,
+    1e-18
+  ],
+  "completed_methods": [
+    "GREENHALL",
+    "KPW",
+    "SUMZERO",
+    "BROWN"
+  ],
+  "excluded_methods": [
+    "NONE"
+  ]
+}

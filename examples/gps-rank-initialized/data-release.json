@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "release_tag": "gps-rank-initialized-data-v1",
+  "assets": {
+    "experiment": {
+      "filename": "gps-rank-initialized-data-v1.zip",
+      "bytes": 14278275,
+      "sha256": "d7c939bd2e397b800f87fd87ac5c307dceccb5e0327c4b4774dfbbab075f6674",
+      "expanded_bytes": 15343486,
+      "file_count": 45,
+      "manifest_sha256": "f50077e068cc94dff7a5e7c7d20eca4089f85dc4715730ab00c554ff4afd73c4"
+    }
+  }
+}
