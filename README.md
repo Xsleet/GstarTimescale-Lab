@@ -21,6 +21,20 @@
 
 **[查看两个样例的相位图、ADEV 图、数值对照和运行命令](docs/example-results.md)**。可以先看结果，再按下面步骤自己运行并绘图。
 
+### 真实 GPS 卫星钟融合实验：31 颗星、22 天
+
+使用提供的 **BHU GPS 钟差产品，2026-06-02 至 06-23，30 秒采样**；G13 缺失，其余 31 颗 GPS 参与融合。采用三状态钟模型，逐星用全部可用数据的哈达玛方差拟合扩散系数，开启正确的相对钟差初始化，**不使用贝叶斯优化**。BROWN 对漂移状态的特殊处理见案例说明。
+
+比较对象包括 **31 个原始卫星钟、原始钟差的等权平均，以及 GREENHALL、KPW、SUMZERO、BROWN 四组原生 C++ 结果**；只展示正确初始化后的结果。指标包括 ADEV、普通 HDEV 和重叠 HDEV（OHDEV）。
+
+![31 颗 GPS 原始钟、等权平均与四种组合方法的重叠 HDEV](examples/gps-rank-initialized/preview/ohdev.svg)
+
+**主要结果：** GREENHALL 与 KPW 在 6 小时 OHDEV 上比等权平均低约 **24.5%**；12 小时时等权平均更低。结论随指标和平均时间变化，完整数值表、ADEV/HDEV 图及统计边界见[GPS 实验教程](examples/gps-rank-initialized/README.md)。本实验评价使用共同有效历元、按连续段计算，差分不跨数据缺口；拟合与评价同源。
+
+- **查看和核对结果：** [公开数据包](https://github.com/Xsleet/GstarTimescale-Lab/releases/tag/gps-rank-initialized-data-v1)约 14.3 MB，无需求解器即可重算 1,008 个目标统计值。
+- **重新运行实验：** 使用支持相对钟差初始化的 **0.2.0 授权运行包及配套清单**；旧 0.1.0 不支持此功能。[安装、配置和运行步骤](examples/gps-rank-initialized/README.md#2-准备匹配的程序和标准输入)。
+- **检查验证范围：** [完整 GPS 实验与 0.2.0 运行包验证记录](examples/gps-rank-initialized/validation.md)。22 天归档结果与打包后的 1 小时 GPS 检查分别记录。
+
 ## 先认识这几个文件
 
 | 文件 | 你用它做什么 |
@@ -49,6 +63,8 @@ python -m venv .venv
 ```
 
 之后求解时直接调用 `engine/GstarTimescale.exe`。安装步骤不会运行实验。
+
+上面的 0.1.0 命令用于基础仿真案例；**GPS 初始化实验请按 [0.2.0 安装步骤](examples/gps-rank-initialized/README.md#2-准备匹配的程序和标准输入)操作**，需要同时替换随包提供的 `engine-release.json`。
 
 ## 2. 准备一个有数据的实验目录
 
@@ -212,6 +228,7 @@ ADEV 横轴是平均时间 τ，纵轴越低通常表示该 τ 上的稳定度�
 | 第 4.3 节论文数据与实验 | [论文实验教程](examples/thesis-section43/README.md) |
 | 第 4.4 节扩散系数实验 | [默认运行、贝叶斯优化与结果比较](examples/thesis-section44/README.md) |
 | 第 5.2 节动态成员实验 | [成员钟退出、新钟加入与初始化对比](examples/thesis-section52/README.md) |
+| 真实 GPS 卫星钟融合实验 | [31 星、22 天：初始化、四种补偿方法及 ADEV/HDEV/OHDEV](examples/gps-rank-initialized/README.md) |
 | 4 CSAC 的数据来源和完整命令 | [CSAC 基础案例](examples/csac/README.md) |
 | 2 CSAC + 2 mRO 的输入参数 | [异构案例](examples/heterogeneous/README.md) |
 | 一键演示、自动检查和 HTML 报告 | [可选便利命令](docs/convenience-commands.md) |
